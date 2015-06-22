@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">MuVi</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="sort_text">SORT BY:</string>
+    <string name="sort_by_popularity">Popularity</string>
+    <string name="sort_by_rating">Rating</string>
+    <string name="sort_order">popularity.desc</string>
 </resources>

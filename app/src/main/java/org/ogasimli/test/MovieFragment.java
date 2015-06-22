@@ -1,6 +1,7 @@
 package org.ogasimli.test;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -11,6 +12,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -42,10 +46,42 @@ public class MovieFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_moviefragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        SharedPreferences.Editor prefs = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+
+        switch (id){
+            case R.id.action_popularity:
+                prefs.putString("sort_order", "popularity.desc");
+                prefs.commit();
+                break;
+            case R.id.action_rating:
+                prefs.putString("sort_order", "vote_average.desc");
+                prefs.commit();
+                break;
+        }
+
+        loadMovieData();
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container,false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -56,9 +92,12 @@ public class MovieFragment extends Fragment {
 
     }
 
-    public void updateWeather(){
+    public void loadMovieData(){
         FetchMovieTask fetchMovieTask = new FetchMovieTask();
-        fetchMovieTask.execute();
+        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String defaultValue = getResources().getString(R.string.sort_order);
+        String sortOrder = prefs.getString("sort_order", defaultValue);
+        fetchMovieTask.execute(sortOrder);
     }
 
 
@@ -76,7 +115,7 @@ public class MovieFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (isOnline()){
-            updateWeather();
+            loadMovieData();
         }else {
             Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_SHORT).show();
         }
@@ -98,10 +137,12 @@ public class MovieFragment extends Fragment {
 
             try {
                 // Construct the URL for the TheMovieDB query
-                final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&";
+                final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+                final String QUERY_PARAM = "sort_by";
                 final String API_KEY = "api_key";
 
                 Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                        .appendQueryParameter(QUERY_PARAM, params[0])
                         .appendQueryParameter(API_KEY, apiKey)
                         .build();
 
@@ -198,7 +239,11 @@ public class MovieFragment extends Fragment {
                 id = singleMovie.getString(OWM_ID);
                 movie.setMovieId(id);
                 //Get movie genre
-                genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
+                try {
+                    genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
+                } catch (JSONException e) {
+                    genreId = "";
+                }
                 movie.setMovieGenre(genreId);
                 //Get poster path
                 posterPath = singleMovie.getString(OWM_POSTER_PATH);
