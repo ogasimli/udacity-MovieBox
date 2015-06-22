@@ -18,13 +18,12 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/film_image"
+            android:id="@+id/movie_poster"
             android:layout_width="match_parent"
-            android:src="@mipmap/eden"
             android:layout_height="250dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:contentDescription="Thumbnails of films"/>
+            android:contentDescription="Posters of films"/>
 
         <TextView
             android:id="@+id/movie_title_text"
@@ -56,9 +55,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/rating_bar"
             style="?android:attr/ratingBarStyleSmall"
-            android:numStars="10"
+            android:numStars="5"
             android:stepSize="0.1"
-            android:rating="2.5"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="5dp"/>

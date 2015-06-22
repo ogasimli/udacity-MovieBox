@@ -6,7 +6,8 @@ package org.ogasimli.test;
 public class Movie {
     private String movieTitle;
     private String movieGenre;
-    private int movieThumbnail;
+    private String posterPath;
+    private String movieId;
     private double movieRating;
 
     public String getMovieTitle() {
@@ -25,12 +26,20 @@ public class Movie {
         this.movieGenre = movieGenre;
     }
 
-    public int getMovieThumbnail() {
-        return movieThumbnail;
+    public String getPosterPath() {
+        return posterPath;
     }
 
-    public void setMovieThumbnail(int movieThumbnail) {
-        this.movieThumbnail = movieThumbnail;
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
     }
 
     public double getMovieRating() {
