@@ -172,6 +172,8 @@ public class MovieFragment extends Fragment {
             final String OWM_GENRE_ID = "genre_ids";
             final String OWM_POSTER_PATH = "poster_path";
             final String OWM_RATING = "vote_average";
+            final String OWM_RELEASE_DATE = "release_date";
+            final String OWM_OVERVIEW = "overview";
 
             List<Movie> movieList = new ArrayList<>();
             JSONObject movieJson = new JSONObject(MovieJsonStr);
@@ -183,6 +185,8 @@ public class MovieFragment extends Fragment {
                 String id;
                 String genreId;
                 String posterPath;
+                String releaseDate;
+                String overview;
                 double rating;
 
                 // Get the JSON object representing the single movie
@@ -199,6 +203,12 @@ public class MovieFragment extends Fragment {
                 //Get poster path
                 posterPath = singleMovie.getString(OWM_POSTER_PATH);
                 movie.setPosterPath(posterPath);
+                //Get release date of movie
+                releaseDate = singleMovie.getString(OWM_RELEASE_DATE);
+                movie.setMovieReleaseDate(releaseDate);
+                //Get movie overview
+                overview = singleMovie.getString(OWM_OVERVIEW);
+                movie.setMovieOverview(overview);
                 //Get movie rating
                 rating = singleMovie.getDouble(OWM_RATING);
                 movie.setMovieRating(rating);

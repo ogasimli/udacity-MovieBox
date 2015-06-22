@@ -8,6 +8,8 @@ public class Movie {
     private String movieGenre;
     private String posterPath;
     private String movieId;
+    private String movieOverview;
+    private String movieReleaseDate;
     private double movieRating;
 
     public String getMovieTitle() {
@@ -40,6 +42,22 @@ public class Movie {
 
     public void setMovieId(String movieId) {
         this.movieId = movieId;
+    }
+
+    public String getMovieOverview() {
+        return movieOverview;
+    }
+
+    public void setMovieOverview(String movieOverview) {
+        this.movieOverview = movieOverview;
+    }
+
+    public String getMovieReleaseDate() {
+        return movieReleaseDate;
+    }
+
+    public void setMovieReleaseDate(String movieReleaseDate) {
+        this.movieReleaseDate = movieReleaseDate;
     }
 
     public double getMovieRating() {
