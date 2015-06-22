@@ -4,5 +4,6 @@
     <string name="sort_text">SORT BY:</string>
     <string name="sort_by_popularity">Popularity</string>
     <string name="sort_by_rating">Rating</string>
+    <string name="sort_by_revenue">Revenue</string>
     <string name="sort_order">popularity.desc</string>
 </resources>

@@ -71,6 +71,10 @@ public class MovieFragment extends Fragment {
                 prefs.putString("sort_order", "vote_average.desc");
                 prefs.commit();
                 break;
+            case R.id.action_revenue:
+                prefs.putString("sort_order", "revenue.desc");
+                prefs.commit();
+                break;
         }
 
         loadMovieData();
