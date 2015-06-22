@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,11 +55,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     private float decreaseRating (double rating){
-        float newRating = (float)Math.round((rating*5/10) * 100) / 100;
-        return newRating;
+        return (float)Math.round((rating*5/10) * 100) / 100;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView movieTitle;
         public TextView movieGenre;
@@ -71,6 +71,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             movieGenre = (TextView) itemView.findViewById(R.id.movie_genre_text);
             moviePoster = (ImageView)itemView.findViewById(R.id.movie_poster);
             movieRating = (RatingBar) itemView.findViewById(R.id.rating_bar);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (movieList != null){
+                int position = getPosition();
+                Log.e("Click Action", "Click position is " +position);
+            }
         }
     }
 }

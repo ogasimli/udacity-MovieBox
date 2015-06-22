@@ -65,15 +65,15 @@ public class MovieFragment extends Fragment {
         switch (id){
             case R.id.action_popularity:
                 prefs.putString("sort_order", "popularity.desc");
-                prefs.commit();
+                prefs.apply();
                 break;
             case R.id.action_rating:
                 prefs.putString("sort_order", "vote_average.desc");
-                prefs.commit();
+                prefs.apply();
                 break;
             case R.id.action_revenue:
                 prefs.putString("sort_order", "revenue.desc");
-                prefs.commit();
+                prefs.apply();
                 break;
         }
 
@@ -93,7 +93,6 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         return rootView;
-
     }
 
     public void loadMovieData(){
