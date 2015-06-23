@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment"
-    android:name="org.ogasimli.test.MovieFragment"
-    tools:layout="@layout/fragment_main"
+    android:name="org.ogasimli.test.DetailActivityFragment"
+    tools:layout="@layout/fragment_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
