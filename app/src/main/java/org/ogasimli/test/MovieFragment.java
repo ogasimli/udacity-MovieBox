@@ -283,7 +283,7 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Movie> movies) {
             if (movies!=null){
-                mAdapter = new MovieAdapter(movies);
+                mAdapter = new MovieAdapter(movies, getActivity());
                 mRecyclerView.setAdapter(mAdapter);
 //              mAdapter.setMovieList(null);
             }

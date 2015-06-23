@@ -1,6 +1,7 @@
 package org.ogasimli.test;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +23,11 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movieList;
+    private Context context;
 
-    public MovieAdapter(List<Movie> movieList) {
+    public MovieAdapter(List<Movie> movieList, Context context) {
         this.movieList = movieList;
+        this.context = context;
     }
 
     @Override
@@ -78,7 +81,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void onClick(View v) {
             if (movieList != null){
                 int position = getPosition();
-                Log.e("Click Action", "Click position is " +position);
+                Log.e("Click Action", "Click position is " + position);
+                Intent intent = new Intent(context, DetailActivity.class);
+                //you can pass on the Pojo with PARCELABLE
+                intent.putExtra(Intent.EXTRA_TEXT, position);
+                context.startActivity(intent);
             }
         }
     }
