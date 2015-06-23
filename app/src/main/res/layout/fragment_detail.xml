@@ -1,118 +1,139 @@
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_margin"
-    android:paddingRight="@dimen/activity_margin"
-    android:paddingTop="@dimen/activity_margin"
-    android:paddingBottom="@dimen/activity_margin"
-    android:orientation="vertical"
-    tools:context="org.ogasimli.test.DetailActivityFragment">
-
-    <VideoView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/videoView"
-        android:layout_gravity="center_vertical|top"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+    tools:context="org.ogasimli.test.DetailActivityFragment"
+    android:fillViewport="true">
 
     <RelativeLayout
-        android:id="@+id/secondRelativeLayout"
-        android:layout_width="120dp"
-        android:layout_height="350dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
+        <VideoView
+            android:id="@+id/videoView"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:id="@+id/imageView"
-            android:scaleType="centerCrop"
-            android:contentDescription="Posters of films"
-            android:src="@mipmap/ic_launcher"
-            android:layout_alignParentBottom="true"
+            android:layout_height="200dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical|top" />
+
+        <RelativeLayout
+            android:id="@+id/secondRelativeLayout"
+            android:layout_width="120dp"
+            android:layout_height="350dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:contentDescription="Posters of films"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/detail_title_text"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/videoView"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/secondRelativeLayout"
+            android:layout_toRightOf="@id/secondRelativeLayout"
+            android:text="Jurassic World" />
+
+        <TextView
+            android:id="@+id/detail_genre_text"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_title_text"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/secondRelativeLayout"
+            android:layout_toRightOf="@id/secondRelativeLayout"
+            android:text="Science Fiction" />
+
+        <TextView
+            android:id="@+id/detail_release_text"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_genre_text"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/secondRelativeLayout"
+            android:layout_toRightOf="@id/secondRelativeLayout"
+            android:text="2015" />
+
+        <View
+            android:id="@+id/SplitLine_hor1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/secondRelativeLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:background="@color/divider_color" />
+
+        <TextView
+            android:id="@+id/detail_rating_text"
+            style="@style/Base.TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/SplitLine_hor1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="7.5 / 10"
+            android:textColor="@color/accent_color" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_rating_text"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:numStars="10"
+            android:rating="7.5"
+            android:stepSize="0.1" />
+
+        <View
+            android:id="@+id/SplitLine_hor2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/ratingBar"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:background="@color/divider_color" />
+
+        <TextView
+            android:id="@+id/detail_overview_caption_text"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/SplitLine_hor2"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:text="Overview" />
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_overview_caption_text"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:text="Wie es sich John Hammond einst erträumt hat, ist es nun gekommen: Die Isla Nublar ist nun ein Vergnügungspark mit Dinosauriern, den jährlich zehn Millionen Besucher besichtigen. Sie genießen dort absolute Sicherheit … bis etwas schief geht." />
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/detail_title_text"
-        android:text="Jurassic World"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/videoView"
-        android:layout_toRightOf="@+id/secondRelativeLayout"
-        android:layout_toEndOf="@+id/secondRelativeLayout"
-        style="@style/Base.TextAppearance.AppCompat.Headline"
-        android:layout_margin="10dp"/>
-
-    <TextView
-        android:id="@+id/detail_genre_text"
-        android:text="Science Fiction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/detail_title_text"
-        android:layout_toRightOf="@+id/secondRelativeLayout"
-        android:layout_toEndOf="@+id/secondRelativeLayout"
-        style="@style/Base.TextAppearance.AppCompat.Body1"
-        android:layout_margin="10dp"/>
-
-    <TextView
-        android:id="@+id/detail_release_text"
-        android:text="2015"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/detail_genre_text"
-        android:layout_toRightOf="@+id/secondRelativeLayout"
-        android:layout_toEndOf="@+id/secondRelativeLayout"
-        style="@style/Base.TextAppearance.AppCompat.Body1"
-        android:layout_margin="10dp"/>
-
-    <TextView
-        android:id="@+id/detail_rating_text"
-        android:text="7.5 / 10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Headline"
-        android:layout_below="@+id/secondRelativeLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:textColor="@color/accent_color"/>
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ratingBar"
-        android:layout_below="@+id/detail_rating_text"
-        android:layout_centerHorizontal="true"
-        style="?android:attr/ratingBarStyleIndicator"
-        android:numStars="10"
-        android:stepSize="0.1"
-        android:rating="7.5"
-        android:layout_marginBottom="40dp"/>
-
-    <TextView
-        android:id="@+id/detail_overview_caption_text"
-        android:text="Overview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Title"
-        android:layout_below="@+id/ratingBar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:text="Wie es sich John Hammond einst erträumt hat, ist es nun gekommen: Die Isla Nublar ist nun ein Vergnügungspark mit Dinosauriern, den jährlich zehn Millionen Besucher besichtigen. Sie genießen dort absolute Sicherheit … bis etwas schief geht."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Base.TextAppearance.AppCompat.Body1"
-        android:layout_below="@+id/detail_overview_caption_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"/>
-
-</RelativeLayout>
+</ScrollView>
