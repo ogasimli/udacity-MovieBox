@@ -6,5 +6,4 @@
     <string name="sort_by_revenue">Revenue</string>
     <string name="sort_order">popularity.desc</string>
     <string name="title_activity_detail">Details</string>
-    <string name="action_settings">Settings</string>
 </resources>

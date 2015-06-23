@@ -1,3 +1,4 @@
+/*
 package org.ogasimli.test;
 
 import android.content.Intent;
@@ -9,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+*/
 /**
  * A placeholder fragment containing a simple view.
- */
+ *//*
+
 public class DetailActivityFragment extends Fragment {
 
     public DetailActivityFragment() {
@@ -25,8 +28,9 @@ public class DetailActivityFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         if (intent!=null && intent.hasExtra(Intent.EXTRA_TEXT)){
             String mForecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
-            ((TextView) rootView.findViewById(R.id.detail_text)).setText(mForecastStr);
+            ((TextView) rootView.findViewById(R.id.detail_release_text)).setText(mForecastStr);
         }
         return rootView;
     }
 }
+*/
