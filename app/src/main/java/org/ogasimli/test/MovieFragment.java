@@ -215,6 +215,7 @@ public class MovieFragment extends Fragment {
             final String OWM_ID = "id";
             final String OWM_GENRE_ID = "genre_ids";
             final String OWM_POSTER_PATH = "poster_path";
+            final String OWM_BACKDROP_PATH = "backdrop_path";
             final String OWM_RATING = "vote_average";
             final String OWM_RELEASE_DATE = "release_date";
             final String OWM_OVERVIEW = "overview";
@@ -229,40 +230,61 @@ public class MovieFragment extends Fragment {
                 String id;
                 String genreId;
                 String posterPath;
+                String backdropPath;
                 String releaseDate;
                 String overview;
                 double rating;
 
                 // Get the JSON object representing the single movie
                 JSONObject singleMovie = movieArray.getJSONObject(i);
+
+                try {
                 //Get movie title
                 title = singleMovie.getString(OWM_TITLE);
-                movie.setMovieTitle(title);
+
                 //Get movie ID
                 id = singleMovie.getString(OWM_ID);
-                movie.setMovieId(id);
+
                 //Get movie genre
-                try {
-                    genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
-                } catch (JSONException e) {
-                    genreId = "";
-                }
-                movie.setMovieGenre(genreId);
+                genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
+
                 //Get poster path
                 posterPath = singleMovie.getString(OWM_POSTER_PATH);
-                movie.setPosterPath(posterPath);
+
+                //Get poster
+                backdropPath = singleMovie.getString(OWM_BACKDROP_PATH);
+
                 //Get release date of movie
                 releaseDate = singleMovie.getString(OWM_RELEASE_DATE);
-                movie.setMovieReleaseDate(releaseDate);
+
                 //Get movie overview
                 overview = singleMovie.getString(OWM_OVERVIEW);
-                movie.setMovieOverview(overview);
+
                 //Get movie rating
                 rating = singleMovie.getDouble(OWM_RATING);
-                movie.setMovieRating(rating);
+                } catch (JSONException e) {
+                    title = "";
+                    id = "";
+                    genreId = "";
+                    posterPath = "";
+                    backdropPath = "";
+                    releaseDate = "";
+                    overview = "";
+                    rating = 0;
+                }
 
+                //Set fetched results to movie object
+                movie.setMovieTitle(title);
+                movie.setMovieId(id);
+                movie.setMovieGenre(genreId);
+                movie.setPosterPath(posterPath);
+                movie.setBackdropPath(backdropPath);
+                movie.setMovieReleaseDate(releaseDate);
+                movie.setMovieOverview(overview);
+                movie.setMovieRating(rating);
                 movieList.add(movie);
             }
+
             return movieList;
         }
 

@@ -38,7 +38,7 @@ public class DetailActivity extends ActionBarActivity {
 
             Intent intent = getActivity().getIntent();
             if (intent!=null && intent.hasExtra(Intent.EXTRA_TEXT)){
-                mForecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
+                mForecastStr = intent.getStringExtra("key");
                 ((TextView) rootView.findViewById(R.id.detail_release_text)).setText(mForecastStr);
             }
 
