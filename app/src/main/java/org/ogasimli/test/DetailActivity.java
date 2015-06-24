@@ -26,7 +26,7 @@ public class DetailActivity extends ActionBarActivity {
 
     public static class DetailFragment extends Fragment {
 
-        private String mForecastStr;
+        private int mForecastStr;
 
         public DetailFragment() {
         }
@@ -38,8 +38,8 @@ public class DetailActivity extends ActionBarActivity {
 
             Intent intent = getActivity().getIntent();
             if (intent!=null && intent.hasExtra(Intent.EXTRA_TEXT)){
-                mForecastStr = intent.getStringExtra("key");
-                ((TextView) rootView.findViewById(R.id.detail_release_text)).setText(mForecastStr);
+                mForecastStr = intent.getIntExtra(Intent.EXTRA_TEXT,1);
+                ((TextView) rootView.findViewById(R.id.detail_release_text)).setText(String.valueOf(mForecastStr));
             }
 
             return rootView;

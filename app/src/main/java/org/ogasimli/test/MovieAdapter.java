@@ -83,7 +83,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 int position = getPosition();
                 Log.e("Click Action", "Click position is " + position);
                 Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("key", position);
+                intent.putExtra(Intent.EXTRA_TEXT, position);
                 context.startActivity(intent);
             }
         }
