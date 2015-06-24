@@ -19,14 +19,14 @@ public class DetailActivity extends ActionBarActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new DetailActivityFragment())
+                    .add(R.id.container, new DetailFragment())
                     .commit();
         }
     }
 
-    public static class DetailActivityFragment extends Fragment {
+    public static class DetailFragment extends Fragment {
 
-        public DetailActivityFragment() {
+        public DetailFragment() {
         }
 
         @Override
