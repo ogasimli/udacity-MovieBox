@@ -12,13 +12,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageViewBig"
+            android:id="@+id/backdrop_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="center_vertical|top"
+            android:scaleType="centerCrop"
             android:contentDescription="Big posters of films"
             android:background="@color/primary_color"/>
 
@@ -29,10 +30,10 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="5dp">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/detail_movie_poster"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 android:layout_alignParentBottom="true"
@@ -40,7 +41,7 @@
                 android:layout_alignParentStart="true"
                 android:contentDescription="Posters of films"
                 android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher" />
+                android:background="@color/primary_color"/>
 
         </RelativeLayout>
 
@@ -49,8 +50,11 @@
             style="@style/Base.TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/imageViewBig"
-            android:layout_margin="10dp"
+            android:layout_below="@id/backdrop_image"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_toEndOf="@id/secondRelativeLayout"
             android:layout_toRightOf="@id/secondRelativeLayout"
             android:text="Jurassic World" />
@@ -58,10 +62,13 @@
         <TextView
             android:id="@+id/detail_genre_text"
             style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:textColor="@color/secondary_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/detail_title_text"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_toEndOf="@id/secondRelativeLayout"
             android:layout_toRightOf="@id/secondRelativeLayout"
             android:text="Science Fiction" />
@@ -69,10 +76,13 @@
         <TextView
             android:id="@+id/detail_release_text"
             style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:textColor="@color/secondary_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/detail_genre_text"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_toEndOf="@id/secondRelativeLayout"
             android:layout_toRightOf="@id/secondRelativeLayout"
             android:text="2015" />
@@ -80,10 +90,10 @@
         <View
             android:id="@+id/SplitLine_hor1"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="1dp"
             android:layout_below="@id/secondRelativeLayout"
             android:layout_centerHorizontal="true"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:background="@color/divider_color" />
 
         <TextView
@@ -93,18 +103,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/SplitLine_hor1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:text="7.5 / 10"
             android:textColor="@color/accent_color" />
 
         <RatingBar
-            android:id="@+id/ratingBar"
-            style="?android:attr/ratingBarStyleIndicator"
+            android:id="@+id/detail_rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/detail_rating_text"
             android:layout_centerHorizontal="true"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:numStars="10"
             android:rating="7.5"
             android:stepSize="0.1" />
@@ -112,10 +122,10 @@
         <View
             android:id="@+id/SplitLine_hor2"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@id/ratingBar"
+            android:layout_height="1dp"
+            android:layout_below="@id/detail_rating_bar"
             android:layout_centerHorizontal="true"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:background="@color/divider_color" />
 
         <TextView
@@ -129,6 +139,7 @@
             android:text="Overview" />
 
         <TextView
+            android:id="@+id/detail_overview_text"
             style="@style/Base.TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

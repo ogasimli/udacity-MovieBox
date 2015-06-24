@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         this.context = context;
     }
 
+    public List<Movie> getMovieList() {
+        return movieList;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
@@ -47,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         viewHolder.movieTitle.setText(movie.getMovieTitle());
         viewHolder.movieGenre.setText(movie.getMovieGenre());
 //        viewHolder.moviePoster.setImageResource(movie.getPosterPath());
-        Context context = viewHolder.moviePoster.getContext();
+        context = viewHolder.moviePoster.getContext();
         Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + movie.getPosterPath()).into(viewHolder.moviePoster);
         viewHolder.movieRating.setRating(decreaseRating(movie.getMovieRating()));
     }
@@ -81,9 +84,29 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public void onClick(View v) {
             if (movieList != null){
                 int position = getPosition();
-                Log.e("Click Action", "Click position is " + position);
+//                Log.e("Click Action", "Click position is " + position);
+                Movie passedMovie = movieList.get(position);
+
+                String movieTitle = passedMovie.getMovieTitle();
+                String movieGenre = passedMovie.getMovieGenre();
+                String posterPath = passedMovie.getPosterPath();
+                String backdropPath = passedMovie.getBackdropPath();
+                String movieId = passedMovie.getMovieId();
+                String movieOverview = passedMovie.getMovieOverview();
+                String movieReleaseDate = passedMovie.getMovieReleaseDate();
+                double movieRating = passedMovie.getMovieRating();
+
                 Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra(Intent.EXTRA_TEXT, position);
+                String packageName = "org.ogasimli.test";
+
+                intent.putExtra(packageName+".movieTitle", movieTitle);
+                intent.putExtra(packageName+".movieGenre", movieGenre);
+                intent.putExtra(packageName+".posterPath", posterPath);
+                intent.putExtra(packageName+".backdropPath", backdropPath);
+                intent.putExtra(packageName+".movieId", movieId);
+                intent.putExtra(packageName+".movieOverview", movieOverview);
+                intent.putExtra(packageName+".movieReleaseDate", movieReleaseDate);
+                intent.putExtra(packageName+".movieRating", movieRating);
                 context.startActivity(intent);
             }
         }

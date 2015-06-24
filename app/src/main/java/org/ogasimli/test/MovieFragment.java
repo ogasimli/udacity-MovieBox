@@ -49,6 +49,12 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        if (isOnline()){
+            loadMovieData();
+        }else {
+            Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -112,17 +118,6 @@ public class MovieFragment extends Fragment {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (isOnline()){
-            loadMovieData();
-        }else {
-            Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_SHORT).show();
-        }
-
     }
 
     public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
