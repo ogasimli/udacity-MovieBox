@@ -140,7 +140,7 @@ public class MovieFragment extends Fragment {
 
             try {
                 // Construct the URL for the TheMovieDB query
-                final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+                final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/discover/movie?include_adult=true";
                 final String QUERY_PARAM = "sort_by";
                 final String API_KEY = "api_key";
 
