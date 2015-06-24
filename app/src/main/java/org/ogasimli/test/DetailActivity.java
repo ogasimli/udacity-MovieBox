@@ -86,7 +86,7 @@ public class DetailActivity extends ActionBarActivity {
             context = detailPosterImage.getContext();
             Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + posterPath).into(detailPosterImage);
             context = detailBackdropImage.getContext();
-            Glide.with(context).load("http://image.tmdb.org/t/p/w342/" + backdropPath).into(detailBackdropImage);
+            Glide.with(context).load("http://image.tmdb.org/t/p/w500/" + backdropPath).into(detailBackdropImage);
             detailMovieOverview.setText(movieOverview);
 
             return rootView;

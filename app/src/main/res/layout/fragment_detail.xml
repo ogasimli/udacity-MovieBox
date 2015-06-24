@@ -19,7 +19,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="center_vertical|top"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:contentDescription="Big posters of films"
             android:background="@color/primary_color"/>
 
@@ -40,7 +40,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:contentDescription="Posters of films"
-                android:scaleType="centerCrop"
+                android:scaleType="fitXY"
                 android:background="@color/primary_color"/>
 
         </RelativeLayout>

@@ -8,9 +8,15 @@
     </style>
 
     <!-- DetailsActivity theme. -->
-    <style name="DetailTheme" tools:targetApi="19" parent="android:Theme.Holo.NoActionBar.TranslucentDecor">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
+    <style name="DetailTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBarOverlay">true</item>
+        <item name="actionBarStyle">@style/TransparentActionBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="TransparentActionBar"
+        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="background">@android:color/transparent</item>
     </style>
 
 </resources>
