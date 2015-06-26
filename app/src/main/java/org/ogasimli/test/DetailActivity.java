@@ -81,7 +81,8 @@ public class DetailActivity extends ActionBarActivity {
             detailMovieTitle.setText(movieTitle);
             detailMovieGenre.setText(movieGenre);
             detailMovieRelease.setText(movieReleaseDate);
-            detailMovieRating.setText(String.valueOf(movieRating)+" / 10");
+            String rating = String.format(rootView.getResources().getString(R.string.detail_rating),String.valueOf(movieRating));
+            detailMovieRating.setText(rating);
             detailRatingBar.setRating((float) movieRating);
             context = detailPosterImage.getContext();
             Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + posterPath).into(detailPosterImage);

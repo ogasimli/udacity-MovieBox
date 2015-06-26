@@ -6,4 +6,5 @@
     <string name="sort_by_revenue">Revenue</string>
     <string name="sort_order">popularity.desc</string>
     <string name="title_activity_detail">Details</string>
+    <string name="detail_rating">%1$s / 10.0</string>
 </resources>
