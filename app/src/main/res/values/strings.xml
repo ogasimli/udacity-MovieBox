@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MuVi</string>
+    <string name="app_name">Movie Box</string>
     <string name="sort_text">SORT BY:</string>
     <string name="sort_by_popularity">Popularity</string>
     <string name="sort_by_rating">Rating</string>
