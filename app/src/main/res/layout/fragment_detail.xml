@@ -40,8 +40,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:contentDescription="Posters of films"
-                android:scaleType="fitXY"
-                android:background="@color/primary_color"/>
+                android:scaleType="fitXY" />
 
         </RelativeLayout>
 

@@ -233,38 +233,51 @@ public class MovieFragment extends Fragment {
                 // Get the JSON object representing the single movie
                 JSONObject singleMovie = movieArray.getJSONObject(i);
 
-                try {
                 //Get movie title
                 title = singleMovie.getString(OWM_TITLE);
-
                 //Get movie ID
                 id = singleMovie.getString(OWM_ID);
 
                 //Get movie genre
+                try {
                 genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
+                } catch (JSONException e) {
+                    genreId = "";
+                }
 
                 //Get poster path
+                try {
                 posterPath = singleMovie.getString(OWM_POSTER_PATH);
+                } catch (JSONException e) {
+                    posterPath = "";
+                }
 
-                //Get poster
+                //Get backdrop poster
+                try {
                 backdropPath = singleMovie.getString(OWM_BACKDROP_PATH);
+                } catch (JSONException e) {
+                    backdropPath = "";
+                }
+
 
                 //Get release date of movie
+                try {
                 releaseDate = singleMovie.getString(OWM_RELEASE_DATE);
+                } catch (JSONException e) {
+                    releaseDate = "";
+                }
 
                 //Get movie overview
+                try {
                 overview = singleMovie.getString(OWM_OVERVIEW);
+                } catch (JSONException e) {
+                    overview = "";
+                }
 
                 //Get movie rating
+                try {
                 rating = singleMovie.getDouble(OWM_RATING);
                 } catch (JSONException e) {
-                    title = "";
-                    id = "";
-                    genreId = "";
-                    posterPath = "";
-                    backdropPath = "";
-                    releaseDate = "";
-                    overview = "";
                     rating = 0;
                 }
 
