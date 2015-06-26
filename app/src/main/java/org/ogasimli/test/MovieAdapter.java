@@ -97,7 +97,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 double movieRating = passedMovie.getMovieRating();
 
                 Intent intent = new Intent(context, DetailActivity.class);
-                String packageName = "org.ogasimli.test";
+
+                String packageName = MainActivity.PACKAGE_NAME;
 
                 intent.putExtra(packageName+".movieTitle", movieTitle);
                 intent.putExtra(packageName+".movieGenre", movieGenre);

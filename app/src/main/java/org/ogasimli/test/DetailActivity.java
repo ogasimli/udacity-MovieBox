@@ -64,7 +64,7 @@ public class DetailActivity extends ActionBarActivity {
             stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
             stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
 
-            String packageName = "org.ogasimli.test";
+            String packageName = MainActivity.PACKAGE_NAME;
             Intent intent = getActivity().getIntent();
             if (intent!=null){
                 movieTitle = intent.getStringExtra(packageName + ".movieTitle");
