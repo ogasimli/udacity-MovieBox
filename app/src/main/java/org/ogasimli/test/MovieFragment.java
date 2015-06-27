@@ -15,6 +15,7 @@ import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -47,6 +48,7 @@ public class MovieFragment extends Fragment {
 
     private FragmentActivity mActivity;
     private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
     private List<Movie> movieList;
@@ -129,6 +131,7 @@ public class MovieFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         return rootView;
     }
 
@@ -138,6 +141,29 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        //colors are  not working
+        mSwipeRefreshLayout.setColorSchemeColors(
+                R.color.accent_material_dark,
+                R.color.accent_material_light,
+                R.color.primary_dark_material_light,
+                R.color.primary_dark_material_dark);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadMovieData();
+                if (!isOnline()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }else {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 3000);
+                }
+            }
+        });
     }
 
     public void loadMovieData() {
