@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -43,10 +44,10 @@ import java.util.List;
  */
 public class MovieFragment extends Fragment {
 
-    FragmentActivity mActivity;
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManager;
-    MovieAdapter mAdapter;
+    private FragmentActivity mActivity;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private MovieAdapter mAdapter;
     private List<Movie> movieList;
 
     public MovieFragment() {
@@ -64,10 +65,10 @@ public class MovieFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        if (isOnline()){
+        if (isOnline()) {
             loadMovieData();
-        }else {
-            Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -82,7 +83,7 @@ public class MovieFragment extends Fragment {
 
         SharedPreferences.Editor prefs = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
 
-        switch (id){
+        switch (id) {
             case R.id.action_popularity:
                 prefs.putString("sort_order", "popularity.desc");
                 prefs.apply();
@@ -106,7 +107,7 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         return rootView;
     }
 
@@ -114,12 +115,12 @@ public class MovieFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getActivity(),2);
+        mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    public void loadMovieData(){
+    public void loadMovieData() {
         FetchMovieTask fetchMovieTask = new FetchMovieTask();
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         String defaultValue = getResources().getString(R.string.sort_order);
@@ -128,7 +129,7 @@ public class MovieFragment extends Fragment {
     }
 
 
-    private boolean isOnline(){
+    private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -185,19 +186,24 @@ public class MovieFragment extends Fragment {
                     // buffer for debugging.
                     buffer.append(line + "\n");
                 }
-
                 if (buffer.length() == 0) {
                     // Stream was empty.  No point in parsing.
                     return null;
                 }
                 movieJsonStr = buffer.toString();
-
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
+                Log.e(LOG_TAG, "Error", e);
+                Handler handler = new Handler();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "Unknown error occurred..", Toast.LENGTH_LONG).show();
+                    }
+                });
                 // If the code didn't successfully get the movie data, there's no point in attemping
                 // to parse it.
                 return null;
-            } finally{
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -237,7 +243,7 @@ public class MovieFragment extends Fragment {
             JSONObject movieJson = new JSONObject(MovieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(OMW_RESULTS);
 
-            for(int i = 0; i < movieArray.length(); i++) {
+            for (int i = 0; i < movieArray.length(); i++) {
                 Movie movie = new Movie();
                 String title;
                 String id;
@@ -258,43 +264,42 @@ public class MovieFragment extends Fragment {
 
                 //Get movie genre
                 try {
-                genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
+                    genreId = getGenre(singleMovie.getJSONArray(OWM_GENRE_ID).getString(0));
                 } catch (JSONException e) {
                     genreId = "";
                 }
 
                 //Get poster path
                 try {
-                posterPath = singleMovie.getString(OWM_POSTER_PATH);
+                    posterPath = singleMovie.getString(OWM_POSTER_PATH);
                 } catch (JSONException e) {
                     posterPath = "";
                 }
 
                 //Get backdrop poster
                 try {
-                backdropPath = singleMovie.getString(OWM_BACKDROP_PATH);
+                    backdropPath = singleMovie.getString(OWM_BACKDROP_PATH);
                 } catch (JSONException e) {
                     backdropPath = "";
                 }
 
-
                 //Get release date of movie
                 try {
-                releaseDate = singleMovie.getString(OWM_RELEASE_DATE);
+                    releaseDate = singleMovie.getString(OWM_RELEASE_DATE);
                 } catch (JSONException e) {
                     releaseDate = "";
                 }
 
                 //Get movie overview
                 try {
-                overview = singleMovie.getString(OWM_OVERVIEW);
+                    overview = singleMovie.getString(OWM_OVERVIEW);
                 } catch (JSONException e) {
                     overview = "";
                 }
 
                 //Get movie rating
                 try {
-                rating = singleMovie.getDouble(OWM_RATING);
+                    rating = singleMovie.getDouble(OWM_RATING);
                 } catch (JSONException e) {
                     rating = 0;
                 }
@@ -314,13 +319,13 @@ public class MovieFragment extends Fragment {
             return movieList;
         }
 
-        private String getGenre (String genreId){
+        private String getGenre(String genreId) {
             String[] id = getResources().getStringArray(R.array.poster_id);
             String[] value = getResources().getStringArray(R.array.poster_id_values);
-            String valueGenre=null;
+            String valueGenre = null;
 
             for (int i = 0; i < id.length; i++) {
-                if (genreId.equals(id[i])){
+                if (genreId.equals(id[i])) {
                     valueGenre = value[i];
                     break;
                 }
@@ -330,17 +335,16 @@ public class MovieFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Movie> movies) {
-            if (movies!=null){
+            if (movies != null) {
                 mAdapter = new MovieAdapter(movies, mActivity);
                 mRecyclerView.setAdapter(mAdapter);
-//              mAdapter.setMovieList(null);
+
                 mAdapter.SetOnItemClickListener(new MovieAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        Log.e("WAU", String.valueOf(position));
                         movieList = mAdapter.getMovieList();
                         if (movieList != null) {
-                            Log.e("Click Action", "Click position is " + position);
+                            //Log.e("Click Action", "Click position is " + position);
                             Movie passedMovie = movieList.get(position);
 
                             String movieTitle = passedMovie.getMovieTitle();
@@ -366,11 +370,12 @@ public class MovieFragment extends Fragment {
                             intent.putExtra(packageName + ".movieRating", movieRating);
 
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            ActivityOptionsCompat options = ActivityOptionsCompat.
-                                    makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
-                            mActivity.startActivity(intent, options.toBundle());
-                            }else {
-                            getActivity().startActivity(intent);}
+                                ActivityOptionsCompat options = ActivityOptionsCompat.
+                                        makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
+                                mActivity.startActivity(intent, options.toBundle());
+                            } else {
+                                getActivity().startActivity(intent);
+                            }
                         }
                     }
                 });
