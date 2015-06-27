@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -49,6 +50,8 @@ public class MovieFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
     private List<Movie> movieList;
+    private static final String LIST_STATE_KEY = "listState";
+    private Parcelable mListState = null;
 
     public MovieFragment() {
     }
@@ -64,11 +67,29 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        loadMovieData();
+    }
 
-        if (isOnline()) {
-            loadMovieData();
-        } else {
-            Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mListState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+        mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
         }
     }
 
@@ -117,17 +138,19 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     public void loadMovieData() {
-        FetchMovieTask fetchMovieTask = new FetchMovieTask();
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-        String defaultValue = getResources().getString(R.string.sort_order);
-        String sortOrder = prefs.getString("sort_order", defaultValue);
-        fetchMovieTask.execute(sortOrder);
+        if (isOnline()) {
+            FetchMovieTask fetchMovieTask = new FetchMovieTask();
+            SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+            String defaultValue = getResources().getString(R.string.sort_order);
+            String sortOrder = prefs.getString("sort_order", defaultValue);
+            fetchMovieTask.execute(sortOrder);
+        } else {
+            Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
+        }
     }
-
 
     private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)
