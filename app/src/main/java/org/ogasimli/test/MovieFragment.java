@@ -1,13 +1,18 @@
 package org.ogasimli.test;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,11 +43,20 @@ import java.util.List;
  */
 public class MovieFragment extends Fragment {
 
+    FragmentActivity mActivity;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
-    RecyclerView.Adapter mAdapter;
+    MovieAdapter mAdapter;
+    private List<Movie> movieList;
 
     public MovieFragment() {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.mActivity = (FragmentActivity) activity;
+        setRetainInstance(true);
     }
 
     @Override
@@ -92,13 +106,17 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
         mRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler_view);
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getActivity(),2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        return rootView;
+        //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     public void loadMovieData(){
@@ -313,9 +331,49 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Movie> movies) {
             if (movies!=null){
-                mAdapter = new MovieAdapter(movies, getActivity());
+                mAdapter = new MovieAdapter(movies, mActivity);
                 mRecyclerView.setAdapter(mAdapter);
 //              mAdapter.setMovieList(null);
+                mAdapter.SetOnItemClickListener(new MovieAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        Log.e("WAU", String.valueOf(position));
+                        movieList = mAdapter.getMovieList();
+                        if (movieList != null) {
+                            Log.e("Click Action", "Click position is " + position);
+                            Movie passedMovie = movieList.get(position);
+
+                            String movieTitle = passedMovie.getMovieTitle();
+                            String movieGenre = passedMovie.getMovieGenre();
+                            String posterPath = passedMovie.getPosterPath();
+                            String backdropPath = passedMovie.getBackdropPath();
+                            String movieId = passedMovie.getMovieId();
+                            String movieOverview = passedMovie.getMovieOverview();
+                            String movieReleaseDate = passedMovie.getMovieReleaseDate();
+                            double movieRating = passedMovie.getMovieRating();
+
+                            Intent intent = new Intent(getActivity(), DetailActivity.class);
+
+                            String packageName = MainActivity.PACKAGE_NAME;
+
+                            intent.putExtra(packageName + ".movieTitle", movieTitle);
+                            intent.putExtra(packageName + ".movieGenre", movieGenre);
+                            intent.putExtra(packageName + ".posterPath", posterPath);
+                            intent.putExtra(packageName + ".backdropPath", backdropPath);
+                            intent.putExtra(packageName + ".movieId", movieId);
+                            intent.putExtra(packageName + ".movieOverview", movieOverview);
+                            intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
+                            intent.putExtra(packageName + ".movieRating", movieRating);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            ActivityOptionsCompat options = ActivityOptionsCompat.
+                                    makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
+                            mActivity.startActivity(intent, options.toBundle());
+                            }else {
+                            getActivity().startActivity(intent);}
+                        }
+                    }
+                });
             }
         }
     }

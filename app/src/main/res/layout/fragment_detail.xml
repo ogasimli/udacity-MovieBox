@@ -40,7 +40,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:contentDescription="Posters of films"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:transitionName="poster"/>
 
         </RelativeLayout>
 
