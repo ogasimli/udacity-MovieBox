@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -142,25 +141,24 @@ public class MovieFragment extends Fragment {
         mLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         //colors are  not working
-        mSwipeRefreshLayout.setColorSchemeColors(
-                R.color.accent_material_dark,
+        mSwipeRefreshLayout.setColorSchemeResources(
+                R.color.accent_color,
                 R.color.accent_material_light,
-                R.color.primary_dark_material_light,
-                R.color.primary_dark_material_dark);
+                R.color.primary_color,
+                R.color.light_primary_color);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadMovieData();
-                if (!isOnline()){
+                if (mAdapter!=null) {
                     mSwipeRefreshLayout.setRefreshing(false);
-                }else {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
+                } else {
+                    if (!isOnline()){
                         mSwipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
+                    }else {
+                        loadMovieData();
                     }
-                }, 3000);
                 }
             }
         });
@@ -242,13 +240,13 @@ public class MovieFragment extends Fragment {
                 movieJsonStr = buffer.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error", e);
-                Handler handler = new Handler();
+/*                Handler handler = new Handler();
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getActivity(), "Unknown error occurred..", Toast.LENGTH_LONG).show();
                     }
-                });
+                });*/
                 // If the code didn't successfully get the movie data, there's no point in attemping
                 // to parse it.
                 return null;
@@ -387,6 +385,9 @@ public class MovieFragment extends Fragment {
             if (movies != null) {
                 mAdapter = new MovieAdapter(movies, mActivity);
                 mRecyclerView.setAdapter(mAdapter);
+                if (mSwipeRefreshLayout.isRefreshing()){
+                    mSwipeRefreshLayout.setRefreshing(false);
+                }
 
                 mAdapter.SetOnItemClickListener(new MovieAdapter.OnItemClickListener() {
                     @Override
@@ -425,10 +426,12 @@ public class MovieFragment extends Fragment {
                             } else {
                                 getActivity().startActivity(intent);
                             }
+                            }
                         }
                     }
-                });
+
+                    );
+                }
             }
-        }
     }
 }
