@@ -68,7 +68,7 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        loadMovieData();
+        //loadMovieData();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class MovieFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
-        mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
         }
     }
 
@@ -131,6 +131,7 @@ public class MovieFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        loadMovieData();
         return rootView;
     }
 
@@ -150,13 +151,13 @@ public class MovieFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mAdapter!=null) {
+                if (mAdapter != null) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 } else {
-                    if (!isOnline()){
+                    if (!isOnline()) {
                         mSwipeRefreshLayout.setRefreshing(false);
                         Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
-                    }else {
+                    } else {
                         loadMovieData();
                     }
                 }
@@ -189,6 +190,18 @@ public class MovieFragment extends Fragment {
     public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+
+        @Override
+        protected void onPreExecute() {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mSwipeRefreshLayout.isRefreshing()) {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                    }
+                }
+            });
+        }
 
         protected List<Movie> doInBackground(String... params) {
 
@@ -385,53 +398,51 @@ public class MovieFragment extends Fragment {
             if (movies != null) {
                 mAdapter = new MovieAdapter(movies, mActivity);
                 mRecyclerView.setAdapter(mAdapter);
-                if (mSwipeRefreshLayout.isRefreshing()){
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+                mSwipeRefreshLayout.setRefreshing(false);
 
-                mAdapter.SetOnItemClickListener(new MovieAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        movieList = mAdapter.getMovieList();
-                        if (movieList != null) {
-                            //Log.e("Click Action", "Click position is " + position);
-                            Movie passedMovie = movieList.get(position);
+                mAdapter.SetOnItemClickListener(
+                        new MovieAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View v, int position) {
+                                movieList = mAdapter.getMovieList();
+                                if (movieList != null) {
+                                    //Log.e("Click Action", "Click position is " + position);
+                                    Movie passedMovie = movieList.get(position);
 
-                            String movieTitle = passedMovie.getMovieTitle();
-                            String movieGenre = passedMovie.getMovieGenre();
-                            String posterPath = passedMovie.getPosterPath();
-                            String backdropPath = passedMovie.getBackdropPath();
-                            String movieId = passedMovie.getMovieId();
-                            String movieOverview = passedMovie.getMovieOverview();
-                            String movieReleaseDate = passedMovie.getMovieReleaseDate();
-                            double movieRating = passedMovie.getMovieRating();
+                                    String movieTitle = passedMovie.getMovieTitle();
+                                    String movieGenre = passedMovie.getMovieGenre();
+                                    String posterPath = passedMovie.getPosterPath();
+                                    String backdropPath = passedMovie.getBackdropPath();
+                                    String movieId = passedMovie.getMovieId();
+                                    String movieOverview = passedMovie.getMovieOverview();
+                                    String movieReleaseDate = passedMovie.getMovieReleaseDate();
+                                    double movieRating = passedMovie.getMovieRating();
 
-                            Intent intent = new Intent(getActivity(), DetailActivity.class);
+                                    Intent intent = new Intent(getActivity(), DetailActivity.class);
 
-                            String packageName = MainActivity.PACKAGE_NAME;
+                                    String packageName = MainActivity.PACKAGE_NAME;
 
-                            intent.putExtra(packageName + ".movieTitle", movieTitle);
-                            intent.putExtra(packageName + ".movieGenre", movieGenre);
-                            intent.putExtra(packageName + ".posterPath", posterPath);
-                            intent.putExtra(packageName + ".backdropPath", backdropPath);
-                            intent.putExtra(packageName + ".movieId", movieId);
-                            intent.putExtra(packageName + ".movieOverview", movieOverview);
-                            intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
-                            intent.putExtra(packageName + ".movieRating", movieRating);
+                                    intent.putExtra(packageName + ".movieTitle", movieTitle);
+                                    intent.putExtra(packageName + ".movieGenre", movieGenre);
+                                    intent.putExtra(packageName + ".posterPath", posterPath);
+                                    intent.putExtra(packageName + ".backdropPath", backdropPath);
+                                    intent.putExtra(packageName + ".movieId", movieId);
+                                    intent.putExtra(packageName + ".movieOverview", movieOverview);
+                                    intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
+                                    intent.putExtra(packageName + ".movieRating", movieRating);
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                ActivityOptionsCompat options = ActivityOptionsCompat.
-                                        makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
-                                mActivity.startActivity(intent, options.toBundle());
-                            } else {
-                                getActivity().startActivity(intent);
-                            }
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                                makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
+                                        mActivity.startActivity(intent, options.toBundle());
+                                    } else {
+                                        getActivity().startActivity(intent);
+                                    }
+                                }
                             }
                         }
-                    }
-
-                    );
-                }
+                );
             }
+        }
     }
 }
