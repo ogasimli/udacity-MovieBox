@@ -156,7 +156,7 @@ public class MovieFragment extends Fragment {
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.accent_color,
                 R.color.accent_material_light,
-                R.color.orange,
+                R.color.red,
                 R.color.primary_color);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
