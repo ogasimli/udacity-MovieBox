@@ -145,8 +145,8 @@ public class MovieFragment extends Fragment {
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.accent_color,
                 R.color.accent_material_light,
-                R.color.primary_color,
-                R.color.light_primary_color);
+                R.color.orange,
+                R.color.primary_color);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -396,7 +396,7 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Movie> movies) {
             if (movies != null) {
-                mAdapter = new MovieAdapter(movies, mActivity);
+                mAdapter = new MovieAdapter(movies);
                 mRecyclerView.setAdapter(mAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
 

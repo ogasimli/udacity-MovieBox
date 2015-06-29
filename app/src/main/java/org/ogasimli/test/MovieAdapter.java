@@ -1,8 +1,8 @@
 package org.ogasimli.test;
 
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,16 +21,23 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movieList;
-    private final FragmentActivity mActivity;
+    private Bitmap posterBitmap;
     OnItemClickListener mItemClickListener;
 
-    public MovieAdapter(List<Movie> movieList, FragmentActivity mActivity) {
+    public MovieAdapter(List<Movie> movieList) {
         this.movieList = movieList;
-        this.mActivity = mActivity;
     }
 
     public List<Movie> getMovieList() {
         return movieList;
+    }
+
+    public Bitmap getPosterBitmap() {
+        return posterBitmap;
+    }
+
+    public void setPosterBitmap(Bitmap posterBitmap) {
+        this.posterBitmap = posterBitmap;
     }
 
     @Override
