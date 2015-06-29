@@ -4,9 +4,11 @@
     tools:context=".MainActivity">
 
     <item
+        android:id="@+id/sort_by"
         android:orderInCategory="100"
         android:title="@string/sort_text"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:enabled="false"/>
 
     <group android:checkableBehavior="single">
 
