@@ -73,8 +73,8 @@
             android:layout_toRightOf="@id/secondRelativeLayout">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:id="@+id/movie_release_date_image"
                 android:src="@mipmap/ic_movie_genre"
                 android:layout_gravity="center"/>
@@ -104,8 +104,8 @@
             android:layout_toRightOf="@id/secondRelativeLayout">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:id="@+id/movie_genre_image"
                 android:src="@mipmap/ic_movie_date"
                 android:layout_gravity="center"/>

@@ -98,10 +98,9 @@ public class MovieFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_moviefragment, menu);
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int defaultValue = R.id.action_popularity;
-        int checked = prefs.getInt("checked", defaultValue);
+        int checked = prefs.getInt("checked", R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
-//        menuItem.setChecked(true);
+        menuItem.setChecked(true);
     }
 
     @Override
