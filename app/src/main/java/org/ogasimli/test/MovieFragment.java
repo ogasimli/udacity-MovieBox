@@ -97,31 +97,42 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_moviefragment, menu);
+        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        int defaultValue = R.id.action_popularity;
+        int checked = prefs.getInt("checked", defaultValue);
+        MenuItem menuItem = menu.findItem(checked);
+        menuItem.setChecked(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
         SharedPreferences.Editor prefs = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
 
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.action_popularity:
                 prefs.putString("sort_order", "popularity.desc");
+                prefs.putInt("checked", item.getItemId());
                 prefs.apply();
+                item.setChecked(!item.isChecked());
                 break;
             case R.id.action_rating:
                 prefs.putString("sort_order", "vote_average.desc");
+                prefs.putInt("checked", item.getItemId());
                 prefs.apply();
+                item.setChecked(!item.isChecked());
                 break;
             case R.id.action_revenue:
                 prefs.putString("sort_order", "revenue.desc");
+                prefs.putInt("checked", item.getItemId());
                 prefs.apply();
+                item.setChecked(!item.isChecked());
                 break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
         loadMovieData();
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
