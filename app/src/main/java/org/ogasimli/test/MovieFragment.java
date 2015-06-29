@@ -101,7 +101,7 @@ public class MovieFragment extends Fragment {
         int defaultValue = R.id.action_popularity;
         int checked = prefs.getInt("checked", defaultValue);
         MenuItem menuItem = menu.findItem(checked);
-        menuItem.setChecked(true);
+//        menuItem.setChecked(true);
     }
 
     @Override

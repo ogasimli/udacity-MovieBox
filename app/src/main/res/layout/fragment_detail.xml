@@ -59,33 +59,67 @@
             android:layout_toRightOf="@id/secondRelativeLayout"
             android:text="Jurassic World" />
 
-        <TextView
-            android:id="@+id/detail_genre_text"
-            style="@style/Base.TextAppearance.AppCompat.Body1"
-            android:textColor="@color/secondary_text"
+        <LinearLayout
+            android:id="@+id/linear_layout_genre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/detail_title_text"
+            android:orientation="horizontal"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp"
+            android:layout_below="@+id/detail_title_text"
             android:layout_toEndOf="@id/secondRelativeLayout"
-            android:layout_toRightOf="@id/secondRelativeLayout"
-            android:text="Science Fiction" />
+            android:layout_toRightOf="@id/secondRelativeLayout">
 
-        <TextView
-            android:id="@+id/detail_release_text"
-            style="@style/Base.TextAppearance.AppCompat.Body1"
-            android:textColor="@color/secondary_text"
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/movie_release_date_image"
+                android:src="@mipmap/ic_movie_genre"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/detail_genre_text"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
+                android:textColor="@color/secondary_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Science Fiction"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/detail_genre_text"
+            android:orientation="horizontal"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp"
+            android:layout_below="@+id/linear_layout_genre"
             android:layout_toEndOf="@id/secondRelativeLayout"
-            android:layout_toRightOf="@id/secondRelativeLayout"
-            android:text="2015" />
+            android:layout_toRightOf="@id/secondRelativeLayout">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/movie_genre_image"
+                android:src="@mipmap/ic_movie_date"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/detail_release_text"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
+                android:textColor="@color/secondary_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="2015"
+                android:layout_gravity="center"/>
+        </LinearLayout>
 
         <View
             android:id="@+id/SplitLine_hor1"
