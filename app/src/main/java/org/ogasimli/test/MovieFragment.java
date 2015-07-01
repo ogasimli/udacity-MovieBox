@@ -105,7 +105,7 @@ public class MovieFragment extends Fragment {
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         int checked = prefs.getInt("checked", R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
-        //menuItem.setChecked(true);
+        menuItem.setChecked(true);
     }
 
     @Override
