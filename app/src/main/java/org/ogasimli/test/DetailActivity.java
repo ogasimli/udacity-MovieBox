@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -60,6 +62,7 @@ public class DetailActivity extends AppCompatActivity {
             TextView detailMovieRating = (TextView) rootView.findViewById(R.id.detail_rating_text);
             RatingBar detailRatingBar = (RatingBar) rootView.findViewById(R.id.detail_rating_bar);
             TextView detailMovieOverview = (TextView) rootView.findViewById(R.id.detail_overview_text);
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
             LayerDrawable stars = (LayerDrawable) detailRatingBar.getProgressDrawable();
             stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
@@ -90,6 +93,15 @@ public class DetailActivity extends AppCompatActivity {
             context = detailBackdropImage.getContext();
             Glide.with(context).load("http://image.tmdb.org/t/p/w500/" + backdropPath).into(detailBackdropImage);
             detailMovieOverview.setText(movieOverview);
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(),
+                            "This button will save the movie to your favorite list",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
 
             return rootView;
         }
