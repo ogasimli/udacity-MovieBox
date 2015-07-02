@@ -1,16 +1,15 @@
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".DetailFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        tools:context=".DetailFragment">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -25,13 +24,13 @@
                     android:id="@+id/backdrop_image"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginBottom="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_gravity="center_vertical|top"
+                    android:layout_marginBottom="20dp"
                     android:background="@color/primary_color"
-                    android:contentDescription="Big posters of films"
+                    android:contentDescription="@string/backdrop_poster_description"
                     android:scaleType="centerCrop" />
 
                 <RelativeLayout
@@ -41,7 +40,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="5dp">
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp">
 
                     <ImageView
                         android:id="@+id/detail_movie_poster"
@@ -50,7 +50,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        android:contentDescription="Posters of films"
+                        android:contentDescription="@string/poster_description"
                         android:scaleType="fitXY"
                         android:transitionName="poster" />
 
@@ -69,13 +69,11 @@
                         style="@style/Base.TextAppearance.AppCompat.Headline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:maxLines="3"
-                        android:layout_below="@id/backdrop_image"
                         android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
-                        android:text="Jurassic World" />
+                        android:maxLines="3" />
 
                     <LinearLayout
                         android:id="@+id/linear_layout_genre"
@@ -92,18 +90,14 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_genre" />
+                            android:src="@drawable/ic_genre"
+                            android:contentDescription="@string/movie_release_date_image_description"/>
 
                         <TextView
                             android:id="@+id/detail_genre_text"
-                            style="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            style="@style/SmallText"
                             android:layout_marginLeft="5dp"
-                            android:layout_marginStart="5dp"
-                            android:text="Science Fiction"
-                            android:textColor="@color/secondary_text" />
+                            android:layout_marginStart="5dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -121,28 +115,21 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
+                            android:contentDescription="@string/genre_icon_description"
                             android:src="@drawable/ic_release_date" />
 
                         <TextView
                             android:id="@+id/detail_release_text"
-                            style="@style/Base.TextAppearance.AppCompat.Body1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            style="@style/SmallText"
                             android:layout_marginLeft="5dp"
-                            android:layout_marginStart="5dp"
-                            android:text="2015"
-                            android:textColor="@color/secondary_text" />
+                            android:layout_marginStart="5dp" />
                     </LinearLayout>
                 </LinearLayout>
             </RelativeLayout>
 
             <View
                 android:id="@+id/SplitLine_hor1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="5dp"
-                android:background="@color/divider_color" />
+                style="@style/ViewStyle" />
 
             <TextView
                 android:id="@+id/detail_rating_text"
@@ -151,26 +138,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:text="7.5 / 10"
                 android:textColor="@color/accent_color" />
 
             <RatingBar
                 android:id="@+id/detail_rating_bar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/RatingBarStyle"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:numStars="10"
-                android:rating="7.5"
-                android:stepSize="0.1" />
+                android:rating="7.5"/>
 
             <View
                 android:id="@+id/SplitLine_hor2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="5dp"
-                android:background="@color/divider_color" />
+                style="@style/ViewStyle" />
 
             <TextView
                 android:id="@+id/detail_overview_caption_text"
@@ -179,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:text="Overview" />
+                android:text="@string/overview" />
 
             <TextView
                 android:id="@+id/detail_overview_text"
@@ -187,8 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:text="Wie es sich John Hammond einst erträumt hat, ist es nun gekommen" />
+                android:layout_margin="10dp" />
         </LinearLayout>
     </ScrollView>
 
@@ -197,13 +174,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="32dp"
         android:src="@drawable/fab_icons"
-        app:rippleColor="@color/white"
         app:backgroundTint="@color/accent_color"
         app:borderWidth="0dp"
         app:layout_anchor="@id/backdrop_image"
-        app:layout_anchorGravity="bottom|center|end" />
+        app:layout_anchorGravity="bottom|center|end"
+        app:rippleColor="@color/white" />
 </android.support.design.widget.CoordinatorLayout>

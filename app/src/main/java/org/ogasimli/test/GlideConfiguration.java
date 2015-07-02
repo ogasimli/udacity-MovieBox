@@ -8,7 +8,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.module.GlideModule;
 
 /**
- * Created by ogasimli on 02.07.2015.
+ * Switch Bitmap Format to ARGB_8888
  */
 public class GlideConfiguration implements GlideModule {
 

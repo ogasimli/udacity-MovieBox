@@ -6,4 +6,10 @@
     <string name="sort_by_revenue">Revenue</string>
     <string name="sort_order">popularity.desc</string>
     <string name="detail_rating">%1$s / 10</string>
+    <string name="transition_label">poster</string>
+    <string name="poster_description">Posters of films</string>
+    <string name="backdrop_poster_description">Backdrop posters of films</string>
+    <string name="genre_icon_description">Movie genre</string>
+    <string name="overview">Overview</string>
+    <string name="movie_release_date_image_description">Movie release date</string>
 </resources>

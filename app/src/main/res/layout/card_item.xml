@@ -23,8 +23,8 @@
             android:layout_height="250dp"
             android:layout_gravity="center"
             android:scaleType="centerCrop"
-            android:contentDescription="Posters of films"
-            android:transitionName="poster"/>
+            android:contentDescription="@string/poster_description"
+            android:transitionName="@string/transition_label"/>
 
         <TextView
             android:id="@+id/movie_title_text"
@@ -35,31 +35,23 @@
             android:layout_marginRight="10dp"
             android:lines="1"
             style="@style/Base.TextAppearance.AppCompat.Subhead"
-            android:text="My CardView"
             android:layout_gravity="center"
             android:textColor="@color/primary_text"/>
 
         <TextView
             android:id="@+id/movie_genre_text"
+            style="@style/SmallText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:maxLines="1"
-            style="@style/Base.TextAppearance.AppCompat.Caption"
-            android:text="My CardView"
-            android:layout_gravity="center"
-            android:textColor="@color/secondary_text"/>
+            android:layout_marginRight="10dp"/>
 
         <RatingBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/rating_bar"
-            style="?android:attr/ratingBarStyleSmall"
+            style="@style/RatingBarStyle"
             android:numStars="5"
-            android:stepSize="0.1"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginBottom="5dp"/>
 
     </LinearLayout>

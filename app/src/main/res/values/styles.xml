@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -14,9 +14,31 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="TransparentActionBar"
-        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="TransparentActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="background">@android:color/transparent</item>
+    </style>
+
+    <style name="SmallText" parent="@style/Base.TextAppearance.AppCompat.Body1">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <style name="RatingBarStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="style">?android:attr/ratingBarStyleSmall</item>
+        <item name="android:stepSize">0.1</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
+    <style name="ViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:background">@color/divider_color</item>
     </style>
 
 </resources>
