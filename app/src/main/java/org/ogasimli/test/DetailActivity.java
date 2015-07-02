@@ -12,12 +12,15 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -89,11 +92,19 @@ public class DetailActivity extends AppCompatActivity {
             detailMovieRating.setText(rating);
             detailRatingBar.setRating((float) movieRating);
             context = detailPosterImage.getContext();
-            Glide.with(context).load("http://image.tmdb.org/t/p/w185/" + posterPath).into(detailPosterImage);
+            Glide.with(context).
+                    load("http://image.tmdb.org/t/p/w185/" + posterPath).
+                    diskCacheStrategy(DiskCacheStrategy.ALL).
+                    into(detailPosterImage);
             context = detailBackdropImage.getContext();
-            Glide.with(context).load("http://image.tmdb.org/t/p/w500/" + backdropPath).into(detailBackdropImage);
+            Glide.with(context).
+                    load("http://image.tmdb.org/t/p/w500/" + backdropPath).
+                    diskCacheStrategy(DiskCacheStrategy.ALL).
+                    into(detailBackdropImage);
             detailMovieOverview.setText(movieOverview);
 
+            Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.grow);
+            fab.startAnimation(animation);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

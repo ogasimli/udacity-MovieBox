@@ -194,10 +194,12 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
         android:src="@drawable/fab_icons"
         app:rippleColor="@color/white"
         app:backgroundTint="@color/accent_color"

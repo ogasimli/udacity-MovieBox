@@ -12,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -57,7 +58,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         viewHolder.movieTitle.setText(movie.getMovieTitle());
         viewHolder.movieGenre.setText(movie.getMovieGenre());
 //        viewHolder.moviePoster.setImageResource(movie.getPosterPath());
-        Glide.with(viewHolder.moviePoster.getContext()).load("http://image.tmdb.org/t/p/w185/" + movie.getPosterPath()).into(viewHolder.moviePoster);
+        Glide.with(viewHolder.moviePoster.getContext()).
+                load("http://image.tmdb.org/t/p/w185/" + movie.getPosterPath()).
+                diskCacheStrategy(DiskCacheStrategy.ALL).
+                into(viewHolder.moviePoster);
+
         viewHolder.movieRating.setRating(decreaseRating(movie.getMovieRating()));
     }
 
