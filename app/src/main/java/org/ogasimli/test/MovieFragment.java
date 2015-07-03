@@ -445,6 +445,8 @@ public class MovieFragment extends Fragment {
                                     } else {
                                         getActivity().startActivity(intent);
                                     }
+                                }else {
+                                    Toast.makeText(getActivity(),mActivity.getString(R.string.unable_to_fetch_data_message),Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

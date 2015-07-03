@@ -20,4 +20,5 @@
     <string name="fab_message">This button will save the movie to your favorite list</string>
     <string name="no_connection_message">No internet connection. Pull down to try again.</string>
     <string name="base_tmdb_link" translatable="false">http://api.themoviedb.org/3/discover/movie?include_adult=true</string>
+    <string name="unable_to_fetch_data_message">Can\'t get movies.</string>
 </resources>
