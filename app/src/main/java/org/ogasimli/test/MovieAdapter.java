@@ -17,7 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.List;
 
 /**
- * Created by ogasimli on 20.06.2015.
+ * Custom Adapter for movies
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
@@ -33,22 +33,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList;
     }
 
-    public Bitmap getPosterBitmap() {
-        return posterBitmap;
-    }
-
-    public void setPosterBitmap(Bitmap posterBitmap) {
-        this.posterBitmap = posterBitmap;
-    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
+        //Change the color of ratingBar
         LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
         stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
         stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
+
         return viewHolder;
     }
 
@@ -57,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         Movie movie = movieList.get(i);
         viewHolder.movieTitle.setText(movie.getMovieTitle());
         viewHolder.movieGenre.setText(movie.getMovieGenre());
-//        viewHolder.moviePoster.setImageResource(movie.getPosterPath());
+
         Glide.with(viewHolder.moviePoster.getContext()).
                 load("http://image.tmdb.org/t/p/w185/" + movie.getPosterPath()).
                 diskCacheStrategy(DiskCacheStrategy.ALL).

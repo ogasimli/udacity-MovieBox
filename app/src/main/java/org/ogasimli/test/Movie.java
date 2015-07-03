@@ -1,7 +1,7 @@
 package org.ogasimli.test;
 
 /**
- * Created by ogasimli on 20.06.2015.
+ * Movie object class
  */
 public class Movie {
     private String movieTitle;

@@ -142,9 +142,13 @@
 
             <RatingBar
                 android:id="@+id/detail_rating_bar"
-                style="@style/RatingBarStyle"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="?android:attr/ratingBarStyleSmall"
+                android:rating="7.5"
+                android:stepSize="0.1"
                 android:layout_gravity="center"
-                android:rating="7.5"/>
+                android:layout_margin="5dp"/>
 
             <View
                 android:id="@+id/SplitLine_hor2"

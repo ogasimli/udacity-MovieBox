@@ -67,6 +67,7 @@ public class DetailActivity extends AppCompatActivity {
             TextView detailMovieOverview = (TextView) rootView.findViewById(R.id.detail_overview_text);
             FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
+            //Change the color of ratingBar
             LayerDrawable stars = (LayerDrawable) detailRatingBar.getProgressDrawable();
             stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
             stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
@@ -93,12 +94,12 @@ public class DetailActivity extends AppCompatActivity {
             detailRatingBar.setRating((float) movieRating);
             context = detailPosterImage.getContext();
             Glide.with(context).
-                    load("http://image.tmdb.org/t/p/w185/" + posterPath).
+                    load(context.getString(R.string.base_poster_link) + "w185/" + posterPath).
                     diskCacheStrategy(DiskCacheStrategy.ALL).
                     into(detailPosterImage);
             context = detailBackdropImage.getContext();
             Glide.with(context).
-                    load("http://image.tmdb.org/t/p/w500/" + backdropPath).
+                    load(context.getString(R.string.base_poster_link) + "w500/" + backdropPath).
                     diskCacheStrategy(DiskCacheStrategy.ALL).
                     into(detailBackdropImage);
             detailMovieOverview.setText(movieOverview);
@@ -109,7 +110,7 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getActivity(),
-                            "This button will save the movie to your favorite list",
+                            context.getString(R.string.fab_message),
                             Toast.LENGTH_SHORT).show();
                 }
             });

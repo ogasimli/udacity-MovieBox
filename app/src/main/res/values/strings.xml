@@ -1,15 +1,23 @@
 <resources>
-    <string name="app_name">Movie Box</string>
+    <string name="app_name" translatable="false">Movie Box</string>
     <string name="sort_text">SORT BY:</string>
     <string name="sort_by_popularity">Popularity</string>
     <string name="sort_by_rating">Rating</string>
     <string name="sort_by_revenue">Revenue</string>
-    <string name="sort_order">popularity.desc</string>
-    <string name="detail_rating">%1$s / 10</string>
-    <string name="transition_label">poster</string>
+    <string name="sort_order_popularity" translatable="false">popularity.desc</string>
+    <string name="sort_order_rating" translatable="false">vote_average.desc</string>
+    <string name="sort_order_revenue" translatable="false">revenue.desc</string>
+    <string name="detail_rating" translatable="false">%1$s / 10</string>
+    <string name="transition_label" translatable="false">poster</string>
     <string name="poster_description">Posters of films</string>
     <string name="backdrop_poster_description">Backdrop posters of films</string>
     <string name="genre_icon_description">Movie genre</string>
     <string name="overview">Overview</string>
     <string name="movie_release_date_image_description">Movie release date</string>
+    <string name="check_state" translatable="false">checked</string>
+    <string name="api_key" translatable="false">65f1348325dc3a10a0a408c9c9100c31</string>
+    <string name="base_poster_link" translatable="false">http://image.tmdb.org/t/p/</string>
+    <string name="fab_message">This button will save the movie to your favorite list</string>
+    <string name="no_connection_message">No internet connection. Pull down to try again.</string>
+    <string name="base_tmdb_link" translatable="false">http://api.themoviedb.org/3/discover/movie?include_adult=true</string>
 </resources>

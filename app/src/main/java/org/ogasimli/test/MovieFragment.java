@@ -52,6 +52,8 @@ public class MovieFragment extends Fragment {
     private MovieAdapter mAdapter;
     private List<Movie> movieList;
     private static final String LIST_STATE_KEY = "listState";
+    private static final String MENU_CHECKED_STATE = "checked";
+    private static final String MENU_SORT_ORDER ="sort_order";
     private Parcelable mListState = null;
 
     public MovieFragment() {
@@ -103,7 +105,7 @@ public class MovieFragment extends Fragment {
         }
         
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int checked = prefs.getInt("checked", R.id.action_popularity);
+        int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
         menuItem.setChecked(true);
     }
@@ -115,20 +117,20 @@ public class MovieFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_popularity:
-                prefs.putString("sort_order", "popularity.desc");
-                prefs.putInt("checked", item.getItemId());
+                prefs.putString(MENU_SORT_ORDER, getResources().getString(R.string.sort_order_popularity));
+                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
                 prefs.apply();
                 item.setChecked(!item.isChecked());
                 break;
             case R.id.action_rating:
-                prefs.putString("sort_order", "vote_average.desc");
-                prefs.putInt("checked", item.getItemId());
+                prefs.putString(MENU_SORT_ORDER, getResources().getString(R.string.sort_order_rating));
+                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
                 prefs.apply();
                 item.setChecked(!item.isChecked());
                 break;
             case R.id.action_revenue:
-                prefs.putString("sort_order", "revenue.desc");
-                prefs.putInt("checked", item.getItemId());
+                prefs.putString(MENU_SORT_ORDER, getResources().getString(R.string.sort_order_revenue));
+                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
                 prefs.apply();
                 item.setChecked(!item.isChecked());
                 break;
@@ -184,11 +186,11 @@ public class MovieFragment extends Fragment {
         if (isOnline()) {
             FetchMovieTask fetchMovieTask = new FetchMovieTask();
             SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-            String defaultValue = getResources().getString(R.string.sort_order);
-            String sortOrder = prefs.getString("sort_order", defaultValue);
+            String defaultValue = getResources().getString(R.string.sort_order_popularity);
+            String sortOrder = prefs.getString(MENU_SORT_ORDER, defaultValue);
             fetchMovieTask.execute(sortOrder);
         } else {
-            Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), mActivity.getString(R.string.no_connection_message), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -196,10 +198,7 @@ public class MovieFragment extends Fragment {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
@@ -225,11 +224,11 @@ public class MovieFragment extends Fragment {
             String movieJsonStr = null;
 
 
-            final String apiKey = "65f1348325dc3a10a0a408c9c9100c31";
+            final String apiKey = mActivity.getString(R.string.api_key);
 
             try {
                 // Construct the URL for the TheMovieDB query
-                final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/discover/movie?include_adult=true";
+                final String MOVIE_BASE_URL = mActivity.getString(R.string.base_tmdb_link);
                 final String QUERY_PARAM = "sort_by";
                 final String API_KEY = "api_key";
 
@@ -268,13 +267,6 @@ public class MovieFragment extends Fragment {
                 movieJsonStr = buffer.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error", e);
-/*                Handler handler = new Handler();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "Unknown error occurred..", Toast.LENGTH_LONG).show();
-                    }
-                });*/
                 // If the code didn't successfully get the movie data, there's no point in attemping
                 // to parse it.
                 return null;

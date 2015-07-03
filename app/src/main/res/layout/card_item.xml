@@ -47,8 +47,11 @@
 
         <RatingBar
             android:id="@+id/rating_bar"
-            style="@style/RatingBarStyle"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            style="?android:attr/ratingBarStyleSmall"
             android:numStars="5"
+            android:stepSize="0.1"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
