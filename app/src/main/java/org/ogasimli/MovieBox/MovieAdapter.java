@@ -1,6 +1,5 @@
 package org.ogasimli.MovieBox;
 
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,6 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movieList;
-    private Bitmap posterBitmap;
     OnItemClickListener mItemClickListener;
 
     public MovieAdapter(List<Movie> movieList) {
@@ -66,6 +64,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList.size();
     }
 
+    //Method to decrease movie ratings in order to be able to assign them into RatingBar on card_item layout
     private float decreaseRating (double rating){
         return (float)Math.round((rating*5/10) * 100) / 100;
     }
@@ -86,10 +85,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             itemView.setOnClickListener(this);
         }
 
+        //Set OnItemClickListener to RecyclerView
         @Override
         public void onClick(View v) {
             if (mItemClickListener !=null){
-                mItemClickListener.onItemClick(v, getPosition());
+                mItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
     }

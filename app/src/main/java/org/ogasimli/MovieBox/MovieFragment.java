@@ -161,8 +161,6 @@ public class MovieFragment extends Fragment {
         //colors are  not working
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.accent_color,
-                R.color.accent_material_light,
-                R.color.red,
                 R.color.primary_color);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -173,7 +171,7 @@ public class MovieFragment extends Fragment {
                 } else {
                     if (!isOnline()) {
                         mSwipeRefreshLayout.setRefreshing(false);
-                        Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), mActivity.getString(R.string.no_connection_message), Toast.LENGTH_LONG).show();
                     } else {
                         loadMovieData();
                     }
@@ -195,8 +193,7 @@ public class MovieFragment extends Fragment {
     }
 
     private boolean isOnline() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }

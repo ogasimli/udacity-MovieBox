@@ -11,7 +11,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Set Window.FEATURE_ACTIVITY_TRANSITIONSin order to enable transition effect
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
                     add(R.id.main_container, new MovieFragment()).
                     commit();
         }
-
+        //Get package name to use within intents
         PACKAGE_NAME = getApplicationContext().getPackageName();
     }
 }
