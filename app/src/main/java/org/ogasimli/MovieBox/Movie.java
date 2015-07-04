@@ -1,4 +1,4 @@
-package org.ogasimli.test;
+package org.ogasimli.MovieBox;
 
 /**
  * Movie object class

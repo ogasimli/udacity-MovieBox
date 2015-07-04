@@ -1,4 +1,4 @@
-package org.ogasimli.test;
+package org.ogasimli.MovieBox;
 
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;

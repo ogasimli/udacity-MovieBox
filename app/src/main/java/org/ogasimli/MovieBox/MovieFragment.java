@@ -1,4 +1,4 @@
-package org.ogasimli.test;
+package org.ogasimli.MovieBox;
 
 import android.app.Activity;
 import android.content.Context;
