@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -70,7 +71,6 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        //loadMovieData();
     }
 
     @Override
@@ -156,7 +156,22 @@ public class MovieFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getActivity(), 2);
+
+        //set GridLayoutManagers grid number based on the orientation of device
+        int i=0;
+        switch (getResources().getConfiguration().orientation){
+            case Configuration.ORIENTATION_PORTRAIT:
+                i = 2;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                i = 3;
+                break;
+            default:
+                i = 2;
+        }
+
+        mLayoutManager = new GridLayoutManager(getActivity(), i);
+
         mRecyclerView.setLayoutManager(mLayoutManager);
         //colors are  not working
         mSwipeRefreshLayout.setColorSchemeResources(
@@ -404,50 +419,52 @@ public class MovieFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
                 mSwipeRefreshLayout.setRefreshing(false);
 
-                mAdapter.SetOnItemClickListener(
-                        new MovieAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View v, int position) {
-                                movieList = mAdapter.getMovieList();
-                                if (movieList != null) {
-                                    //Log.e("Click Action", "Click position is " + position);
-                                    Movie passedMovie = movieList.get(position);
+                if (mAdapter != null) {
+                    mAdapter.SetOnItemClickListener(
+                            new MovieAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View v, int position) {
+                                    movieList = mAdapter.getMovieList();
+                                    if (movieList != null) {
+                                        //Log.e("Click Action", "Click position is " + position);
+                                        Movie passedMovie = movieList.get(position);
 
-                                    String movieTitle = passedMovie.getMovieTitle();
-                                    String movieGenre = passedMovie.getMovieGenre();
-                                    String posterPath = passedMovie.getPosterPath();
-                                    String backdropPath = passedMovie.getBackdropPath();
-                                    String movieId = passedMovie.getMovieId();
-                                    String movieOverview = passedMovie.getMovieOverview();
-                                    String movieReleaseDate = passedMovie.getMovieReleaseDate();
-                                    double movieRating = passedMovie.getMovieRating();
+                                        String movieTitle = passedMovie.getMovieTitle();
+                                        String movieGenre = passedMovie.getMovieGenre();
+                                        String posterPath = passedMovie.getPosterPath();
+                                        String backdropPath = passedMovie.getBackdropPath();
+                                        String movieId = passedMovie.getMovieId();
+                                        String movieOverview = passedMovie.getMovieOverview();
+                                        String movieReleaseDate = passedMovie.getMovieReleaseDate();
+                                        double movieRating = passedMovie.getMovieRating();
 
-                                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                                        Intent intent = new Intent(getActivity(), DetailActivity.class);
 
-                                    String packageName = MainActivity.PACKAGE_NAME;
+                                        String packageName = MainActivity.PACKAGE_NAME;
 
-                                    intent.putExtra(packageName + ".movieTitle", movieTitle);
-                                    intent.putExtra(packageName + ".movieGenre", movieGenre);
-                                    intent.putExtra(packageName + ".posterPath", posterPath);
-                                    intent.putExtra(packageName + ".backdropPath", backdropPath);
-                                    intent.putExtra(packageName + ".movieId", movieId);
-                                    intent.putExtra(packageName + ".movieOverview", movieOverview);
-                                    intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
-                                    intent.putExtra(packageName + ".movieRating", movieRating);
+                                        intent.putExtra(packageName + ".movieTitle", movieTitle);
+                                        intent.putExtra(packageName + ".movieGenre", movieGenre);
+                                        intent.putExtra(packageName + ".posterPath", posterPath);
+                                        intent.putExtra(packageName + ".backdropPath", backdropPath);
+                                        intent.putExtra(packageName + ".movieId", movieId);
+                                        intent.putExtra(packageName + ".movieOverview", movieOverview);
+                                        intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
+                                        intent.putExtra(packageName + ".movieRating", movieRating);
 
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                        ActivityOptionsCompat options = ActivityOptionsCompat.
-                                                makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
-                                        mActivity.startActivity(intent, options.toBundle());
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            ActivityOptionsCompat options = ActivityOptionsCompat.
+                                                    makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
+                                            mActivity.startActivity(intent, options.toBundle());
+                                        } else {
+                                            getActivity().startActivity(intent);
+                                        }
                                     } else {
-                                        getActivity().startActivity(intent);
+                                        Toast.makeText(getActivity(), mActivity.getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
                                     }
-                                }else {
-                                    Toast.makeText(getActivity(),mActivity.getString(R.string.unable_to_fetch_data_message),Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }
-                );
+                    );
+                }
             }
         }
     }
