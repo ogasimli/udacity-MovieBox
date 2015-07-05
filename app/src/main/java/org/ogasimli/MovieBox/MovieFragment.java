@@ -158,7 +158,7 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         //set GridLayoutManagers grid number based on the orientation of device
-        int i=0;
+        int i;
         switch (getResources().getConfiguration().orientation){
             case Configuration.ORIENTATION_PORTRAIT:
                 i = 2;
