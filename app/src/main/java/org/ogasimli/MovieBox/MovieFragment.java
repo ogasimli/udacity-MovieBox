@@ -51,7 +51,7 @@ public class MovieFragment extends Fragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
-    private List<Movie> movieList;
+    private ArrayList<Movie> movieList;
     private static final String LIST_STATE_KEY = "listState";
     private static final String MENU_CHECKED_STATE = "checked";
     private static final String MENU_SORT_ORDER = "sort_order";
@@ -71,16 +71,26 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)){
+            loadMovieData();
+        }else {
+            movieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
+            mAdapter = new MovieAdapter();
+            mAdapter.setMovieList(movieList);
+            mRecyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mListState = mLayoutManager.onSaveInstanceState();
-        outState.putParcelable(LIST_STATE_KEY, mListState);
+/*        mListState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY, mListState);*/
+        outState.putParcelableArrayList(LIST_STATE_KEY, movieList);
     }
 
-    @Override
+/*    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (savedInstanceState != null) {
@@ -94,7 +104,7 @@ public class MovieFragment extends Fragment {
         if (mListState != null) {
             mLayoutManager.onRestoreInstanceState(mListState);
         }
-    }
+    }*/
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -159,7 +169,7 @@ public class MovieFragment extends Fragment {
     private MovieAdapter.onItemClickListener itemClickListener = new MovieAdapter.onItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
-            movieList = mAdapter.getMovieList();
+            movieList = (ArrayList<Movie>) mAdapter.getMovieList();
             if (movieList != null) {
                 //Log.e("Click Action", "Click position is " + position);
                 Movie passedMovie = movieList.get(position);
@@ -267,14 +277,14 @@ public class MovieFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            mSwipeRefreshLayout.post(new Runnable() {
+/*            mSwipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
                     if (!mSwipeRefreshLayout.isRefreshing()) {
                         mSwipeRefreshLayout.setRefreshing(true);
                     }
                 }
-            });
+            });*/
         }
 
         protected List<Movie> doInBackground(String... params) {
