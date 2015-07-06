@@ -21,9 +21,12 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movieList;
-    OnItemClickListener mItemClickListener;
+    onItemClickListener mItemClickListener;
 
-    public MovieAdapter(List<Movie> movieList) {
+    public MovieAdapter() {
+    }
+
+    public void setMovieList(List<Movie> movieList) {
         this.movieList = movieList;
     }
 
@@ -61,6 +64,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
+        if (movieList == null) return 0;
         return movieList.size();
     }
 
@@ -85,7 +89,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             itemView.setOnClickListener(this);
         }
 
-        //Set OnItemClickListener to RecyclerView
+        //Set onItemClickListener to RecyclerView
         @Override
         public void onClick(View v) {
             if (mItemClickListener !=null){
@@ -94,11 +98,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         }
     }
 
-    public interface OnItemClickListener {
+    public interface onItemClickListener {
         void onItemClick(View v, int position);
     }
 
-    public void SetOnItemClickListener (final OnItemClickListener mItemClickListener){
+    public void setOnItemClickListener(final onItemClickListener mItemClickListener){
         this.mItemClickListener = mItemClickListener;
     }
 }

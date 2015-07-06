@@ -54,7 +54,7 @@ public class MovieFragment extends Fragment {
     private List<Movie> movieList;
     private static final String LIST_STATE_KEY = "listState";
     private static final String MENU_CHECKED_STATE = "checked";
-    private static final String MENU_SORT_ORDER ="sort_order";
+    private static final String MENU_SORT_ORDER = "sort_order";
     private Parcelable mListState = null;
 
     public MovieFragment() {
@@ -100,10 +100,10 @@ public class MovieFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_moviefragment, menu);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             menu.findItem(R.id.sort_by).setVisible(false);
         }
-        
+
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
@@ -146,11 +146,59 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mAdapter = new MovieAdapter();
+        mAdapter.setOnItemClickListener(itemClickListener);
+        mRecyclerView.setAdapter(mAdapter);
+
         loadMovieData();
         return rootView;
     }
+
+    private MovieAdapter.onItemClickListener itemClickListener = new MovieAdapter.onItemClickListener() {
+        @Override
+        public void onItemClick(View v, int position) {
+            movieList = mAdapter.getMovieList();
+            if (movieList != null) {
+                //Log.e("Click Action", "Click position is " + position);
+                Movie passedMovie = movieList.get(position);
+
+                String movieTitle = passedMovie.getMovieTitle();
+                String movieGenre = passedMovie.getMovieGenre();
+                String posterPath = passedMovie.getPosterPath();
+                String backdropPath = passedMovie.getBackdropPath();
+                String movieId = passedMovie.getMovieId();
+                String movieOverview = passedMovie.getMovieOverview();
+                String movieReleaseDate = passedMovie.getMovieReleaseDate();
+                double movieRating = passedMovie.getMovieRating();
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+
+                String packageName = MainActivity.PACKAGE_NAME;
+
+                intent.putExtra(packageName + ".movieTitle", movieTitle);
+                intent.putExtra(packageName + ".movieGenre", movieGenre);
+                intent.putExtra(packageName + ".posterPath", posterPath);
+                intent.putExtra(packageName + ".backdropPath", backdropPath);
+                intent.putExtra(packageName + ".movieId", movieId);
+                intent.putExtra(packageName + ".movieOverview", movieOverview);
+                intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
+                intent.putExtra(packageName + ".movieRating", movieRating);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
+                    mActivity.startActivity(intent, options.toBundle());
+                } else {
+                    getActivity().startActivity(intent);
+                }
+            } else {
+                Toast.makeText(getActivity(), mActivity.getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -159,7 +207,7 @@ public class MovieFragment extends Fragment {
 
         //set GridLayoutManagers grid number based on the orientation of device
         int i;
-        switch (getResources().getConfiguration().orientation){
+        switch (getResources().getConfiguration().orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
                 i = 2;
                 break;
@@ -415,56 +463,9 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Movie> movies) {
             if (movies != null) {
-                mAdapter = new MovieAdapter(movies);
-                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.setMovieList(movies);
+                mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
-
-                if (mAdapter != null) {
-                    mAdapter.SetOnItemClickListener(
-                            new MovieAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(View v, int position) {
-                                    movieList = mAdapter.getMovieList();
-                                    if (movieList != null) {
-                                        //Log.e("Click Action", "Click position is " + position);
-                                        Movie passedMovie = movieList.get(position);
-
-                                        String movieTitle = passedMovie.getMovieTitle();
-                                        String movieGenre = passedMovie.getMovieGenre();
-                                        String posterPath = passedMovie.getPosterPath();
-                                        String backdropPath = passedMovie.getBackdropPath();
-                                        String movieId = passedMovie.getMovieId();
-                                        String movieOverview = passedMovie.getMovieOverview();
-                                        String movieReleaseDate = passedMovie.getMovieReleaseDate();
-                                        double movieRating = passedMovie.getMovieRating();
-
-                                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-
-                                        String packageName = MainActivity.PACKAGE_NAME;
-
-                                        intent.putExtra(packageName + ".movieTitle", movieTitle);
-                                        intent.putExtra(packageName + ".movieGenre", movieGenre);
-                                        intent.putExtra(packageName + ".posterPath", posterPath);
-                                        intent.putExtra(packageName + ".backdropPath", backdropPath);
-                                        intent.putExtra(packageName + ".movieId", movieId);
-                                        intent.putExtra(packageName + ".movieOverview", movieOverview);
-                                        intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
-                                        intent.putExtra(packageName + ".movieRating", movieRating);
-
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                            ActivityOptionsCompat options = ActivityOptionsCompat.
-                                                    makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
-                                            mActivity.startActivity(intent, options.toBundle());
-                                        } else {
-                                            getActivity().startActivity(intent);
-                                        }
-                                    } else {
-                                        Toast.makeText(getActivity(), mActivity.getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-                    );
-                }
             }
         }
     }
