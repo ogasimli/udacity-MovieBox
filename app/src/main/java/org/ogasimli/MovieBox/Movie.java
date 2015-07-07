@@ -17,7 +17,9 @@ public class Movie implements Parcelable{
     private String movieReleaseDate;
     private double movieRating;
 
-/*    private Movie(Parcel in){
+    public Movie(){}
+
+    private Movie(Parcel in){
         movieTitle = in.readString();
         movieGenre = in.readString();
         posterPath = in.readString();
@@ -26,7 +28,7 @@ public class Movie implements Parcelable{
         movieOverview = in.readString();
         movieReleaseDate = in.readString();
         movieRating = in.readDouble();
-    }*/
+    }
 
     public int describeContents() {
         return 0;
