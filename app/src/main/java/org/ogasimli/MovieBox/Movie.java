@@ -48,7 +48,7 @@ public class Movie implements Parcelable{
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>(){
         public Movie createFromParcel(Parcel in) {
-            return new Movie();
+            return new Movie(in);
         }
 
         public Movie[] newArray(int size) {

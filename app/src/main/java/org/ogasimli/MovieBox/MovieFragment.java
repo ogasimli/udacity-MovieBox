@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -60,7 +61,7 @@ public class MovieFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = (FragmentActivity) activity;
-        //setRetainInstance(true);
+        setRetainInstance(true);
     }
 
     @Override
@@ -149,32 +150,8 @@ public class MovieFragment extends Fragment {
                 Movie passedMovie = movieList.get(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra(MainActivity.PACKAGE_NAME, passedMovie);
-                Log.e("Fragment - movieTitle", passedMovie.getMovieTitle());
-                startActivity(intent);
 
-/*                String movieTitle = passedMovie.getMovieTitle();
-                String movieGenre = passedMovie.getMovieGenre();
-                String posterPath = passedMovie.getPosterPath();
-                String backdropPath = passedMovie.getBackdropPath();
-                String movieId = passedMovie.getMovieId();
-                String movieOverview = passedMovie.getMovieOverview();
-                String movieReleaseDate = passedMovie.getMovieReleaseDate();
-                double movieRating = passedMovie.getMovieRating();
-
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-
-                String packageName = MainActivity.PACKAGE_NAME;
-
-                intent.putExtra(packageName + ".movieTitle", movieTitle);
-                intent.putExtra(packageName + ".movieGenre", movieGenre);
-                intent.putExtra(packageName + ".posterPath", posterPath);
-                intent.putExtra(packageName + ".backdropPath", backdropPath);
-                intent.putExtra(packageName + ".movieId", movieId);
-                intent.putExtra(packageName + ".movieOverview", movieOverview);
-                intent.putExtra(packageName + ".movieReleaseDate", movieReleaseDate);
-                intent.putExtra(packageName + ".movieRating", movieRating);*/
-
-/*                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
                     mActivity.startActivity(intent, options.toBundle());
@@ -182,7 +159,7 @@ public class MovieFragment extends Fragment {
                     getActivity().startActivity(intent);
                 }
             } else {
-                Toast.makeText(getActivity(), mActivity.getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();*/
+                Toast.makeText(getActivity(), mActivity.getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -434,9 +411,9 @@ public class MovieFragment extends Fragment {
         }
 
         private String getGenre(String genreId) {
+            String valueGenre = null;
             String[] id = getResources().getStringArray(R.array.poster_id);
             String[] value = getResources().getStringArray(R.array.poster_id_values);
-            String valueGenre = null;
 
             for (int i = 0; i < id.length; i++) {
                 if (genreId.equals(id[i])) {

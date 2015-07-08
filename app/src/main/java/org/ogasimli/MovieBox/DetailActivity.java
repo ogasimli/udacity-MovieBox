@@ -33,7 +33,6 @@ public class DetailActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             movie = extras.getParcelable(MainActivity.PACKAGE_NAME);
-            //Log.e("Detail - movieTitle", movie.getMovieTitle());
         } else {
             throw new NullPointerException("No movie found in extras");
         }
@@ -47,14 +46,6 @@ public class DetailActivity extends AppCompatActivity {
 
     public static class DetailFragment extends Fragment {
 
-        private String movieTitle;
-        private String movieGenre;
-        private String posterPath;
-        private String backdropPath;
-        private String movieId;
-        private String movieOverview;
-        private String movieReleaseDate;
-        private double movieRating;
         private Context context;
         private Movie mMovie;
 
@@ -94,19 +85,6 @@ public class DetailActivity extends AppCompatActivity {
             LayerDrawable stars = (LayerDrawable) detailRatingBar.getProgressDrawable();
             stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
             stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
-
-/*            String packageName = MainActivity.PACKAGE_NAME;
-            Intent intent = getActivity().getIntent();
-            if (intent!=null){
-                movieTitle = intent.getStringExtra(packageName + ".movieTitle");
-                movieGenre = intent.getStringExtra(packageName + ".movieGenre");
-                posterPath = intent.getStringExtra(packageName + ".posterPath");
-                backdropPath = intent.getStringExtra(packageName + ".backdropPath");
-                movieId = intent.getStringExtra(packageName + ".movieId");
-                movieOverview = intent.getStringExtra(packageName + ".movieOverview");
-                movieReleaseDate = intent.getStringExtra(packageName + ".movieReleaseDate");
-                movieRating = intent.getDoubleExtra(packageName + ".movieRating", 0);
-            }*/
 
 
             detailMovieTitle.setText(mMovie.getMovieTitle());
