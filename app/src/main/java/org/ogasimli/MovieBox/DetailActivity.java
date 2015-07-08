@@ -1,7 +1,6 @@
 package org.ogasimli.MovieBox;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -30,11 +29,20 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detail_container, new DetailFragment())
-                    .commit();
+        Movie movie;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            movie = extras.getParcelable(MainActivity.PACKAGE_NAME);
+            //Log.e("Detail - movieTitle", movie.getMovieTitle());
+        } else {
+            throw new NullPointerException("No movie found in extras");
         }
+
+        DetailFragment fragment = DetailFragment.getInstance(movie);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.detail_container, fragment)
+                .commit();
     }
 
     public static class DetailFragment extends Fragment {
@@ -48,8 +56,23 @@ public class DetailActivity extends AppCompatActivity {
         private String movieReleaseDate;
         private double movieRating;
         private Context context;
+        private Movie mMovie;
 
-        public DetailFragment() {
+        public static DetailFragment getInstance(Movie movie) {
+            DetailFragment fragment = new DetailFragment();
+            Bundle args = new Bundle();
+            args.putParcelable(MainActivity.PACKAGE_NAME, movie);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            mMovie = getArguments().getParcelable(MainActivity.PACKAGE_NAME);
+            if (mMovie == null) {
+                throw new NullPointerException("Movie object should be put into fragment arguments.");
+            }
         }
 
         @Override
@@ -72,7 +95,7 @@ public class DetailActivity extends AppCompatActivity {
             stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
             stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
 
-            String packageName = MainActivity.PACKAGE_NAME;
+/*            String packageName = MainActivity.PACKAGE_NAME;
             Intent intent = getActivity().getIntent();
             if (intent!=null){
                 movieTitle = intent.getStringExtra(packageName + ".movieTitle");
@@ -83,26 +106,26 @@ public class DetailActivity extends AppCompatActivity {
                 movieOverview = intent.getStringExtra(packageName + ".movieOverview");
                 movieReleaseDate = intent.getStringExtra(packageName + ".movieReleaseDate");
                 movieRating = intent.getDoubleExtra(packageName + ".movieRating", 0);
-            }
+            }*/
 
 
-            detailMovieTitle.setText(movieTitle);
-            detailMovieGenre.setText(movieGenre);
-            detailMovieRelease.setText(movieReleaseDate);
-            String rating = String.format(rootView.getResources().getString(R.string.detail_rating),String.valueOf(movieRating));
+            detailMovieTitle.setText(mMovie.getMovieTitle());
+            detailMovieGenre.setText(mMovie.getMovieGenre());
+            detailMovieRelease.setText(mMovie.getMovieReleaseDate());
+            String rating = String.format(rootView.getResources().getString(R.string.detail_rating),String.valueOf(mMovie.getMovieRating()));
             detailMovieRating.setText(rating);
-            detailRatingBar.setRating((float) movieRating);
+            detailRatingBar.setRating((float) mMovie.getMovieRating());
             context = detailPosterImage.getContext();
             Glide.with(context).
-                    load(context.getString(R.string.base_poster_link) + "w185/" + posterPath).
+                    load(context.getString(R.string.base_poster_link) + "w185/" + mMovie.getPosterPath()).
                     diskCacheStrategy(DiskCacheStrategy.ALL).
                     into(detailPosterImage);
             context = detailBackdropImage.getContext();
             Glide.with(context).
-                    load(context.getString(R.string.base_poster_link) + "w500/" + backdropPath).
+                    load(context.getString(R.string.base_poster_link) + "w500/" + mMovie.getBackdropPath()).
                     diskCacheStrategy(DiskCacheStrategy.ALL).
                     into(detailBackdropImage);
-            detailMovieOverview.setText(movieOverview);
+            detailMovieOverview.setText(mMovie.getMovieOverview());
 
             Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.grow);
             fab.startAnimation(animation);
