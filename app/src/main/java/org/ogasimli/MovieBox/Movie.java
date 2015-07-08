@@ -1,9 +1,13 @@
 package org.ogasimli.MovieBox;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Movie object class
  */
-public class Movie {
+public class Movie implements Parcelable{
+
     private String movieTitle;
     private String movieGenre;
     private String posterPath;
@@ -12,6 +16,45 @@ public class Movie {
     private String movieOverview;
     private String movieReleaseDate;
     private double movieRating;
+
+    public Movie(){}
+
+    private Movie(Parcel in){
+        movieTitle = in.readString();
+        movieGenre = in.readString();
+        posterPath = in.readString();
+        backdropPath = in.readString();
+        movieId = in.readString();
+        movieOverview = in.readString();
+        movieReleaseDate = in.readString();
+        movieRating = in.readDouble();
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(movieTitle);
+        dest.writeString(movieGenre);
+        dest.writeString(posterPath);
+        dest.writeString(backdropPath);
+        dest.writeString(movieId);
+        dest.writeString(movieOverview);
+        dest.writeString(movieReleaseDate);
+        dest.writeDouble(movieRating);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>(){
+        public Movie createFromParcel(Parcel in) {
+            return new Movie();
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getMovieTitle() {
         return movieTitle;

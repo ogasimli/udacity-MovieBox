@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -49,13 +48,11 @@ public class MovieFragment extends Fragment {
     private FragmentActivity mActivity;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView.LayoutManager mLayoutManager;
     private MovieAdapter mAdapter;
-    private List<Movie> movieList;
+    private ArrayList<Movie> movieList;
     private static final String LIST_STATE_KEY = "listState";
     private static final String MENU_CHECKED_STATE = "checked";
     private static final String MENU_SORT_ORDER = "sort_order";
-    private Parcelable mListState = null;
 
     public MovieFragment() {
     }
@@ -64,7 +61,7 @@ public class MovieFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.mActivity = (FragmentActivity) activity;
-        setRetainInstance(true);
+        //setRetainInstance(true);
     }
 
     @Override
@@ -76,24 +73,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mListState = mLayoutManager.onSaveInstanceState();
-        outState.putParcelable(LIST_STATE_KEY, mListState);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState != null) {
-            mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mListState != null) {
-            mLayoutManager.onRestoreInstanceState(mListState);
-        }
+        outState.putParcelableArrayList(LIST_STATE_KEY, movieList);
     }
 
     @Override
@@ -144,22 +124,28 @@ public class MovieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mAdapter = new MovieAdapter();
+
+        //loadMovieData if savedInstanceState is null, load from already fetched data if savedInstanceSate is not null
+        if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)) {
+            loadMovieData();
+        } else {
+            movieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
+            mAdapter.setMovieList(movieList);
+        }
+
         mAdapter.setOnItemClickListener(itemClickListener);
         mRecyclerView.setAdapter(mAdapter);
-
-        loadMovieData();
         return rootView;
     }
 
     private MovieAdapter.onItemClickListener itemClickListener = new MovieAdapter.onItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
-            movieList = mAdapter.getMovieList();
+            movieList = (ArrayList<Movie>) mAdapter.getMovieList();
             if (movieList != null) {
                 //Log.e("Click Action", "Click position is " + position);
                 Movie passedMovie = movieList.get(position);
@@ -218,10 +204,9 @@ public class MovieFragment extends Fragment {
                 i = 2;
         }
 
-        mLayoutManager = new GridLayoutManager(getActivity(), i);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), i);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        //colors are  not working
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.accent_color,
                 R.color.primary_color);
@@ -366,7 +351,7 @@ public class MovieFragment extends Fragment {
             final String OWM_RELEASE_DATE = "release_date";
             final String OWM_OVERVIEW = "overview";
 
-            List<Movie> movieList = new ArrayList<>();
+            movieList = new ArrayList<>();
             JSONObject movieJson = new JSONObject(MovieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(OMW_RESULTS);
 
