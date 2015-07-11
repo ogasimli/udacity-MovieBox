@@ -166,7 +166,7 @@ public class MovieFragment extends Fragment {
         return rootView;
     }
 
-    private MovieAdapter.onItemClickListener itemClickListener = new MovieAdapter.onItemClickListener() {
+    private MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
             movieList = (ArrayList<Movie>) mAdapter.getMovieList();

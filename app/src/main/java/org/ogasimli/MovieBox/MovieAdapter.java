@@ -21,7 +21,7 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private List<Movie> movieList;
-    onItemClickListener mItemClickListener;
+    OnItemClickListener mItemClickListener;
 
     public MovieAdapter() {
     }
@@ -89,7 +89,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             itemView.setOnClickListener(this);
         }
 
-        //Set onItemClickListener to RecyclerView
+        //Set OnItemClickListener to RecyclerView
         @Override
         public void onClick(View v) {
             if (mItemClickListener !=null){
@@ -98,11 +98,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         }
     }
 
-    public interface onItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(View v, int position);
     }
 
-    public void setOnItemClickListener(final onItemClickListener mItemClickListener){
         this.mItemClickListener = mItemClickListener;
     }
 }
