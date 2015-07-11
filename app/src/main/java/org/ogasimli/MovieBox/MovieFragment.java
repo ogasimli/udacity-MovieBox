@@ -195,19 +195,10 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         //set GridLayoutManagers grid number based on the orientation of device
-        int i;
-        switch (getResources().getConfiguration().orientation) {
-            case Configuration.ORIENTATION_PORTRAIT:
-                i = 2;
-                break;
-            case Configuration.ORIENTATION_LANDSCAPE:
-                i = 3;
-                break;
-            default:
-                i = 2;
-        }
+        int orientation = getResources().getConfiguration().orientation;
+        int spanCount = (orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2;
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), i);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mSwipeRefreshLayout.setColorSchemeResources(
