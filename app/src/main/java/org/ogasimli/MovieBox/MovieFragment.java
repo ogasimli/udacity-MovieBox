@@ -217,7 +217,7 @@ public class MovieFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mRecyclerView.getAdapter() != null) {
+                if (mRecyclerView.getVisibility() == View.VISIBLE) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(getActivity(), R.string.movies_already_loaded_message, Toast.LENGTH_SHORT).show();
                 } else {

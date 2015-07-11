@@ -1,24 +1,30 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivityFragment">
+    android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivityFragment">
 
         <LinearLayout
             android:id="@+id/error_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_centerInParent="true">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/error_image"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:alpha="0.2"
+                android:contentDescription="@string/error_image_description"
                 android:src="@drawable/sad_face" />
 
             <TextView
@@ -36,12 +42,7 @@
                 android:text="@string/refine_search"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/secondary_text" />
-    </LinearLayout>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -49,5 +50,6 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
-</RelativeLayout>
+
+    </RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
