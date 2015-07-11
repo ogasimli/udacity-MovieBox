@@ -56,9 +56,8 @@ public class MovieFragment extends Fragment {
     private static final String MENU_CHECKED_STATE = "checked";
     private static final String MENU_SORT_ORDER = "sort_order";
     private static final String VIEW_STATE_KEY = "view_state";
-    private final static int VIEW_STATE_LOADING = 0;
-    private final static int VIEW_STATE_ERROR = 1;
-    private final static int VIEW_STATE_RESULTS = 2;
+    private final static int VIEW_STATE_ERROR = 0;
+    private final static int VIEW_STATE_RESULTS = 1;
 
     public MovieFragment() {
     }
@@ -79,11 +78,10 @@ public class MovieFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int state = VIEW_STATE_LOADING;
+
+        int state = VIEW_STATE_RESULTS;
         if (mLinearLayout.getVisibility() == View.VISIBLE){
             state = VIEW_STATE_ERROR;
-        }else if (mRecyclerView.getVisibility() == View.VISIBLE){
-            state = VIEW_STATE_RESULTS;
         }
 
         outState.putInt(VIEW_STATE_KEY, state);
@@ -160,8 +158,6 @@ public class MovieFragment extends Fragment {
                     mRecyclerView.setAdapter(mAdapter);
                     showResultView();
                     break;
-                case VIEW_STATE_LOADING:
-                    showLoadingView();
             }
 
         }
@@ -254,12 +250,6 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         mLinearLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void showLoadingView () {
-        if (!mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(true);
-        }
     }
 
     private void showResultView () {
