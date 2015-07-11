@@ -24,8 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -47,9 +46,7 @@ import java.util.List;
  */
 public class MovieFragment extends Fragment {
 
-    private ImageView mImageView;
-    private TextView mErrorText;
-    private TextView mRetryText;
+    private LinearLayout mLinearLayout;
     private FragmentActivity mActivity;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -82,11 +79,11 @@ public class MovieFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        int state = VIEW_STATE_RESULTS;
-        if (mImageView.getVisibility() == View.VISIBLE){
+        int state = VIEW_STATE_LOADING;
+        if (mLinearLayout.getVisibility() == View.VISIBLE){
             state = VIEW_STATE_ERROR;
-        }else if (mSwipeRefreshLayout.getVisibility() == View.VISIBLE){
-            state = VIEW_STATE_LOADING;
+        }else if (mRecyclerView.getVisibility() == View.VISIBLE){
+            state = VIEW_STATE_RESULTS;
         }
 
         outState.putInt(VIEW_STATE_KEY, state);
@@ -142,9 +139,7 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        mImageView = (ImageView) rootView.findViewById(R.id.error_image);
-        mErrorText = (TextView) rootView.findViewById(R.id.error_text);
-        mRetryText = (TextView) rootView.findViewById(R.id.retry_text);
+        mLinearLayout = (LinearLayout) rootView.findViewById(R.id.error_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mAdapter = new MovieAdapter();
@@ -162,7 +157,8 @@ public class MovieFragment extends Fragment {
                 case VIEW_STATE_RESULTS:
                     movieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
                     mAdapter.setMovieList(movieList);
-                    showErrorView();
+                    mRecyclerView.setAdapter(mAdapter);
+                    showResultView();
                     break;
                 case VIEW_STATE_LOADING:
                     showLoadingView();
@@ -257,9 +253,7 @@ public class MovieFragment extends Fragment {
     private void showErrorView (){
         mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
-        mImageView.setVisibility(View.VISIBLE);
-        mErrorText.setVisibility(View.VISIBLE);
-        mRetryText.setVisibility(View.VISIBLE);
+        mLinearLayout.setVisibility(View.VISIBLE);
     }
 
     private void showLoadingView () {
@@ -269,9 +263,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void showResultView () {
-        mImageView.setVisibility(View.GONE);
-        mErrorText.setVisibility(View.GONE);
-        mRetryText.setVisibility(View.GONE);
+        mLinearLayout.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         mRecyclerView.setVisibility(View.VISIBLE);
     }

@@ -5,24 +5,21 @@
     tools:context=".MainActivityFragment">
 
 
-<!--        <LinearLayout
+        <LinearLayout
             android:id="@+id/error_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">-->
+            android:visibility="gone"
+            android:layout_centerInParent="true">
 
             <ImageView
                 android:id="@+id/error_image"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_gravity="center_horizontal"
                 android:alpha="0.2"
-                android:src="@drawable/sad_face"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"/>
+                android:src="@drawable/sad_face" />
 
             <TextView
                 android:id="@+id/error_text"
@@ -30,10 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_result"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/secondary_text"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/error_image"
-                android:visibility="gone"/>
+                android:textColor="@color/secondary_text" />
 
             <TextView
                 android:id="@+id/retry_text"
@@ -41,10 +35,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/refine_search"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@color/secondary_text"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/error_text"
-                android:visibility="gone"/>
+                android:textColor="@color/secondary_text" />
+    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
