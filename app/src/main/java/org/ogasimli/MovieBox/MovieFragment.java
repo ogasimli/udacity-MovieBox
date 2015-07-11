@@ -42,7 +42,8 @@ import java.util.List;
 
 
 /**
- * A placeholder fragment containing a simple view.
+ * A placeholder fragment containing list of movies.
+ * Created by ogasimli on 01.07.2015.
  */
 public class MovieFragment extends Fragment {
 

@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Custom Adapter for movies
+ * Created by ogasimli on 01.07.2015.
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
@@ -102,6 +103,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onItemClick(View v, int position);
     }
 
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener){
         this.mItemClickListener = mItemClickListener;
     }
 }

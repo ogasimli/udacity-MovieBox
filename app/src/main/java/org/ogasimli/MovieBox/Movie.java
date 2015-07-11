@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Movie object class
+ * Created by ogasimli on 01.07.2015.
  */
 public class Movie implements Parcelable{
 
