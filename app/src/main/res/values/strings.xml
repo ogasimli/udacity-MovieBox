@@ -18,7 +18,8 @@
     <string name="api_key" translatable="false">65f1348325dc3a10a0a408c9c9100c31</string>
     <string name="base_poster_link" translatable="false">http://image.tmdb.org/t/p/</string>
     <string name="fab_message">This button will save the movie to your favorite list</string>
-    <string name="no_connection_message">No internet connection. Pull down to try again.</string>
     <string name="base_tmdb_link" translatable="false">http://api.themoviedb.org/3/discover/movie?include_adult=true</string>
-    <string name="unable_to_fetch_data_message">Can\'t get movies.</string>
+    <string name="no_result">Ooops! No movie to show.</string>
+    <string name="refine_search">Swipe down to try again</string>
+    <string name="movies_already_loaded_message">Movies are already loaded!</string>
 </resources>

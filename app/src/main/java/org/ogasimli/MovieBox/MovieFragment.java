@@ -24,6 +24,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -45,14 +47,21 @@ import java.util.List;
  */
 public class MovieFragment extends Fragment {
 
+    private ImageView mImageView;
+    private TextView mErrorText;
+    private TextView mRetryText;
     private FragmentActivity mActivity;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MovieAdapter mAdapter;
     private ArrayList<Movie> movieList;
-    private static final String LIST_STATE_KEY = "listState";
+    private static final String LIST_STATE_KEY = "list_state";
     private static final String MENU_CHECKED_STATE = "checked";
     private static final String MENU_SORT_ORDER = "sort_order";
+    private static final String VIEW_STATE_KEY = "view_state";
+    private final static int VIEW_STATE_LOADING = 0;
+    private final static int VIEW_STATE_ERROR = 1;
+    private final static int VIEW_STATE_RESULTS = 2;
 
     public MovieFragment() {
     }
@@ -73,6 +82,14 @@ public class MovieFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        int state = VIEW_STATE_RESULTS;
+        if (mImageView.getVisibility() == View.VISIBLE){
+            state = VIEW_STATE_ERROR;
+        }else if (mSwipeRefreshLayout.getVisibility() == View.VISIBLE){
+            state = VIEW_STATE_LOADING;
+        }
+
+        outState.putInt(VIEW_STATE_KEY, state);
         outState.putParcelableArrayList(LIST_STATE_KEY, movieList);
     }
 
@@ -125,20 +142,35 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        mImageView = (ImageView) rootView.findViewById(R.id.error_image);
+        mErrorText = (TextView) rootView.findViewById(R.id.error_text);
+        mRetryText = (TextView) rootView.findViewById(R.id.retry_text);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mAdapter = new MovieAdapter();
+        mAdapter.setOnItemClickListener(itemClickListener);
 
         //loadMovieData if savedInstanceState is null, load from already fetched data if savedInstanceSate is not null
         if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)) {
             loadMovieData();
         } else {
-            movieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
-            mAdapter.setMovieList(movieList);
+            int state = savedInstanceState.getInt(VIEW_STATE_KEY, VIEW_STATE_ERROR);
+            switch (state){
+                case VIEW_STATE_ERROR:
+                    showErrorView();
+                    break;
+                case VIEW_STATE_RESULTS:
+                    movieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
+                    mAdapter.setMovieList(movieList);
+                    showErrorView();
+                    break;
+                case VIEW_STATE_LOADING:
+                    showLoadingView();
+            }
+
         }
 
-        mAdapter.setOnItemClickListener(itemClickListener);
-        mRecyclerView.setAdapter(mAdapter);
+
         return rootView;
     }
 
@@ -193,15 +225,11 @@ public class MovieFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mAdapter != null) {
+                if (mRecyclerView.getAdapter() != null) {
                     mSwipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getActivity(), R.string.movies_already_loaded_message, Toast.LENGTH_SHORT).show();
                 } else {
-                    if (!isOnline()) {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        Toast.makeText(getActivity(), mActivity.getString(R.string.no_connection_message), Toast.LENGTH_LONG).show();
-                    } else {
-                        loadMovieData();
-                    }
+                    loadMovieData();
                 }
             }
         });
@@ -214,8 +242,9 @@ public class MovieFragment extends Fragment {
             String defaultValue = getResources().getString(R.string.sort_order_popularity);
             String sortOrder = prefs.getString(MENU_SORT_ORDER, defaultValue);
             fetchMovieTask.execute(sortOrder);
+            showResultView();
         } else {
-            Toast.makeText(getActivity(), mActivity.getString(R.string.no_connection_message), Toast.LENGTH_LONG).show();
+            showErrorView();
         }
     }
 
@@ -223,6 +252,28 @@ public class MovieFragment extends Fragment {
         ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private void showErrorView (){
+        mRecyclerView.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(false);
+        mImageView.setVisibility(View.VISIBLE);
+        mErrorText.setVisibility(View.VISIBLE);
+        mRetryText.setVisibility(View.VISIBLE);
+    }
+
+    private void showLoadingView () {
+        if (!mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
+    }
+
+    private void showResultView () {
+        mImageView.setVisibility(View.GONE);
+        mErrorText.setVisibility(View.GONE);
+        mRetryText.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(false);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
@@ -428,6 +479,7 @@ public class MovieFragment extends Fragment {
         protected void onPostExecute(List<Movie> movies) {
             if (movies != null) {
                 mAdapter.setMovieList(movies);
+                mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
             }
