@@ -57,6 +57,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         Glide.with(viewHolder.moviePoster.getContext()).
                 load("http://image.tmdb.org/t/p/w185/" + movie.getPosterPath()).
+                placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(viewHolder.moviePoster);
 

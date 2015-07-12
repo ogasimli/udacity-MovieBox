@@ -75,11 +75,13 @@ public class DetailFragment extends Fragment {
         context = detailPosterImage.getContext();
         Glide.with(context).
                 load(context.getString(R.string.base_poster_link) + "w185/" + mMovie.getPosterPath()).
+                placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailPosterImage);
         context = detailBackdropImage.getContext();
         Glide.with(context).
                 load(context.getString(R.string.base_poster_link) + "w500/" + mMovie.getBackdropPath()).
+                placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailBackdropImage);
         detailMovieOverview.setText(mMovie.getMovieOverview());
