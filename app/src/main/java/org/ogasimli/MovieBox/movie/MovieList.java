@@ -97,27 +97,12 @@ public class MovieList {
             String valueGenre = null;
             if (genreIds.size() != 0) {
                 String firstGenreId = genreIds.get(0);
-                String[] id = {"28", "12", "16", "35", "80", "99", "18", "10751", "14", "10769", "36", "27", "10402", "9648", "10749", "878", "10770", "53", "10752", "37"};
-                String[] value = {"Action",
-                        "Adventure",
-                        "Animation",
-                        "Comedy",
-                        "Crime",
-                        "Documentary",
-                        "Drama",
-                        "Family",
-                        "Fantasy",
-                        "Foreign",
-                        "History",
-                        "Horror",
-                        "Music",
-                        "Mystery",
-                        "Romance",
-                        "Science Fiction",
-                        "TV Movie",
-                        "Thriller",
-                        "War",
-                        "Western"};
+                String[] id = {"28", "12", "16", "35", "80", "99", "18", "10751", "14", "10769",
+                        "36", "27", "10402", "9648", "10749", "878", "10770", "53", "10752", "37"};
+                String[] value = {"Action", "Adventure", "Animation", "Comedy", "Crime",
+                        "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History",
+                        "Horror", "Music", "Mystery", "Romance", "Science Fiction",
+                        "TV Movie", "Thriller", "War", "Western"};
                 //String[] id = context.getResources().getStringArray(R.array.genre_id);
                 //String[] value = context.getResources().getStringArray(R.array.genre_id_values);
 
@@ -139,8 +124,12 @@ public class MovieList {
         //Additional methods to get poster URLs
         private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
 
-        public String getPosterUrl(){return POSTER_BASE_URL + "w185" + posterPath;}
+        public String getPosterUrl() {
+            return POSTER_BASE_URL + "w185" + posterPath;
+        }
 
-        public String getBackdropPosterUrl () {return POSTER_BASE_URL + "w500" + backdropPath;}
+        public String getBackdropPosterUrl() {
+            return POSTER_BASE_URL + "w500" + backdropPath;
+        }
     }
 }

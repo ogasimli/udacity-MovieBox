@@ -39,14 +39,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).
+                inflate(R.layout.card_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
         //Change the color of ratingBar
         LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color),
+                PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color),
+                PorterDuff.Mode.SRC_ATOP);
 
         return viewHolder;
     }
@@ -72,7 +75,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return movieList.size();
     }
 
-    //Method to decrease movie ratings in order to be able to assign them into RatingBar on card_item layout
+    //Method to decrease movie ratings in order to be able to assign them into RatingBar
+    // on card_item layout
     private float decreaseRating (double rating){
         return (float)Math.round((rating*5/10) * 100) / 100;
     }

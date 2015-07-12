@@ -66,14 +66,16 @@ public class DetailFragment extends Fragment {
 
         //Change the color of ratingBar
         LayerDrawable stars = (LayerDrawable) detailRatingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color), PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color),
+                PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color),
+                PorterDuff.Mode.SRC_ATOP);
 
 
         detailMovieTitle.setText(mMovie.movieTitle);
         detailMovieGenre.setText(mMovie.getMovieGenre());
         detailMovieRelease.setText(mMovie.movieReleaseDate);
-        String rating = String.format(rootView.getResources().getString(R.string.detail_rating),String.valueOf(mMovie.movieRating));
+        String rating = String.format(rootView.getResources().getString(R.string.detail_rating), String.valueOf(mMovie.movieRating));
         detailMovieRating.setText(rating);
         detailRatingBar.setRating((float) mMovie.movieRating);
         context = detailPosterImage.getContext();

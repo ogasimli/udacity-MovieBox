@@ -79,7 +79,7 @@ public class MovieFragment extends Fragment {
         super.onSaveInstanceState(outState);
 
         int state = VIEW_STATE_RESULTS;
-        if (mLinearLayout.getVisibility() == View.VISIBLE){
+        if (mLinearLayout.getVisibility() == View.VISIBLE) {
             state = VIEW_STATE_ERROR;
         }
 
@@ -142,12 +142,13 @@ public class MovieFragment extends Fragment {
         mAdapter = new MovieAdapter();
         mAdapter.setOnItemClickListener(itemClickListener);
 
-        //loadMovieData if savedInstanceState is null, load from already fetched data if savedInstanceSate is not null
+        //loadMovieData if savedInstanceState is null, load from already fetched data
+        // if savedInstanceSate is not null
         if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)) {
             loadMovieData();
         } else {
             int state = savedInstanceState.getInt(VIEW_STATE_KEY, VIEW_STATE_ERROR);
-            switch (state){
+            switch (state) {
                 case VIEW_STATE_ERROR:
                     showErrorView();
                     break;
@@ -175,7 +176,8 @@ public class MovieFragment extends Fragment {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(mActivity, v.findViewById(R.id.movie_poster), "poster");
+                            makeSceneTransitionAnimation(mActivity,
+                                    v.findViewById(R.id.movie_poster), "poster");
                     mActivity.startActivity(intent, options.toBundle());
                 } else {
                     getActivity().startActivity(intent);
@@ -208,7 +210,9 @@ public class MovieFragment extends Fragment {
             public void onRefresh() {
                 if (mRecyclerView.getVisibility() == View.VISIBLE) {
                     mSwipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getActivity(), R.string.movies_already_loaded_message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),
+                            R.string.movies_already_loaded_message,
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     loadMovieData();
                 }
@@ -241,13 +245,13 @@ public class MovieFragment extends Fragment {
         });
     }
 
-    private void showErrorView (){
+    private void showErrorView() {
         mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         mLinearLayout.setVisibility(View.VISIBLE);
     }
 
-    private void showLoadingView () {
+    private void showLoadingView() {
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -258,7 +262,7 @@ public class MovieFragment extends Fragment {
         });
     }
 
-    private void showResultView () {
+    private void showResultView() {
         mLinearLayout.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         mRecyclerView.setVisibility(View.VISIBLE);
