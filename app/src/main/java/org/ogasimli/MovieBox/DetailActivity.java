@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import org.ogasimli.MovieBox.fragments.DetailFragment;
+import org.ogasimli.MovieBox.movie.MovieList;
+
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -12,7 +15,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Movie movie;
+        MovieList.Movie movie;
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             movie = extras.getParcelable(MainActivity.PACKAGE_NAME);

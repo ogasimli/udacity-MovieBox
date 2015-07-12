@@ -1,4 +1,4 @@
-package org.ogasimli.MovieBox;
+package org.ogasimli.MovieBox.fragments;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -19,6 +19,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.ogasimli.MovieBox.MainActivity;
+import org.ogasimli.MovieBox.R;
+import org.ogasimli.MovieBox.movie.MovieList;
+
 /**
  * Fragment containing movie details
  * Created by ogasimli on 11.07.2015.
@@ -26,9 +30,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 public class DetailFragment extends Fragment {
 
     private Context context;
-    private Movie mMovie;
+    private MovieList.Movie mMovie;
 
-    public static DetailFragment getInstance(Movie movie) {
+    public static DetailFragment getInstance(MovieList.Movie movie) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putParcelable(MainActivity.PACKAGE_NAME, movie);
@@ -66,25 +70,25 @@ public class DetailFragment extends Fragment {
         stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color), PorterDuff.Mode.SRC_ATOP);
 
 
-        detailMovieTitle.setText(mMovie.getMovieTitle());
+        detailMovieTitle.setText(mMovie.movieTitle);
         detailMovieGenre.setText(mMovie.getMovieGenre());
-        detailMovieRelease.setText(mMovie.getMovieReleaseDate());
-        String rating = String.format(rootView.getResources().getString(R.string.detail_rating),String.valueOf(mMovie.getMovieRating()));
+        detailMovieRelease.setText(mMovie.movieReleaseDate);
+        String rating = String.format(rootView.getResources().getString(R.string.detail_rating),String.valueOf(mMovie.movieRating));
         detailMovieRating.setText(rating);
-        detailRatingBar.setRating((float) mMovie.getMovieRating());
+        detailRatingBar.setRating((float) mMovie.movieRating);
         context = detailPosterImage.getContext();
         Glide.with(context).
-                load(context.getString(R.string.base_poster_link) + "w185/" + mMovie.getPosterPath()).
+                load(mMovie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailPosterImage);
         context = detailBackdropImage.getContext();
         Glide.with(context).
-                load(context.getString(R.string.base_poster_link) + "w500/" + mMovie.getBackdropPath()).
+                load(mMovie.getBackdropPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailBackdropImage);
-        detailMovieOverview.setText(mMovie.getMovieOverview());
+        detailMovieOverview.setText(mMovie.movieOverview);
 
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
         fab.startAnimation(animation);

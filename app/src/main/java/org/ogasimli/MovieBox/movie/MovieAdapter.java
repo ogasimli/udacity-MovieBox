@@ -1,4 +1,4 @@
-package org.ogasimli.MovieBox;
+package org.ogasimli.MovieBox.movie;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
@@ -13,7 +13,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.util.List;
+import org.ogasimli.MovieBox.R;
+
+import java.util.ArrayList;
 
 /**
  * Custom Adapter for movies
@@ -21,17 +23,17 @@ import java.util.List;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private List<Movie> movieList;
-    OnItemClickListener mItemClickListener;
+    private ArrayList<MovieList.Movie> movieList;
+    private OnItemClickListener mItemClickListener;
 
     public MovieAdapter() {
     }
 
-    public void setMovieList(List<Movie> movieList) {
+    public void setMovieList(ArrayList<MovieList.Movie> movieList) {
         this.movieList = movieList;
     }
 
-    public List<Movie> getMovieList() {
+    public ArrayList<MovieList.Movie> getMovieList() {
         return movieList;
     }
 
@@ -51,17 +53,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Movie movie = movieList.get(i);
-        viewHolder.movieTitle.setText(movie.getMovieTitle());
-        viewHolder.movieGenre.setText(movie.getMovieGenre());
+        MovieList.Movie movie = movieList.get(i);
+        viewHolder.movieTitle.setText(movie.movieTitle);
+        viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
 
         Glide.with(viewHolder.moviePoster.getContext()).
-                load("http://image.tmdb.org/t/p/w185/" + movie.getPosterPath()).
+                load(movie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(viewHolder.moviePoster);
 
-        viewHolder.movieRating.setRating(decreaseRating(movie.getMovieRating()));
+        viewHolder.movieRating.setRating(decreaseRating(movie.movieRating));
     }
 
     @Override
@@ -77,10 +79,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public TextView movieTitle;
-        public TextView movieGenre;
-        public ImageView moviePoster;
-        public RatingBar movieRating;
+        public final TextView movieTitle;
+        public final TextView movieGenre;
+        public final ImageView moviePoster;
+        public final RatingBar movieRating;
 
         public ViewHolder(View itemView) {
             super(itemView);

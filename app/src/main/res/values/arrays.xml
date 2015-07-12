@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="poster_id">
+    <string-array name="genre_id">
         <item>28</item>
         <item>12</item>
         <item>16</item>
@@ -23,7 +23,7 @@
         <item>37</item>
     </string-array>
 
-    <string-array name="poster_id_values">
+    <string-array name="genre_id_values">
         <item>Action</item>
         <item>Adventure</item>
         <item>Animation</item>
