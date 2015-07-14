@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,7 +45,6 @@ import retrofit.client.Response;
 public class MovieFragment extends Fragment {
 
     private LinearLayout mLinearLayout;
-    private FragmentActivity mActivity;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MovieAdapter mAdapter;
@@ -64,7 +62,6 @@ public class MovieFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mActivity = (FragmentActivity) activity;
         setRetainInstance(true);
     }
 
@@ -176,14 +173,14 @@ public class MovieFragment extends Fragment {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(mActivity,
+                            makeSceneTransitionAnimation(getActivity(),
                                     v.findViewById(R.id.movie_poster), "poster");
-                    mActivity.startActivity(intent, options.toBundle());
+                    getActivity().startActivity(intent, options.toBundle());
                 } else {
                     getActivity().startActivity(intent);
                 }
             } else {
-                Toast.makeText(getActivity(), mActivity.getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
             }
         }
     };
