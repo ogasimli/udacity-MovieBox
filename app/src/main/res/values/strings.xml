@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name" translatable="false">Movie Box</string>
-    <string name="sort_text">SORT BY:</string>
     <string name="sort_by_popularity">Popularity</string>
     <string name="sort_by_rating">Rating</string>
     <string name="sort_by_revenue">Revenue</string>
@@ -21,4 +20,5 @@
     <string name="movies_already_loaded_message">Movies are already loaded!</string>
     <string name="unable_to_fetch_data_message">Can\'t get movies</string>
     <string name="error_image_description">Error image</string>
+    <string name="menu_sort">Sort</string>
 </resources>

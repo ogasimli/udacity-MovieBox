@@ -88,10 +88,6 @@ public class MovieFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_moviefragment, menu);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            menu.findItem(R.id.sort_by).setVisible(false);
-        }
-
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
