@@ -17,7 +17,6 @@
     <string name="fab_message">This button will save the movie to your favorite list</string>
     <string name="no_result">Ooops! No movie to show.</string>
     <string name="refine_search">Swipe down to try again</string>
-    <string name="movies_already_loaded_message">Movies are already loaded!</string>
     <string name="unable_to_fetch_data_message">Can\'t get movies</string>
     <string name="error_image_description">Error image</string>
     <string name="menu_sort">Sort</string>
