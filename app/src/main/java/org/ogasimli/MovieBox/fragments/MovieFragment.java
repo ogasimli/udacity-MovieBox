@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +48,7 @@ public class MovieFragment extends Fragment {
 
     private LinearLayout mLinearLayout;
     private RecyclerView mRecyclerView;
+    private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MovieAdapter mAdapter;
     private ArrayList<MovieList.Movie> movieList;
@@ -129,6 +132,7 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
         mLinearLayout = (LinearLayout) rootView.findViewById(R.id.error_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
@@ -184,6 +188,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initToolbar();
         mRecyclerView.setHasFixedSize(true);
 
         //set GridLayoutManagers grid number based on the orientation of device
@@ -249,5 +254,10 @@ public class MovieFragment extends Fragment {
         mLinearLayout.setVisibility(View.GONE);
         mSwipeRefreshLayout.setRefreshing(false);
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void initToolbar() {
+        mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 }
