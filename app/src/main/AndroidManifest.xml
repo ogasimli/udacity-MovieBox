@@ -22,8 +22,7 @@
         <activity
             android:name="org.ogasimli.MovieBox.DetailActivity"
             android:label=""
-            android:parentActivityName="org.ogasimli.MovieBox.MainActivity"
-            android:theme="@style/DetailTheme">
+            android:parentActivityName="org.ogasimli.MovieBox.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.ogasimli.MovieBox.MainActivity" />

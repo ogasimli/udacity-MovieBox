@@ -94,7 +94,11 @@ public class MovieFragment extends Fragment {
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
+        if (menuItem!=null){
         menuItem.setChecked(true);
+        }else {
+            menu.findItem(R.id.action_popularity).setChecked(true);
+        }
     }
 
     @Override
@@ -188,7 +192,10 @@ public class MovieFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //Initialize Toolbar
         initToolbar();
+
         mRecyclerView.setHasFixedSize(true);
 
         //set GridLayoutManagers grid number based on the orientation of device

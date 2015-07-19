@@ -9,17 +9,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- DetailsActivity theme. -->
-    <style name="DetailTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowActionBarOverlay">true</item>
-        <item name="actionBarStyle">@style/TransparentActionBar</item>
-    </style>
-
-    <!-- ActionBar style -->
-    <style name="TransparentActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="background">@android:color/transparent</item>
-    </style>
-
     <!-- Small text style -->
     <style name="SmallText" parent="@style/Base.TextAppearance.AppCompat.Body1">
         <item name="android:layout_width">wrap_content</item>
