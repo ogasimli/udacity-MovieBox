@@ -247,6 +247,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void showLoadingView() {
+        mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.post(new Runnable() {
             @Override
             public void run() {
