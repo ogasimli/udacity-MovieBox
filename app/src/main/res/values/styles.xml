@@ -9,6 +9,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- Theme for Details Activity. -->
+    <style name="DetailsTheme" parent="AppTheme"/>
+
     <!-- Small text style -->
     <style name="SmallText" parent="@style/Base.TextAppearance.AppCompat.Body1">
         <item name="android:layout_width">wrap_content</item>
