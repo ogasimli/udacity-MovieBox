@@ -147,7 +147,7 @@ public class MovieList {
         }
 
         public String getBackdropPosterUrl() {
-            return POSTER_BASE_URL + "w500" + backdropPath;
+            return POSTER_BASE_URL + "w780" + backdropPath;
         }
     }
 }
