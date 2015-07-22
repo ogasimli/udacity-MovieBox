@@ -57,8 +57,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         MovieList.Movie movie = movieList.get(i);
+
         viewHolder.movieTitle.setText(movie.movieTitle);
-        viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
+
+        if (movie.genreIds.size() != 0){
+            viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
+        }else {
+            viewHolder.movieGenre.setText(R.string.unknown_genre_text);
+        }
 
         Glide.with(viewHolder.moviePoster.getContext()).
                 load(movie.getPosterUrl()).

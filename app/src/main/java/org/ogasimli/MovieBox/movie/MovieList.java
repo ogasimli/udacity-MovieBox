@@ -43,7 +43,7 @@ public class MovieList {
         @SerializedName("vote_average")
         public double movieRating;
 
-        private String movieGenre;
+        public String movieGenre;
 
         public Movie() {
         }
@@ -85,20 +85,12 @@ public class MovieList {
             }
         };
 
-        public String getMovieGenre() {
-            return movieGenre;
-        }
-
-        public void setMovieGenre(String movieGenre) {
-            this.movieGenre = movieGenre;
-        }
-
         public String getMovieGenre(List<String> genreIds) {
             String firstGenre;
             String secondGenre;
             String thirdGenre;
             String resultGenre = null;
-            if (genreIds.size() > 3) {
+            if (genreIds.size() > 2) {
                 firstGenre = determineGenre(genreIds.get(0));
                 secondGenre = determineGenre(genreIds.get(1));
                 thirdGenre = determineGenre(genreIds.get(2));
@@ -112,7 +104,7 @@ public class MovieList {
                 resultGenre = firstGenre;
             }
 
-            setMovieGenre(resultGenre);
+            this.movieGenre = resultGenre;
             return resultGenre;
         }
 

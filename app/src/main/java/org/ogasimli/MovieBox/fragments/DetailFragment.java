@@ -81,9 +81,19 @@ public class DetailFragment extends Fragment {
 
 
         detailMovieTitle.setText(mMovie.movieTitle);
-        detailMovieGenre.setText(mMovie.getMovieGenre());
+        if (mMovie.movieGenre != null){
+            detailMovieGenre.setText(mMovie.movieGenre);
+        }else {
+            detailMovieGenre.setText("Unknown");
+        }
         detailMovieRelease.setText(mMovie.movieReleaseDate);
-        String rating = String.format(rootView.getResources().getString(R.string.detail_rating), String.valueOf(mMovie.movieRating));
+
+        String rating;
+        if (mMovie.movieRating == 10.0){
+            rating = String.format(rootView.getResources().getString(R.string.detail_rating), "10");
+        }else {
+            rating = String.format(rootView.getResources().getString(R.string.detail_rating), String.valueOf(mMovie.movieRating));
+        }
         detailMovieRating.setText(rating);
         detailRatingBar.setRating((float) mMovie.movieRating);
         context = detailPosterImage.getContext();
@@ -98,7 +108,11 @@ public class DetailFragment extends Fragment {
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailBackdropImage);
+        if (mMovie.movieOverview != null){
         detailMovieOverview.setText(mMovie.movieOverview);
+        }else {
+            detailMovieOverview.setText(R.string.no_overview);
+        }
 
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
         fab.startAnimation(animation);
