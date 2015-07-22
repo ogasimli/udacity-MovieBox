@@ -194,7 +194,7 @@
         android:src="@drawable/fab_icons"
         app:backgroundTint="@color/accent_color"
         app:borderWidth="0dp"
-        app:layout_anchor="@id/app_bar"
+        app:layout_anchor="@id/collapsing_toolbar_layout"
         app:layout_anchorGravity="bottom|right"
         app:rippleColor="@color/white" />
 </android.support.design.widget.CoordinatorLayout>
