@@ -44,8 +44,7 @@
                 android:src="@drawable/sad_face"
                 android:background="@android:color/transparent"
                 app:layout_collapseParallaxMultiplier="0.7"
-                android:visibility="gone"
-                android:onClick="displayTrailers"/>
+                android:visibility="gone"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"

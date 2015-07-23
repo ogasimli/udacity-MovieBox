@@ -51,16 +51,13 @@ public class MovieFragment extends Fragment {
     private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MovieAdapter mAdapter;
-    private ArrayList<MovieList.Movie> movieList;
+    private ArrayList<MovieList.Movie> mMovieList;
     private static final String LIST_STATE_KEY = "list_state";
     private static final String MENU_CHECKED_STATE = "checked";
     private static final String MENU_SORT_ORDER = "sort_order";
     private static final String VIEW_STATE_KEY = "view_state";
     private final static int VIEW_STATE_ERROR = 0;
     private final static int VIEW_STATE_RESULTS = 1;
-
-/*    public MovieFragment() {
-    }*/
 
     @Override
     public void onAttach(Activity activity) {
@@ -84,7 +81,7 @@ public class MovieFragment extends Fragment {
         }
 
         outState.putInt(VIEW_STATE_KEY, state);
-        outState.putParcelableArrayList(LIST_STATE_KEY, movieList);
+        outState.putParcelableArrayList(LIST_STATE_KEY, mMovieList);
     }
 
     @Override
@@ -154,8 +151,8 @@ public class MovieFragment extends Fragment {
                     showErrorView();
                     break;
                 case VIEW_STATE_RESULTS:
-                    movieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
-                    mAdapter.setMovieList(movieList);
+                    mMovieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
+                    mAdapter.setMovieList(mMovieList);
                     mRecyclerView.setAdapter(mAdapter);
                     showResultView();
                     break;
@@ -168,9 +165,9 @@ public class MovieFragment extends Fragment {
     private final MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
-            movieList = mAdapter.getMovieList();
-            if (movieList != null) {
-                MovieList.Movie passedMovie = movieList.get(position);
+            mMovieList = mAdapter.getMovieList();
+            if (mMovieList != null) {
+                MovieList.Movie passedMovie = mMovieList.get(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra(MainActivity.PACKAGE_NAME, passedMovie);
 
@@ -225,8 +222,8 @@ public class MovieFragment extends Fragment {
         service.getMovie(sortOrder, new Callback<MovieList>() {
             @Override
             public void success(MovieList movies, Response response) {
-                movieList = movies.results;
-                mAdapter.setMovieList(movieList);
+                mMovieList = movies.results;
+                mAdapter.setMovieList(mMovieList);
                 mRecyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 showResultView();

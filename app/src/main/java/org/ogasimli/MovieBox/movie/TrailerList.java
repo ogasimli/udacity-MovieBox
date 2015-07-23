@@ -57,5 +57,12 @@ public class TrailerList {
                 return new Trailer[size];
             }
         };
+
+        /**
+         * Helper method to build youtube link.
+         */
+        public String getYoutubeLink() {
+            return "https://www.youtube.com/watch?v=" + this.key;
+        }
     }
 }
