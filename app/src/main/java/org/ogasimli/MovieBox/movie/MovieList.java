@@ -59,10 +59,6 @@ public class MovieList {
             movieRating = in.readDouble();
         }
 
-        public int describeContents() {
-            return 0;
-        }
-
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(movieTitle);
@@ -75,7 +71,11 @@ public class MovieList {
             dest.writeDouble(movieRating);
         }
 
-        public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<Movie> CREATOR = new Creator<Movie>() {
             public Movie createFromParcel(Parcel in) {
                 return new Movie(in);
             }
