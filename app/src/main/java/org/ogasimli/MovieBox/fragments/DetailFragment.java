@@ -1,13 +1,9 @@
 package org.ogasimli.MovieBox.fragments;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -54,17 +50,21 @@ import retrofit.client.Response;
 public class DetailFragment extends Fragment {
 
     private Context mContext;
-    private Toolbar mToolbar;
     private MovieList.Movie mMovie;
     CollapsingToolbarLayout mCollapsingToolbarLayout;
-    ImageButton trailerImageButton;
+    private ImageButton mTrailerImageButton;
+    private LinearLayout mReviewListView;
+    private TextView mNoReviewTextView;
     private ArrayList<TrailerList.Trailer> mTrailerList;
     private ArrayList<ReviewList.Review> mReviewList;
     private static final String TRAILER_STATE_KEY = "trailer_state";
     private static final String REVIEW_STATE_KEY = "review_state";
-    private static final String IMAGE_BUTTON_VIEW_STATE_KEY = "view_state";
-    private static final int IMAGE_BUTTON_VIEW_STATE_VISIBLE = 0;
-    private static final int IMAGE_BUTTON_VIEW_STATE_GONE = 1;
+    private static final String TRAILER_VIEW_STATE_KEY = "trailer_view_state";
+    private static final int TRAILER_VIEW_STATE_SUCCESS = 0;
+    private static final int TRAILER_VIEW_STATE_FAILURE = 1;
+    private static final String REVIEW_VIEW_STATE_KEY = "review_view_state";
+    private static final int REVIEW_VIEW_STATE_SUCCESS = 0;
+    private static final int REVIEW_VIEW_STATE_FAILURE = 1;
 
     public static DetailFragment getInstance(MovieList.Movie movie) {
         DetailFragment fragment = new DetailFragment();
@@ -78,12 +78,18 @@ public class DetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        int state = IMAGE_BUTTON_VIEW_STATE_GONE;
-        if (trailerImageButton.getVisibility() == View.VISIBLE) {
-            state = IMAGE_BUTTON_VIEW_STATE_VISIBLE;
+        int trailerState = TRAILER_VIEW_STATE_FAILURE;
+        if (mTrailerImageButton.getVisibility() == View.VISIBLE) {
+            trailerState = TRAILER_VIEW_STATE_SUCCESS;
         }
 
-        outState.putInt(IMAGE_BUTTON_VIEW_STATE_KEY, state);
+        int reviewState = REVIEW_VIEW_STATE_FAILURE;
+        if (mReviewListView.getVisibility() == View.VISIBLE) {
+            reviewState = REVIEW_VIEW_STATE_SUCCESS;
+        }
+
+        outState.putInt(TRAILER_VIEW_STATE_KEY, trailerState);
+        outState.putInt(REVIEW_VIEW_STATE_KEY, reviewState);
         outState.putParcelableArrayList(TRAILER_STATE_KEY, mTrailerList);
         outState.putParcelableArrayList(REVIEW_STATE_KEY, mReviewList);
     }
@@ -110,8 +116,11 @@ public class DetailFragment extends Fragment {
         TextView detailMovieRating = (TextView) rootView.findViewById(R.id.detail_rating_text);
         RatingBar detailRatingBar = (RatingBar) rootView.findViewById(R.id.detail_rating_bar);
         TextView detailMovieOverview = (TextView) rootView.findViewById(R.id.detail_overview_text);
-        trailerImageButton = (ImageButton) rootView.findViewById(R.id.play_image);
-        final CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinator_layout);
+        mTrailerImageButton = (ImageButton) rootView.findViewById(R.id.play_image);
+        mReviewListView = (LinearLayout) rootView.findViewById(R.id.list_view_review);
+        mNoReviewTextView = (TextView) rootView.findViewById(R.id.detail_review_text);
+        final CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout)
+                rootView.findViewById(R.id.coordinator_layout);
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         //Change the color of ratingBar
@@ -125,18 +134,30 @@ public class DetailFragment extends Fragment {
                 !savedInstanceState.containsKey(REVIEW_STATE_KEY)) {
             loadTrailerAndResponse();
         } else {
-        int state = savedInstanceState.getInt(IMAGE_BUTTON_VIEW_STATE_KEY, IMAGE_BUTTON_VIEW_STATE_GONE);
-        switch (state) {
-            case IMAGE_BUTTON_VIEW_STATE_GONE:
-                trailerImageButton.setVisibility(View.GONE);
-                break;
-            case IMAGE_BUTTON_VIEW_STATE_VISIBLE:
-                mTrailerList = savedInstanceState.getParcelableArrayList(TRAILER_STATE_KEY);
-                mReviewList = savedInstanceState.getParcelableArrayList(REVIEW_STATE_KEY);
-                trailerImageButton.setVisibility(View.VISIBLE);
-                break;
+        int trailerState = savedInstanceState.getInt(TRAILER_VIEW_STATE_KEY,
+                TRAILER_VIEW_STATE_FAILURE);
+            switch (trailerState) {
+                case TRAILER_VIEW_STATE_FAILURE:
+                    mTrailerImageButton.setVisibility(View.GONE);
+                    break;
+                case TRAILER_VIEW_STATE_SUCCESS:
+                    mTrailerList = savedInstanceState.getParcelableArrayList(TRAILER_STATE_KEY);
+                    mTrailerImageButton.setVisibility(View.VISIBLE);
+                    break;
+            }
+            int reviewState = savedInstanceState.getInt(REVIEW_VIEW_STATE_KEY,
+                    REVIEW_VIEW_STATE_FAILURE);
+            switch (reviewState) {
+                case REVIEW_VIEW_STATE_FAILURE:
+                    mReviewListView.setVisibility(View.GONE);
+                    mNoReviewTextView.setVisibility(View.VISIBLE);
+                    break;
+                case TRAILER_VIEW_STATE_SUCCESS:
+                    mReviewList = savedInstanceState.getParcelableArrayList(REVIEW_STATE_KEY);
+                    addReviewsToList();
+                    break;
+            }
         }
-    }
 
         detailMovieTitle.setText(mMovie.movieTitle);
         if (mMovie.movieGenre != null){
@@ -189,7 +210,7 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        trailerImageButton.setOnClickListener(new View.OnClickListener() {
+        mTrailerImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog();
@@ -220,7 +241,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void initToolbar() {
-        mToolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
+        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 
@@ -233,9 +254,9 @@ public class DetailFragment extends Fragment {
             public void success(TrailerList trailerList, Response response) {
                 mTrailerList = trailerList.results;
                 if (mTrailerList.size() != 0){
-                    trailerImageButton.setVisibility(View.VISIBLE);
+                    mTrailerImageButton.setVisibility(View.VISIBLE);
                 }else {
-                    trailerImageButton.setVisibility(View.GONE);
+                    mTrailerImageButton.setVisibility(View.GONE);
                 }
             }
 
@@ -249,68 +270,52 @@ public class DetailFragment extends Fragment {
             @Override
             public void success(ReviewList reviewList, Response response) {
                 mReviewList = reviewList.results;
+                addReviewsToList();
+
             }
 
             @Override
             public void failure(RetrofitError error) {
-
                 Log.d("RetrofitError", error.toString());
             }
         });
     }
 
+    private void addReviewsToList(){
+        if (mReviewList != null && mReviewList.size() > 0) {
+            mReviewListView.removeAllViews();
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            for (ReviewList.Review review : mReviewList) {
+                View view = inflater.inflate(R.layout.review_list_item, mReviewListView, false);
+                ReviewViewHolder viewHolder = new ReviewViewHolder(view);
+                viewHolder.userName.setText(review.author);
+                viewHolder.reviewContent.setText(review.content);
+                mReviewListView.addView(view);
+            }
+            mReviewListView.setVisibility(View.VISIBLE);
+            mNoReviewTextView.setVisibility(View.GONE);
+        } else {
+            mReviewListView.setVisibility(View.GONE);
+            mNoReviewTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
     void showDialog() {
         FragmentManager fragmentManager = getFragmentManager();
-        android.support.v4.app.DialogFragment newFragment = TrailerDialog.getInstance(mTrailerList);
+        android.support.v4.app.DialogFragment newFragment = TrailerDialogFragment.getInstance(mTrailerList);
         newFragment.show(fragmentManager, "dialog");
     }
 
-    public static class TrailerDialog extends android.support.v4.app.DialogFragment {
+    class ReviewViewHolder {
 
-        private ArrayList<TrailerList.Trailer> mTrailerList;
-        private TrailerList.Trailer mTrailer;
+        public TextView userName;
+        public TextView reviewContent;
+        public ImageView userAvatar;
 
-        public static TrailerDialog getInstance(ArrayList<TrailerList.Trailer> trailers) {
-            TrailerDialog dialog = new TrailerDialog();
-            Bundle args = new Bundle();
-            args.putParcelableArrayList(MainActivity.PACKAGE_NAME, trailers);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mTrailerList = getArguments().getParcelableArrayList(MainActivity.PACKAGE_NAME);
-            if (mTrailerList == null) {
-                throw new NullPointerException("Trailer object should be put into dialog arguments.");
-            }
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            String[] trailerNames = new String[mTrailerList.size()];
-            for (int i = 0; i < mTrailerList.size(); i++) {
-                mTrailer = mTrailerList.get(i);
-                trailerNames[i] = mTrailer.name + " (" + mTrailer.size + "p)";
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Pick a trailer")
-                    .setItems(trailerNames, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            openTrailer(mTrailerList.get(which).getYoutubeLink());
-                        }
-                    });
-            return builder.create();
-        }
-
-        private void openTrailer(String url) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+        public ReviewViewHolder(View itemView) {
+            userName = (TextView) itemView.findViewById(R.id.user_name_text_view);
+            reviewContent = (TextView) itemView.findViewById(R.id.review_content_text_view);
+            userAvatar = (ImageView) itemView.findViewById(R.id.avatar_image);
         }
     }
-
 }

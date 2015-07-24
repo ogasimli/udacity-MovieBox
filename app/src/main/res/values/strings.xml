@@ -11,7 +11,7 @@
     <string name="poster_description">Posters of films</string>
     <string name="backdrop_poster_description">Backdrop posters of films</string>
     <string name="genre_icon_description">Movie genre</string>
-    <string name="overview">Overview</string>
+    <string name="overview_caption">Overview</string>
     <string name="movie_release_date_image_description">Movie release date</string>
     <string name="check_state" translatable="false">checked</string>
     <string name="fab_message">This button will save the movie to your favorite list</string>
@@ -22,4 +22,7 @@
     <string name="menu_sort">Sort</string>
     <string name="no_overview">No information available.</string>
     <string name="unknown_genre_text">Unknown</string>
+    <string name="no_review">No user review available.</string>
+    <string name="user_avatar_description">User avatar</string>
+    <string name="user_reviews_caption">User reviews</string>
 </resources>

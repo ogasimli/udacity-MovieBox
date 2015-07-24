@@ -48,9 +48,8 @@ public class MovieFragment extends Fragment {
 
     private LinearLayout mLinearLayout;
     private RecyclerView mRecyclerView;
-    private Toolbar mToolbar;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private MovieAdapter mAdapter;
+    private MovieAdapter mMovieAdapter;
     private ArrayList<MovieList.Movie> mMovieList;
     private static final String LIST_STATE_KEY = "list_state";
     private static final String MENU_CHECKED_STATE = "checked";
@@ -137,8 +136,8 @@ public class MovieFragment extends Fragment {
         mLinearLayout = (LinearLayout) rootView.findViewById(R.id.error_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mAdapter = new MovieAdapter();
-        mAdapter.setOnItemClickListener(itemClickListener);
+        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter.setOnItemClickListener(itemClickListener);
 
         //loadMovieData if savedInstanceState is null, load from already fetched data
         // if savedInstanceSate is not null
@@ -152,8 +151,8 @@ public class MovieFragment extends Fragment {
                     break;
                 case VIEW_STATE_RESULTS:
                     mMovieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
-                    mAdapter.setMovieList(mMovieList);
-                    mRecyclerView.setAdapter(mAdapter);
+                    mMovieAdapter.setMovieList(mMovieList);
+                    mRecyclerView.setAdapter(mMovieAdapter);
                     showResultView();
                     break;
             }
@@ -165,7 +164,7 @@ public class MovieFragment extends Fragment {
     private final MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
-            mMovieList = mAdapter.getMovieList();
+            mMovieList = mMovieAdapter.getMovieList();
             if (mMovieList != null) {
                 MovieList.Movie passedMovie = mMovieList.get(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
@@ -208,7 +207,9 @@ public class MovieFragment extends Fragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() { loadMovieData(); }
+            public void onRefresh() {
+                loadMovieData();
+            }
         });
     }
 
@@ -223,10 +224,14 @@ public class MovieFragment extends Fragment {
             @Override
             public void success(MovieList movies, Response response) {
                 mMovieList = movies.results;
-                mAdapter.setMovieList(mMovieList);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                showResultView();
+                if (mMovieList != null && mMovieList.size() > 0) {
+                    mMovieAdapter.setMovieList(mMovieList);
+                    mRecyclerView.setAdapter(mMovieAdapter);
+                    mMovieAdapter.notifyDataSetChanged();
+                    showResultView();
+                } else {
+                    showErrorView();
+                }
             }
 
             @Override
@@ -262,7 +267,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void initToolbar() {
-        mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 }

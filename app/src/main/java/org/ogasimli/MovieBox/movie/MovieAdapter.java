@@ -23,18 +23,18 @@ import java.util.ArrayList;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    private ArrayList<MovieList.Movie> movieList;
+    private ArrayList<MovieList.Movie> mMovieList;
     private OnItemClickListener mItemClickListener;
 
     public MovieAdapter() {
     }
 
     public void setMovieList(ArrayList<MovieList.Movie> movieList) {
-        this.movieList = movieList;
+        this.mMovieList = movieList;
     }
 
     public ArrayList<MovieList.Movie> getMovieList() {
-        return movieList;
+        return mMovieList;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        MovieList.Movie movie = movieList.get(i);
+        MovieList.Movie movie = mMovieList.get(i);
 
         viewHolder.movieTitle.setText(movie.movieTitle);
 
@@ -77,8 +77,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (movieList == null) return 0;
-        return movieList.size();
+        return mMovieList == null ? 0 : mMovieList.size();
     }
 
     //Method to decrease movie ratings in order to be able to assign them into RatingBar

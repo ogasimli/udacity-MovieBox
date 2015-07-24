@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="8dp">
+
+    <ImageView
+        android:id="@+id/avatar_image"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/circle_user_background"
+        android:contentDescription="@string/user_avatar_description"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_user" />
+
+    <TextView
+        android:id="@+id/user_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/avatar_image"
+        android:layout_toEndOf="@id/avatar_image"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        tools:text="User Name"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/review_content_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_name_text_view"
+        android:layout_toRightOf="@id/avatar_image"
+        android:layout_toEndOf="@id/avatar_image"
+        tools:text="User review about the movie"/>
+
+</RelativeLayout>
