@@ -28,6 +28,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.ogasimli.MovieBox.MainActivity" />
         </activity>
+        <provider
+            android:name=".provigen.MovieContentProvider"
+            android:authorities="org.ogasimli.MovieBox" >
+        </provider>
     </application>
 
 </manifest>
