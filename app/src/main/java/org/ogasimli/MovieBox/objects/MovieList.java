@@ -1,4 +1,4 @@
-package org.ogasimli.MovieBox.movie;
+package org.ogasimli.MovieBox.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -23,7 +23,7 @@ public class MovieList {
         public String movieTitle;
 
         @SerializedName("genre_ids")
-        public List<String> genreIds = new ArrayList<>();
+        public final List<String> genreIds = new ArrayList<>();
 
         @SerializedName("poster_path")
         public String posterPath;
@@ -95,11 +95,11 @@ public class MovieList {
                 secondGenre = determineGenre(genreIds.get(1));
                 thirdGenre = determineGenre(genreIds.get(2));
                 resultGenre = firstGenre + ", " + secondGenre + ", " + thirdGenre;
-            }else if (genreIds.size() == 2){
+            } else if (genreIds.size() == 2) {
                 firstGenre = determineGenre(genreIds.get(0));
                 secondGenre = determineGenre(genreIds.get(1));
                 resultGenre = firstGenre + ", " + secondGenre;
-            }else if (genreIds.size() == 1){
+            } else if (genreIds.size() == 1) {
                 firstGenre = determineGenre(genreIds.get(0));
                 resultGenre = firstGenre;
             }

@@ -1,4 +1,4 @@
-package org.ogasimli.MovieBox.movie;
+package org.ogasimli.MovieBox.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;

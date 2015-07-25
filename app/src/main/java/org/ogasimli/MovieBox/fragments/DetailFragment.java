@@ -1,9 +1,14 @@
 package org.ogasimli.MovieBox.fragments;
 
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,6 +16,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,13 +38,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.ogasimli.MovieBox.MainActivity;
 import org.ogasimli.MovieBox.R;
-import org.ogasimli.MovieBox.movie.MovieList;
-import org.ogasimli.MovieBox.movie.ReviewList;
-import org.ogasimli.MovieBox.movie.TrailerList;
+import org.ogasimli.MovieBox.asynctasks.MovieStore;
+import org.ogasimli.MovieBox.asynctasks.ReviewLoader;
+import org.ogasimli.MovieBox.asynctasks.TrailerAndReviewStore;
+import org.ogasimli.MovieBox.asynctasks.TrailerLoader;
+import org.ogasimli.MovieBox.objects.MovieList;
+import org.ogasimli.MovieBox.objects.ReviewList;
+import org.ogasimli.MovieBox.objects.TrailerList;
+import org.ogasimli.MovieBox.provigen.ReviewContract;
+import org.ogasimli.MovieBox.provigen.TrailerContract;
 import org.ogasimli.MovieBox.retrofit.RetrofitAdapter;
 import org.ogasimli.MovieBox.retrofit.TmdbService;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -47,24 +62,49 @@ import retrofit.client.Response;
  * Fragment containing movie details
  * Created by ogasimli on 11.07.2015.
  */
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList> {
 
-    private Context mContext;
     private MovieList.Movie mMovie;
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
     private ImageButton mTrailerImageButton;
+
+    private FloatingActionButton fab;
+
     private LinearLayout mReviewListView;
+
     private TextView mNoReviewTextView;
+
     private ArrayList<TrailerList.Trailer> mTrailerList;
+
     private ArrayList<ReviewList.Review> mReviewList;
+
+    private static final String FAVORITE_STATE = "favorite_state";
+
     private static final String TRAILER_STATE_KEY = "trailer_state";
+
     private static final String REVIEW_STATE_KEY = "review_state";
+
     private static final String TRAILER_VIEW_STATE_KEY = "trailer_view_state";
+
     private static final int TRAILER_VIEW_STATE_SUCCESS = 0;
+
     private static final int TRAILER_VIEW_STATE_FAILURE = 1;
+
     private static final String REVIEW_VIEW_STATE_KEY = "review_view_state";
+
     private static final int REVIEW_VIEW_STATE_SUCCESS = 0;
+
     private static final int REVIEW_VIEW_STATE_FAILURE = 1;
+
+    private final static int TRAILER_LOADER_ID = 0;
+
+    private final static int REVIEW_LOADER_ID = 1;
+
+    private boolean isFavorite = false;
+
+    private boolean isConnected = true;
+
+//    private DetailsActionListener mActionListener;
 
     public static DetailFragment getInstance(MovieList.Movie movie) {
         DetailFragment fragment = new DetailFragment();
@@ -72,6 +112,14 @@ public class DetailFragment extends Fragment {
         args.putParcelable(MainActivity.PACKAGE_NAME, movie);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+/*        if (activity instanceof DetailsActionListener) {
+            mActionListener = (DetailsActionListener) activity;
+        }*/
     }
 
     @Override
@@ -90,6 +138,7 @@ public class DetailFragment extends Fragment {
 
         outState.putInt(TRAILER_VIEW_STATE_KEY, trailerState);
         outState.putInt(REVIEW_VIEW_STATE_KEY, reviewState);
+        outState.putBoolean(FAVORITE_STATE, isFavorite);
         outState.putParcelableArrayList(TRAILER_STATE_KEY, mTrailerList);
         outState.putParcelableArrayList(REVIEW_STATE_KEY, mReviewList);
     }
@@ -121,7 +170,7 @@ public class DetailFragment extends Fragment {
         mNoReviewTextView = (TextView) rootView.findViewById(R.id.detail_review_text);
         final CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout)
                 rootView.findViewById(R.id.coordinator_layout);
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         //Change the color of ratingBar
         LayerDrawable stars = (LayerDrawable) detailRatingBar.getProgressDrawable();
@@ -130,12 +179,18 @@ public class DetailFragment extends Fragment {
         stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color),
                 PorterDuff.Mode.SRC_ATOP);
 
-        if (savedInstanceState == null || !savedInstanceState.containsKey(TRAILER_STATE_KEY) ||
-                !savedInstanceState.containsKey(REVIEW_STATE_KEY)) {
-            loadTrailerAndResponse();
+        if (savedInstanceState == null) {
+            ifMovieIsFavorite();
+            ifDeviceIsConnected();
+            if (isFavorite && !isConnected) {
+                getActivity().getSupportLoaderManager().restartLoader(TRAILER_LOADER_ID, null, this);
+                getActivity().getSupportLoaderManager().restartLoader(REVIEW_LOADER_ID, null, this);
+            } else {
+                loadTrailerAndResponse();
+            }
         } else {
-        int trailerState = savedInstanceState.getInt(TRAILER_VIEW_STATE_KEY,
-                TRAILER_VIEW_STATE_FAILURE);
+            int trailerState = savedInstanceState.
+                    getInt(TRAILER_VIEW_STATE_KEY, TRAILER_VIEW_STATE_FAILURE);
             switch (trailerState) {
                 case TRAILER_VIEW_STATE_FAILURE:
                     mTrailerImageButton.setVisibility(View.GONE);
@@ -157,25 +212,28 @@ public class DetailFragment extends Fragment {
                     addReviewsToList();
                     break;
             }
+            isFavorite = savedInstanceState.getBoolean(FAVORITE_STATE, false);
         }
 
+        setFavorite(isFavorite);
+
         detailMovieTitle.setText(mMovie.movieTitle);
-        if (mMovie.movieGenre != null){
+        if (mMovie.movieGenre != null) {
             detailMovieGenre.setText(mMovie.movieGenre);
-        }else {
+        } else {
             detailMovieGenre.setText("Unknown");
         }
         detailMovieRelease.setText(mMovie.movieReleaseDate);
 
         String rating;
-        if (mMovie.movieRating == 10.0){
+        if (mMovie.movieRating == 10.0) {
             rating = String.format(rootView.getResources().getString(R.string.detail_rating), "10");
-        }else {
+        } else {
             rating = String.format(rootView.getResources().getString(R.string.detail_rating), String.valueOf(mMovie.movieRating));
         }
         detailMovieRating.setText(rating);
         detailRatingBar.setRating((float) mMovie.movieRating);
-        mContext = detailPosterImage.getContext();
+        Context mContext = detailPosterImage.getContext();
         Glide.with(mContext).
                 load(mMovie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
@@ -184,12 +242,11 @@ public class DetailFragment extends Fragment {
         mContext = detailBackdropImage.getContext();
         Glide.with(mContext).
                 load(mMovie.getBackdropPosterUrl()).
-                placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailBackdropImage);
-        if (mMovie.movieOverview != null){
-        detailMovieOverview.setText(mMovie.movieOverview);
-        }else {
+        if (mMovie.movieOverview != null) {
+            detailMovieOverview.setText(mMovie.movieOverview);
+        } else {
             detailMovieOverview.setText(R.string.no_overview);
         }
 
@@ -198,12 +255,16 @@ public class DetailFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(mCoordinatorLayout, mContext.getString(R.string.fab_message),
-                        Snackbar.LENGTH_SHORT)
-                        .setAction("Undo", new View.OnClickListener() {
+                favoriteMovie();
+                String message = (isFavorite)
+                        ? getString(R.string.added_to_favorites_snackbar)
+                        : getString(R.string.removed_from_favorites_snackbar);
+                Snackbar.
+                        make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo_message_snackbar, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                favoriteMovie();
                             }
                         })
                         .show();
@@ -213,26 +274,52 @@ public class DetailFragment extends Fragment {
         mTrailerImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                if (mTrailerList != null && mTrailerList.size() > 0) {
+                    showDialog();
+                }
             }
         });
 
         return rootView;
     }
 
+    /*Method to check if device has a network connection*/
+    private void ifDeviceIsConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+    /*Method to determine if movie is in favorites list*/
+    private void ifMovieIsFavorite() {
+        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String favoritesString = prefs.getString("favorites", "");
+        StringTokenizer stringTokenizer = new StringTokenizer(favoritesString, ",");
+        ArrayList<String> list = new ArrayList<>();
+        while (stringTokenizer.hasMoreTokens()) {
+            list.add(stringTokenizer.nextToken());
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(mMovie.movieId)) {
+                isFavorite = true;
+                break;
+            }
+        }
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        //Initialize Toolbar
         initToolbar();
-
-        //Initialize CollapsingToolbarLayout
         initCollapsingToolbar();
     }
 
+    /*Initialize CollapsingToolbarLayout*/
     private void initCollapsingToolbar() {
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) getActivity().
+        CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) getActivity().
                 findViewById(R.id.collapsing_toolbar_layout);
         mCollapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         mCollapsingToolbarLayout.setTitle(mMovie.movieTitle);
@@ -240,6 +327,7 @@ public class DetailFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /*Initialize Toolbar*/
     private void initToolbar() {
         Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
@@ -253,15 +341,16 @@ public class DetailFragment extends Fragment {
             @Override
             public void success(TrailerList trailerList, Response response) {
                 mTrailerList = trailerList.results;
-                if (mTrailerList.size() != 0){
+                if (mTrailerList != null && mTrailerList.size() > 0) {
                     mTrailerImageButton.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mTrailerImageButton.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
+                mTrailerImageButton.setVisibility(View.GONE);
                 Log.d("RetrofitError", error.toString());
             }
         });
@@ -271,17 +360,19 @@ public class DetailFragment extends Fragment {
             public void success(ReviewList reviewList, Response response) {
                 mReviewList = reviewList.results;
                 addReviewsToList();
-
             }
 
             @Override
             public void failure(RetrofitError error) {
+                mReviewListView.setVisibility(View.GONE);
+                mNoReviewTextView.setVisibility(View.VISIBLE);
                 Log.d("RetrofitError", error.toString());
             }
         });
     }
 
-    private void addReviewsToList(){
+    /*Add reviews to the list*/
+    private void addReviewsToList() {
         if (mReviewList != null && mReviewList.size() > 0) {
             mReviewListView.removeAllViews();
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -300,17 +391,131 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    void showDialog() {
+    /**
+     * Add movie and its trailer and reviews to favorites list.
+     */
+    private void favoriteMovie() {
+        setFavorite(!isFavorite);
+        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String favoritesString = prefs.getString("favorites", "");
+        StringTokenizer stringTokenizer = new StringTokenizer(favoritesString, ",");
+        ArrayList<String> list = new ArrayList<>();
+        while (stringTokenizer.hasMoreTokens()) {
+            list.add(stringTokenizer.nextToken());
+        }
+        if (isFavorite) {
+            list.add(mMovie.movieId);
+            storeMovie();
+            storeTrailers();
+            storeReviews();
+        } else {
+            list.remove(mMovie.movieId);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String id : list) {
+            stringBuilder.append(id).append(",");
+        }
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("favorites", stringBuilder.toString());
+        editor.apply();
+/*        if (mActionListener != null) {
+            mActionListener.onFavoriteAction(mMovie.movieId);
+        }*/
+    }
+
+    private void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+        int resId;
+        if (isFavorite) {
+            resId = R.drawable.ic_favorite_added;
+        } else {
+            resId = R.drawable.ic_favorite;
+        }
+        if (getActivity() != null) {
+            fab.setImageDrawable(ContextCompat.getDrawable(getActivity(), resId));
+        }
+    }
+
+    /**
+     * Methods to store movie data
+     */
+    private void storeMovie() {
+        new MovieStore(getActivity()).execute(mMovie);
+    }
+
+    private void storeTrailers() {
+        if (mTrailerList.size() == 0) {
+            return;
+        }
+        ContentValues[] values = new ContentValues[mTrailerList.size()];
+        for (int i = 0; i < mTrailerList.size(); i++) {
+            TrailerList.Trailer trailer = mTrailerList.get(i);
+            ContentValues value = new ContentValues();
+            value.put(TrailerContract.MOVIE_ID, mMovie.movieId);
+            value.put(TrailerContract.KEY, trailer.key);
+            value.put(TrailerContract.NAME, trailer.name);
+            value.put(TrailerContract.SIZE, trailer.size);
+            values[i] = value;
+        }
+        new TrailerAndReviewStore(getActivity(),
+                TrailerContract.CONTENT_URI, mMovie.movieId)
+                .execute(values);
+    }
+
+    private void storeReviews() {
+        if (mReviewList.size() == 0) {
+            return;
+        }
+        ContentValues[] values = new ContentValues[mReviewList.size()];
+        for (int i = 0; i < mReviewList.size(); i++) {
+            ReviewList.Review review = mReviewList.get(i);
+            ContentValues value = new ContentValues();
+            value.put(ReviewContract.MOVIE_ID, mMovie.movieId);
+            value.put(ReviewContract.AUTHOR, review.author);
+            value.put(ReviewContract.CONTENT, review.content);
+            values[i] = value;
+        }
+        new TrailerAndReviewStore(getActivity(),
+                ReviewContract.CONTENT_URI, mMovie.movieId)
+                .execute(values);
+    }
+
+    private void showDialog() {
         FragmentManager fragmentManager = getFragmentManager();
         android.support.v4.app.DialogFragment newFragment = TrailerDialogFragment.getInstance(mTrailerList);
         newFragment.show(fragmentManager, "dialog");
     }
 
+    /*Callbacks to qery data from trailer and review tables*/
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        if (id == TRAILER_LOADER_ID) {
+            return new TrailerLoader(getActivity(), mMovie.movieId);
+        } else {
+            return new ReviewLoader(getActivity(), mMovie.movieId);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, ArrayList data) {
+        if (loader.getId() == TRAILER_LOADER_ID) {
+            mTrailerList = data;
+        } else {
+            mReviewList = data;
+            addReviewsToList();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+    }
+
+
     class ReviewViewHolder {
 
-        public TextView userName;
-        public TextView reviewContent;
-        public ImageView userAvatar;
+        public final TextView userName;
+        public final TextView reviewContent;
+        public final ImageView userAvatar;
 
         public ReviewViewHolder(View itemView) {
             userName = (TextView) itemView.findViewById(R.id.user_name_text_view);

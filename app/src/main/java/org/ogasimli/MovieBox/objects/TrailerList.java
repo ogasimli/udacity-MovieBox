@@ -1,4 +1,4 @@
-package org.ogasimli.MovieBox.movie;
+package org.ogasimli.MovieBox.objects;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -26,9 +26,10 @@ public class TrailerList {
         @SerializedName("size")
         public String size;
 
-        public Trailer (){}
+        public Trailer() {
+        }
 
-        private Trailer (Parcel in){
+        private Trailer(Parcel in) {
             key = in.readString();
             name = in.readString();
             size = in.readString();

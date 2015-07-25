@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import org.ogasimli.MovieBox.fragments.DetailFragment;
-import org.ogasimli.MovieBox.movie.MovieList;
+import org.ogasimli.MovieBox.objects.MovieList;
 
 
 public class DetailActivity extends AppCompatActivity {

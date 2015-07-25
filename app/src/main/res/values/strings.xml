@@ -14,7 +14,6 @@
     <string name="overview_caption">Overview</string>
     <string name="movie_release_date_image_description">Movie release date</string>
     <string name="check_state" translatable="false">checked</string>
-    <string name="fab_message">This button will save the movie to your favorite list</string>
     <string name="no_result">Ooops! No movie to show.</string>
     <string name="refine_search">Swipe down to try again</string>
     <string name="unable_to_fetch_data_message">Can\'t get movies</string>
@@ -25,4 +24,7 @@
     <string name="no_review">No user review available.</string>
     <string name="user_avatar_description">User avatar</string>
     <string name="user_reviews_caption">User reviews</string>
+    <string name="added_to_favorites_snackbar">Movie added to favorites</string>
+    <string name="removed_from_favorites_snackbar">Movie removed from favorites</string>
+    <string name="undo_message_snackbar">Undo</string>
 </resources>

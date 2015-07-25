@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
 import org.ogasimli.MovieBox.MainActivity;
-import org.ogasimli.MovieBox.movie.TrailerList;
+import org.ogasimli.MovieBox.objects.TrailerList;
 
 import java.util.ArrayList;
 

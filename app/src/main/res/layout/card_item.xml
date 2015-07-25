@@ -24,7 +24,8 @@
             android:layout_gravity="center"
             android:scaleType="centerCrop"
             android:contentDescription="@string/poster_description"
-            android:transitionName="@string/transition_label"/>
+            android:transitionName="@string/transition_label"
+            card_view:ignore="UnusedAttribute" />
 
         <TextView
             android:id="@+id/movie_title_text"

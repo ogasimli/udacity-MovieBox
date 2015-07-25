@@ -21,6 +21,9 @@ public interface TrailerContract extends ProviGenBaseContract {
     @Column(Column.Type.TEXT)
     String NAME = "name";
 
+    @Column(Column.Type.TEXT)
+    String SIZE = "size";
+
     @ContentUri
     Uri CONTENT_URI = Uri.parse(MovieContentProvider.AUTHORITY + "trailer");
 }

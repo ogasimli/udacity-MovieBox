@@ -1,8 +1,8 @@
 package org.ogasimli.MovieBox.retrofit;
 
-import org.ogasimli.MovieBox.movie.MovieList;
-import org.ogasimli.MovieBox.movie.ReviewList;
-import org.ogasimli.MovieBox.movie.TrailerList;
+import org.ogasimli.MovieBox.objects.MovieList;
+import org.ogasimli.MovieBox.objects.ReviewList;
+import org.ogasimli.MovieBox.objects.TrailerList;
 
 import retrofit.http.GET;
 import retrofit.http.Path;

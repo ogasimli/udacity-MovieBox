@@ -1,4 +1,4 @@
-package org.ogasimli.MovieBox.movie;
+package org.ogasimli.MovieBox.objects;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     private ArrayList<MovieList.Movie> mMovieList;
+
     private OnItemClickListener mItemClickListener;
 
     public MovieAdapter() {
@@ -60,9 +61,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         viewHolder.movieTitle.setText(movie.movieTitle);
 
-        if (movie.genreIds.size() != 0){
+        if (movie.genreIds.size() != 0) {
             viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
-        }else {
+        } else {
             viewHolder.movieGenre.setText(R.string.unknown_genre_text);
         }
 
@@ -82,11 +83,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     //Method to decrease movie ratings in order to be able to assign them into RatingBar
     // on card_item layout
-    private float decreaseRating (double rating){
-        return (float)Math.round((rating*5/10) * 100) / 100;
+    private float decreaseRating(double rating) {
+        return (float) Math.round((rating * 5 / 10) * 100) / 100;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView movieTitle;
         public final TextView movieGenre;
@@ -95,9 +96,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            movieTitle = (TextView)itemView.findViewById(R.id.movie_title_text);
+            movieTitle = (TextView) itemView.findViewById(R.id.movie_title_text);
             movieGenre = (TextView) itemView.findViewById(R.id.movie_genre_text);
-            moviePoster = (ImageView)itemView.findViewById(R.id.movie_poster);
+            moviePoster = (ImageView) itemView.findViewById(R.id.movie_poster);
             movieRating = (RatingBar) itemView.findViewById(R.id.rating_bar);
             itemView.setOnClickListener(this);
         }
@@ -105,7 +106,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         //Set OnItemClickListener to RecyclerView
         @Override
         public void onClick(View v) {
-            if (mItemClickListener !=null){
+            if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
@@ -115,7 +116,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onItemClick(View v, int position);
     }
 
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener){
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mItemClickListener = mItemClickListener;
     }
 }

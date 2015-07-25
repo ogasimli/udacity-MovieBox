@@ -27,8 +27,8 @@ import android.widget.Toast;
 import org.ogasimli.MovieBox.DetailActivity;
 import org.ogasimli.MovieBox.MainActivity;
 import org.ogasimli.MovieBox.R;
-import org.ogasimli.MovieBox.movie.MovieAdapter;
-import org.ogasimli.MovieBox.movie.MovieList;
+import org.ogasimli.MovieBox.objects.MovieAdapter;
+import org.ogasimli.MovieBox.objects.MovieList;
 import org.ogasimli.MovieBox.retrofit.RetrofitAdapter;
 import org.ogasimli.MovieBox.retrofit.TmdbService;
 
@@ -47,15 +47,25 @@ import retrofit.client.Response;
 public class MovieFragment extends Fragment {
 
     private LinearLayout mLinearLayout;
+
     private RecyclerView mRecyclerView;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
     private MovieAdapter mMovieAdapter;
+
     private ArrayList<MovieList.Movie> mMovieList;
+
     private static final String LIST_STATE_KEY = "list_state";
+
     private static final String MENU_CHECKED_STATE = "checked";
+
     private static final String MENU_SORT_ORDER = "sort_order";
+
     private static final String VIEW_STATE_KEY = "view_state";
+
     private final static int VIEW_STATE_ERROR = 0;
+
     private final static int VIEW_STATE_RESULTS = 1;
 
     @Override
@@ -90,9 +100,9 @@ public class MovieFragment extends Fragment {
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
-        if (menuItem!=null){
-        menuItem.setChecked(true);
-        }else {
+        if (menuItem != null) {
+            menuItem.setChecked(true);
+        } else {
             menu.findItem(R.id.action_popularity).setChecked(true);
         }
     }

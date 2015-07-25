@@ -10,7 +10,7 @@ import com.tjeannin.provigen.annotation.ContentUri;
  * Movies table contract
  * Created by ogasimli on 24.07.2015.
  */
-public interface MovieContract extends ProviGenBaseContract{
+public interface MovieContract extends ProviGenBaseContract {
 
     @Column(Column.Type.TEXT)
     String TITLE = "title";
