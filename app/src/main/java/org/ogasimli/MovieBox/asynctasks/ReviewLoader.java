@@ -29,7 +29,7 @@ public class ReviewLoader extends AsyncTaskLoader<ArrayList<ReviewList.Review>> 
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        if (mReviewList != null) {
+        if (mReviewList != null && mReviewList.size() > 0) {
             deliverResult(mReviewList);
         } else {
             forceLoad();

@@ -61,10 +61,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         viewHolder.movieTitle.setText(movie.movieTitle);
 
-        if (movie.genreIds.size() != 0) {
-            viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
+        if (movie.movieGenre != null) {
+            viewHolder.movieGenre.setText(movie.movieGenre);
         } else {
-            viewHolder.movieGenre.setText(R.string.unknown_genre_text);
+            if (movie.genreIds.size() != 0) {
+                viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
+            } else {
+                viewHolder.movieGenre.setText(R.string.unknown_genre_text);
+            }
         }
 
         Glide.with(viewHolder.moviePoster.getContext()).

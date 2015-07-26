@@ -29,7 +29,7 @@ public class TrailerLoader extends AsyncTaskLoader<ArrayList<TrailerList.Trailer
     @Override
     protected void onStartLoading() {
         super.onStartLoading();
-        if (mTrailerList != null) {
+        if (mTrailerList != null && mTrailerList.size() > 0) {
             deliverResult(mTrailerList);
         } else {
             forceLoad();

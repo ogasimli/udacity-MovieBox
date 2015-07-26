@@ -1,15 +1,18 @@
 package org.ogasimli.MovieBox.fragments;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +26,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -51,6 +57,7 @@ import org.ogasimli.MovieBox.retrofit.RetrofitAdapter;
 import org.ogasimli.MovieBox.retrofit.TmdbService;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import retrofit.Callback;
@@ -73,6 +80,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private LinearLayout mReviewListView;
 
     private TextView mNoReviewTextView;
+
+    private MenuItem mShareButton;
 
     private ArrayList<TrailerList.Trailer> mTrailerList;
 
@@ -101,10 +110,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private final static int REVIEW_LOADER_ID = 1;
 
     private boolean isFavorite = false;
-
     private boolean isConnected = true;
-
-//    private DetailsActionListener mActionListener;
 
     public static DetailFragment getInstance(MovieList.Movie movie) {
         DetailFragment fragment = new DetailFragment();
@@ -112,14 +118,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         args.putParcelable(MainActivity.PACKAGE_NAME, movie);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-/*        if (activity instanceof DetailsActionListener) {
-            mActionListener = (DetailsActionListener) activity;
-        }*/
     }
 
     @Override
@@ -144,8 +142,31 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail_fragment, menu);
+
+        mShareButton = menu.findItem(R.id.menu_share);
+        mShareButton.setEnabled(mTrailerList != null && mTrailerList.size() > 0);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_share) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_trailer_text,
+                    mMovie.movieTitle, mTrailerList.get(0).getYoutubeLink()));
+            intent.setType("text/plain");
+            startActivity(Intent.createChooser(intent, getString(R.string.share_trailer_title)));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mMovie = getArguments().getParcelable(MainActivity.PACKAGE_NAME);
         if (mMovie == null) {
             throw new NullPointerException("Movie object should be put into fragment arguments.");
@@ -286,7 +307,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     /*Method to check if device has a network connection*/
     private void ifDeviceIsConnected() {
         ConnectivityManager cm =
-                (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
@@ -295,7 +316,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     /*Method to determine if movie is in favorites list*/
     private void ifMovieIsFavorite() {
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String favoritesString = prefs.getString("favorites", "");
         StringTokenizer stringTokenizer = new StringTokenizer(favoritesString, ",");
         ArrayList<String> list = new ArrayList<>();
@@ -343,14 +364,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 mTrailerList = trailerList.results;
                 if (mTrailerList != null && mTrailerList.size() > 0) {
                     mTrailerImageButton.setVisibility(View.VISIBLE);
+                    mShareButton.setEnabled(true);
                 } else {
                     mTrailerImageButton.setVisibility(View.GONE);
+                    mShareButton.setEnabled(false);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 mTrailerImageButton.setVisibility(View.GONE);
+                mShareButton.setEnabled(false);
                 Log.d("RetrofitError", error.toString());
             }
         });
@@ -372,15 +396,27 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     /*Add reviews to the list*/
+    @SuppressWarnings("deprecation")
     private void addReviewsToList() {
         if (mReviewList != null && mReviewList.size() > 0) {
             mReviewListView.removeAllViews();
             LayoutInflater inflater = LayoutInflater.from(getActivity());
+            Random random = new Random();
             for (ReviewList.Review review : mReviewList) {
                 View view = inflater.inflate(R.layout.review_list_item, mReviewListView, false);
                 ReviewViewHolder viewHolder = new ReviewViewHolder(view);
                 viewHolder.userName.setText(review.author);
                 viewHolder.reviewContent.setText(review.content);
+                int color = Color.argb(255, random.nextInt(256), random.nextInt(256),
+                        random.nextInt(256));
+                Drawable drawable = ContextCompat
+                        .getDrawable(getActivity(), R.drawable.circle_user_background);
+                drawable.setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    viewHolder.userAvatar.setBackgroundDrawable(drawable);
+                } else {
+                    viewHolder.userAvatar.setBackground(drawable);
+                }
                 mReviewListView.addView(view);
             }
             mReviewListView.setVisibility(View.VISIBLE);
@@ -396,7 +432,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
      */
     private void favoriteMovie() {
         setFavorite(!isFavorite);
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String favoritesString = prefs.getString("favorites", "");
         StringTokenizer stringTokenizer = new StringTokenizer(favoritesString, ",");
         ArrayList<String> list = new ArrayList<>();
@@ -418,9 +454,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("favorites", stringBuilder.toString());
         editor.apply();
-/*        if (mActionListener != null) {
-            mActionListener.onFavoriteAction(mMovie.movieId);
-        }*/
     }
 
     private void setFavorite(boolean favorite) {
@@ -487,6 +520,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     /*Callbacks to qery data from trailer and review tables*/
+    @SuppressWarnings("unchecked")
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
         if (id == TRAILER_LOADER_ID) {
@@ -496,6 +530,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onLoadFinished(Loader loader, ArrayList data) {
         if (loader.getId() == TRAILER_LOADER_ID) {

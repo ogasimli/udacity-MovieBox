@@ -35,16 +35,20 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:lines="1"
+            android:ellipsize="end"
             style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_gravity="center"
             android:textColor="@color/primary_text"/>
 
         <TextView
             android:id="@+id/movie_genre_text"
-            style="@style/SmallText"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="10dp"
+            android:lines="1"
+            android:ellipsize="end"
+            style="@style/SmallText" />
 
         <RatingBar
             android:id="@+id/rating_bar"

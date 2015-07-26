@@ -23,7 +23,7 @@ public class MovieList {
         public String movieTitle;
 
         @SerializedName("genre_ids")
-        public final List<String> genreIds = new ArrayList<>();
+        public final ArrayList<String> genreIds = new ArrayList<>();
 
         @SerializedName("poster_path")
         public String posterPath;

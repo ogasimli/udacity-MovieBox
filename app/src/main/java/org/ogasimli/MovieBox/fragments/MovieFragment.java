@@ -1,14 +1,17 @@
 package org.ogasimli.MovieBox.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,12 +30,15 @@ import android.widget.Toast;
 import org.ogasimli.MovieBox.DetailActivity;
 import org.ogasimli.MovieBox.MainActivity;
 import org.ogasimli.MovieBox.R;
+import org.ogasimli.MovieBox.asynctasks.MovieLoader;
 import org.ogasimli.MovieBox.objects.MovieAdapter;
 import org.ogasimli.MovieBox.objects.MovieList;
 import org.ogasimli.MovieBox.retrofit.RetrofitAdapter;
 import org.ogasimli.MovieBox.retrofit.TmdbService;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.StringTokenizer;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -44,9 +50,11 @@ import retrofit.client.Response;
  * A placeholder fragment containing list of movies.
  * Created by ogasimli on 01.07.2015.
  */
-public class MovieFragment extends Fragment {
+public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<MovieList.Movie>> {
 
-    private LinearLayout mLinearLayout;
+    private LinearLayout mErrorLinearLayout;
+
+    private LinearLayout mNoFavoritesLinearLayout;
 
     private RecyclerView mRecyclerView;
 
@@ -68,6 +76,12 @@ public class MovieFragment extends Fragment {
 
     private final static int VIEW_STATE_RESULTS = 1;
 
+    private final static int VIEW_STATE_NO_FAVORITES = 2;
+
+    private static final int MOVIE_LOADER_ID = 0;
+
+    private String mSortOrder;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -80,13 +94,25 @@ public class MovieFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    //TODO: replace this with actionlistener, this results in destroying the view while orientation change
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Reload favorites list
+        if (mSortOrder.equals(getString(R.string.sort_order_favorites))) {
+            loadFavoriteMovies();
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         int state = VIEW_STATE_RESULTS;
-        if (mLinearLayout.getVisibility() == View.VISIBLE) {
+        if (mErrorLinearLayout.getVisibility() == View.VISIBLE) {
             state = VIEW_STATE_ERROR;
+        } else if (mNoFavoritesLinearLayout.getVisibility() == View.VISIBLE) {
+            state = VIEW_STATE_NO_FAVORITES;
         }
 
         outState.putInt(VIEW_STATE_KEY, state);
@@ -95,9 +121,9 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_moviefragment, menu);
+        inflater.inflate(R.menu.menu_main_fragment, menu);
 
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
         MenuItem menuItem = menu.findItem(checked);
         if (menuItem != null) {
@@ -110,7 +136,8 @@ public class MovieFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        SharedPreferences.Editor prefs = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor prefs = PreferenceManager.
+                getDefaultSharedPreferences(getActivity()).edit();
 
         switch (item.getItemId()) {
             case R.id.action_popularity:
@@ -131,10 +158,16 @@ public class MovieFragment extends Fragment {
                 prefs.apply();
                 item.setChecked(!item.isChecked());
                 break;
+            case R.id.action_favorites:
+                prefs.putString(MENU_SORT_ORDER, getString(R.string.sort_order_favorites));
+                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
+                prefs.apply();
+                item.setChecked(!item.isChecked());
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
-        loadMovieData();
+        getData();
         return true;
     }
 
@@ -143,16 +176,18 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mLinearLayout = (LinearLayout) rootView.findViewById(R.id.error_view);
+        mErrorLinearLayout = (LinearLayout) rootView.findViewById(R.id.error_view);
+        mNoFavoritesLinearLayout = (LinearLayout) rootView.findViewById(R.id.no_favorites_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mMovieAdapter = new MovieAdapter();
         mMovieAdapter.setOnItemClickListener(itemClickListener);
+        mSortOrder = getSortOrder();
 
-        //loadMovieData if savedInstanceState is null, load from already fetched data
-        // if savedInstanceSate is not null
+        /*loadMovieData if savedInstanceState is null, load from already fetched data
+         if savedInstanceSate is not null*/
         if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)) {
-            loadMovieData();
+            getData();
         } else {
             int state = savedInstanceState.getInt(VIEW_STATE_KEY, VIEW_STATE_ERROR);
             switch (state) {
@@ -164,6 +199,9 @@ public class MovieFragment extends Fragment {
                     mMovieAdapter.setMovieList(mMovieList);
                     mRecyclerView.setAdapter(mMovieAdapter);
                     showResultView();
+                    break;
+                case VIEW_STATE_NO_FAVORITES:
+                    showNoFavoritesView();
                     break;
             }
         }
@@ -218,19 +256,34 @@ public class MovieFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadMovieData();
+                getData();
             }
         });
     }
 
-    private void loadMovieData() {
+    /*Method to get data from database or by using loadMovieData*/
+    private void getData() {
+//        android.os.Debug.waitForDebugger();
         showLoadingView();
+        mSortOrder = getSortOrder();
+        if (mSortOrder.equals(getString(R.string.sort_order_favorites))) {
+            loadFavoriteMovies();
+        } else {
+            getActivity().getSupportLoaderManager().destroyLoader(MOVIE_LOADER_ID);
+            loadMovieData();
+        }
+    }
+
+    /*Method to get favorite movies data from database*/
+    private void loadFavoriteMovies() {
+        getActivity().getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+    }
+
+    /*Method to load data from TMDB*/
+    private void loadMovieData() {
         RestAdapter adapter = RetrofitAdapter.getRestAdapter();
         TmdbService service = adapter.create(TmdbService.class);
-        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
-        String defaultValue = getResources().getString(R.string.sort_order_popularity);
-        String sortOrder = prefs.getString(MENU_SORT_ORDER, defaultValue);
-        service.getMovie(sortOrder, new Callback<MovieList>() {
+        service.getMovie(mSortOrder, new Callback<MovieList>() {
             @Override
             public void success(MovieList movies, Response response) {
                 mMovieList = movies.results;
@@ -252,12 +305,55 @@ public class MovieFragment extends Fragment {
         });
     }
 
-    private void showErrorView() {
-        mRecyclerView.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setRefreshing(false);
-        mLinearLayout.setVisibility(View.VISIBLE);
+    /*Method to get list of favorite movie ids*/
+    //TODO: force recyclerview to load movies in chronological order
+    private ArrayList<String> getFavoriteList() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String favoritesString = prefs.getString("favorites", "");
+        ArrayList<String> list = new ArrayList<>();
+        if (favoritesString.length() > 0) {
+            StringTokenizer st = new StringTokenizer(favoritesString, ",");
+            while (st.hasMoreTokens()) {
+                list.add(st.nextToken());
+            }
+        }
+        Collections.reverse(list);
+        return list;
     }
 
+    /*Method to get sort order from SharedPreferences*/
+    @NonNull
+    private String getSortOrder() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String defaultValue = getResources().getString(R.string.sort_order_popularity);
+        return prefs.getString(MENU_SORT_ORDER, defaultValue);
+    }
+
+    /*Method to show error view*/
+    private void showErrorView() {
+        mErrorLinearLayout.setVisibility(View.VISIBLE);
+        mNoFavoritesLinearLayout.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    /*Method to show result view*/
+    private void showResultView() {
+        mErrorLinearLayout.setVisibility(View.GONE);
+        mNoFavoritesLinearLayout.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    /*Method to show that there is no movie in favorites list*/
+    private void showNoFavoritesView() {
+        mErrorLinearLayout.setVisibility(View.GONE);
+        mNoFavoritesLinearLayout.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    /*Method to cancel swiperefreshlayout*/
     private void showLoadingView() {
         mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.post(new Runnable() {
@@ -270,14 +366,32 @@ public class MovieFragment extends Fragment {
         });
     }
 
-    private void showResultView() {
-        mLinearLayout.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setRefreshing(false);
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
+    /*Initialize Toolbar*/
     private void initToolbar() {
         Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+    }
+
+    /*Callbacks to query data from movie table*/
+    @Override
+    public Loader<ArrayList<MovieList.Movie>> onCreateLoader(int id, Bundle args) {
+        return new MovieLoader(getActivity(), getFavoriteList());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<MovieList.Movie>> loader, ArrayList<MovieList.Movie> data) {
+        if (data == null) {
+            showErrorView();
+        } else if (data.size() > 0) {
+            mMovieAdapter.setMovieList(data);
+            mRecyclerView.setAdapter(mMovieAdapter);
+            showResultView();
+        } else {
+            showNoFavoritesView();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<MovieList.Movie>> loader) {
     }
 }
