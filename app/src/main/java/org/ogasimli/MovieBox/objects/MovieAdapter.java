@@ -27,30 +27,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private OnItemClickListener mItemClickListener;
 
-    public MovieAdapter() {
-    }
+    private View view;
 
-    public void setMovieList(ArrayList<MovieList.Movie> movieList) {
-        this.mMovieList = movieList;
+    public MovieAdapter() {
     }
 
     public ArrayList<MovieList.Movie> getMovieList() {
         return mMovieList;
     }
 
+    public void setMovieList(ArrayList<MovieList.Movie> movieList) {
+        this.mMovieList = movieList;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).
+        view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.card_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
 
-        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating_bar);
         //Change the color of ratingBar
-        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color),
-                PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color),
-                PorterDuff.Mode.SRC_ATOP);
+        tintRatingBar(view, viewHolder.movieRating);
 
         return viewHolder;
     }
@@ -64,11 +61,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         if (movie.movieGenre != null) {
             viewHolder.movieGenre.setText(movie.movieGenre);
         } else {
-            if (movie.genreIds.size() != 0) {
-                viewHolder.movieGenre.setText(movie.getMovieGenre(movie.genreIds));
-            } else {
-                viewHolder.movieGenre.setText(R.string.unknown_genre_text);
-            }
+            movie.movieGenre = determineGenre(view, movie.genreIds);
+            viewHolder.movieGenre.setText(movie.movieGenre);
         }
 
         Glide.with(viewHolder.moviePoster.getContext()).
@@ -85,18 +79,76 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         return mMovieList == null ? 0 : mMovieList.size();
     }
 
-    //Method to decrease movie ratings in order to be able to assign them into RatingBar
-    // on card_item layout
+    /*Method to determine the genre string*/
+    private String determineGenre(View view, ArrayList<String> genreId) {
+        String resultGenre;
+        ArrayList<String> genreList = new ArrayList<>();
+        String[] id = view.getResources().getStringArray(R.array.genre_id);
+        String[] value = view.getResources().getStringArray(R.array.genre_id_values);
+
+        if (genreId != null && genreId.size() > 0) {
+            for (int i = 0; i < genreId.size(); i++) {
+                for (int j = 0; j < id.length; j++) {
+                    if (id[j].equals(genreId.get(i))) {
+                        genreList.add(value[j]);
+                        break;
+                    }
+                    if (genreList.size() > 2) {
+                        break;
+                    }
+                }
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < genreList.size(); i++) {
+                stringBuilder.append(genreList.get(i));
+                stringBuilder.append(", ");
+            }
+            stringBuilder.setLength(stringBuilder.length() - 2);
+            resultGenre = stringBuilder.toString();
+        } else {
+            resultGenre = view.getResources().getString(R.string.unknown_genre_text);
+        }
+
+        return resultGenre;
+    }
+
+    /*Method to change the color of ratingBar*/
+    private void tintRatingBar(View view, RatingBar ratingBar) {
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color),
+                PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(1).setColorFilter(view.getResources().getColor(R.color.rating_bar_empty_color),
+                PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color),
+                PorterDuff.Mode.SRC_ATOP);
+    }
+
+    /*Method to get the half of movie ratings*/
     private float decreaseRating(double rating) {
         return (float) Math.round((rating * 5 / 10) * 100) / 100;
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView movieTitle;
+
         public final TextView movieGenre;
+
         public final ImageView moviePoster;
+
         public final RatingBar movieRating;
+
+        public final String id[];
+
+        public final String value[];
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -104,6 +156,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             movieGenre = (TextView) itemView.findViewById(R.id.movie_genre_text);
             moviePoster = (ImageView) itemView.findViewById(R.id.movie_poster);
             movieRating = (RatingBar) itemView.findViewById(R.id.rating_bar);
+            id = itemView.getResources().getStringArray(R.array.genre_id);
+            value = itemView.getResources().getStringArray(R.array.genre_id_values);
             itemView.setOnClickListener(this);
         }
 
@@ -114,13 +168,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 mItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View v, int position);
-    }
-
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mItemClickListener = mItemClickListener;
     }
 }

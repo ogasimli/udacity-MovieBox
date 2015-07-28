@@ -71,44 +71,25 @@ import retrofit.client.Response;
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList> {
 
-    private MovieList.Movie mMovie;
-
-    private ImageButton mTrailerImageButton;
-
-    private FloatingActionButton fab;
-
-    private LinearLayout mReviewListView;
-
-    private TextView mNoReviewTextView;
-
-    private MenuItem mShareButton;
-
-    private ArrayList<TrailerList.Trailer> mTrailerList;
-
-    private ArrayList<ReviewList.Review> mReviewList;
-
     private static final String FAVORITE_STATE = "favorite_state";
-
     private static final String TRAILER_STATE_KEY = "trailer_state";
-
     private static final String REVIEW_STATE_KEY = "review_state";
-
     private static final String TRAILER_VIEW_STATE_KEY = "trailer_view_state";
-
     private static final int TRAILER_VIEW_STATE_SUCCESS = 0;
-
     private static final int TRAILER_VIEW_STATE_FAILURE = 1;
-
     private static final String REVIEW_VIEW_STATE_KEY = "review_view_state";
-
     private static final int REVIEW_VIEW_STATE_SUCCESS = 0;
-
     private static final int REVIEW_VIEW_STATE_FAILURE = 1;
-
     private final static int TRAILER_LOADER_ID = 0;
-
     private final static int REVIEW_LOADER_ID = 1;
-
+    private MovieList.Movie mMovie;
+    private ImageButton mTrailerImageButton;
+    private FloatingActionButton fab;
+    private LinearLayout mReviewListView;
+    private TextView mNoReviewTextView;
+    private MenuItem mShareButton;
+    private ArrayList<TrailerList.Trailer> mTrailerList;
+    private ArrayList<ReviewList.Review> mReviewList;
     private boolean isFavorite = false;
     private boolean isConnected = true;
 
@@ -193,13 +174,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 rootView.findViewById(R.id.coordinator_layout);
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
-        //Change the color of ratingBar
-        LayerDrawable stars = (LayerDrawable) detailRatingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(rootView.getResources().getColor(R.color.accent_color),
-                PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(rootView.getResources().getColor(R.color.light_primary_color),
-                PorterDuff.Mode.SRC_ATOP);
-
         if (savedInstanceState == null) {
             ifMovieIsFavorite();
             ifDeviceIsConnected();
@@ -238,33 +212,35 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         setFavorite(isFavorite);
 
-        detailMovieTitle.setText(mMovie.movieTitle);
-        if (mMovie.movieGenre != null) {
-            detailMovieGenre.setText(mMovie.movieGenre);
-        } else {
-            detailMovieGenre.setText("Unknown");
-        }
-        detailMovieRelease.setText(mMovie.movieReleaseDate);
+        tintRatingBar(rootView, detailRatingBar);
 
-        String rating;
-        if (mMovie.movieRating == 10.0) {
-            rating = String.format(rootView.getResources().getString(R.string.detail_rating), "10");
-        } else {
-            rating = String.format(rootView.getResources().getString(R.string.detail_rating), String.valueOf(mMovie.movieRating));
-        }
-        detailMovieRating.setText(rating);
+        detailMovieTitle.setText(mMovie.movieTitle);
+        detailMovieGenre.setText(mMovie.movieGenre);
+        detailMovieRelease.setText(mMovie.movieReleaseDate);
         detailRatingBar.setRating((float) mMovie.movieRating);
-        Context mContext = detailPosterImage.getContext();
-        Glide.with(mContext).
+
+        if (mMovie.movieRating == 10.0) {
+            detailMovieRating.setText(String.format(rootView.getResources().
+                    getString(R.string.detail_rating), "10"));
+        } else {
+            detailMovieRating.setText(String.format(rootView.getResources().
+                            getString(R.string.detail_rating),
+                    String.valueOf(mMovie.movieRating)));
+        }
+
+        Context context = detailPosterImage.getContext();
+        Glide.with(context).
                 load(mMovie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailPosterImage);
-        mContext = detailBackdropImage.getContext();
-        Glide.with(mContext).
+
+        context = detailBackdropImage.getContext();
+        Glide.with(context).
                 load(mMovie.getBackdropPosterUrl()).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailBackdropImage);
+
         if (mMovie.movieOverview != null) {
             detailMovieOverview.setText(mMovie.movieOverview);
         } else {
@@ -336,6 +312,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         super.onViewCreated(view, savedInstanceState);
         initToolbar();
         initCollapsingToolbar();
+    }
+
+    /*Method to change the color of ratingBar*/
+    private void tintRatingBar(View view, RatingBar ratingBar) {
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color),
+                PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(1).setColorFilter(view.getResources().getColor(R.color.rating_bar_empty_color),
+                PorterDuff.Mode.SRC_ATOP);
+        stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color),
+                PorterDuff.Mode.SRC_ATOP);
     }
 
     /*Initialize CollapsingToolbarLayout*/
@@ -427,9 +414,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
-    /**
-     * Add movie and its trailer and reviews to favorites list.
-     */
+    /*Add movie and its trailer and reviews to favorites list*/
     private void favoriteMovie() {
         setFavorite(!isFavorite);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -469,9 +454,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
-    /**
-     * Methods to store movie data
-     */
+    /*Methods to store movie data*/
     private void storeMovie() {
         new MovieStore(getActivity()).execute(mMovie);
     }
