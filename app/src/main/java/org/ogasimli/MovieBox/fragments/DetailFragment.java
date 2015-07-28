@@ -459,8 +459,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         new MovieStore(getActivity()).execute(mMovie);
     }
 
+    /*Method to store movie trailers*/
     private void storeTrailers() {
-        if (mTrailerList.size() == 0) {
+        if (mReviewList == null || mTrailerList.size() == 0) {
             return;
         }
         ContentValues[] values = new ContentValues[mTrailerList.size()];
@@ -478,8 +479,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 .execute(values);
     }
 
+    /*Method to store movie reviews*/
     private void storeReviews() {
-        if (mReviewList.size() == 0) {
+        if (mReviewList == null || mReviewList.size() == 0) {
             return;
         }
         ContentValues[] values = new ContentValues[mReviewList.size()];
