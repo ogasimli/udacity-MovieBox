@@ -14,6 +14,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -52,34 +53,42 @@ import retrofit.client.Response;
  */
 public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<MovieList.Movie>> {
 
-    private LinearLayout mErrorLinearLayout;
-
-    private LinearLayout mNoFavoritesLinearLayout;
-
-    private RecyclerView mRecyclerView;
-
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private MovieAdapter mMovieAdapter;
-
-    private ArrayList<MovieList.Movie> mMovieList;
-
     private static final String LIST_STATE_KEY = "list_state";
-
     private static final String MENU_CHECKED_STATE = "checked";
-
     private static final String MENU_SORT_ORDER = "sort_order";
-
     private static final String VIEW_STATE_KEY = "view_state";
-
     private final static int VIEW_STATE_ERROR = 0;
-
     private final static int VIEW_STATE_RESULTS = 1;
-
     private final static int VIEW_STATE_NO_FAVORITES = 2;
-
     private static final int MOVIE_LOADER_ID = 0;
+    private LinearLayout mErrorLinearLayout;
+    private LinearLayout mNoFavoritesLinearLayout;
+    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private MovieAdapter mMovieAdapter;
+    private ArrayList<MovieList.Movie> mMovieList;
+    private final MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View v, int position) {
+            mMovieList = mMovieAdapter.getMovieList();
+            if (mMovieList != null) {
+                MovieList.Movie passedMovie = mMovieList.get(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra(MainActivity.PACKAGE_NAME, passedMovie);
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(getActivity(),
+                                    v.findViewById(R.id.movie_poster), "poster");
+                    getActivity().startActivity(intent, options.toBundle());
+                } else {
+                    getActivity().startActivity(intent);
+                }
+            } else {
+                Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
     private String mSortOrder;
 
     @Override
@@ -182,7 +191,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mMovieAdapter = new MovieAdapter();
         mMovieAdapter.setOnItemClickListener(itemClickListener);
-        mSortOrder = getSortOrder();
 
         /*loadMovieData if savedInstanceState is null, load from already fetched data
          if savedInstanceSate is not null*/
@@ -205,33 +213,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                     break;
             }
         }
-
         return rootView;
     }
-
-    private final MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, int position) {
-            mMovieList = mMovieAdapter.getMovieList();
-            if (mMovieList != null) {
-                MovieList.Movie passedMovie = mMovieList.get(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(MainActivity.PACKAGE_NAME, passedMovie);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(getActivity(),
-                                    v.findViewById(R.id.movie_poster), "poster");
-                    getActivity().startActivity(intent, options.toBundle());
-                } else {
-                    getActivity().startActivity(intent);
-                }
-            } else {
-                Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -240,15 +223,15 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         //Initialize Toolbar
         initToolbar();
 
-        mRecyclerView.setHasFixedSize(true);
-
         //set GridLayoutManagers grid number based on the orientation of device
         int orientation = getResources().getConfiguration().orientation;
         int spanCount = (orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2;
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
-
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.accent_color,
                 R.color.primary_color);
@@ -305,8 +288,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    /*Method to get list of favorite movie ids*/
-    //TODO: force recyclerview to load movies in chronological order
+    /*Method to get list of favorite movie ids in a reversed order*/
     private ArrayList<String> getFavoriteList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String favoritesString = prefs.getString("favorites", "");
@@ -334,7 +316,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mErrorLinearLayout.setVisibility(View.VISIBLE);
         mNoFavoritesLinearLayout.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setRefreshing(false);
+        hideLoadingView();
     }
 
     /*Method to show result view*/
@@ -342,7 +324,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mErrorLinearLayout.setVisibility(View.GONE);
         mNoFavoritesLinearLayout.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
-        mSwipeRefreshLayout.setRefreshing(false);
+        hideLoadingView();
     }
 
     /*Method to show that there is no movie in favorites list*/
@@ -350,10 +332,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mErrorLinearLayout.setVisibility(View.GONE);
         mNoFavoritesLinearLayout.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setRefreshing(false);
+        hideLoadingView();
     }
 
-    /*Method to cancel swiperefreshlayout*/
+    /*Method to start swiperefreshlayout*/
     private void showLoadingView() {
         mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.post(new Runnable() {
@@ -361,6 +343,18 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             public void run() {
                 if (!mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(true);
+                }
+            }
+        });
+    }
+
+    /*Method to cancel swiperefreshlayout*/
+    private void hideLoadingView() {
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mSwipeRefreshLayout.isRefreshing()) {
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
@@ -385,6 +379,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         } else if (data.size() > 0) {
             mMovieAdapter.setMovieList(data);
             mRecyclerView.setAdapter(mMovieAdapter);
+            mMovieAdapter.notifyDataSetChanged();
             showResultView();
         } else {
             showNoFavoritesView();
