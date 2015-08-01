@@ -1,5 +1,6 @@
 package org.ogasimli.MovieBox.fragments;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +43,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import org.ogasimli.MovieBox.MainActivity;
 import org.ogasimli.MovieBox.R;
 import org.ogasimli.MovieBox.asynctasks.MovieStore;
 import org.ogasimli.MovieBox.asynctasks.ReviewLoader;
@@ -71,34 +71,64 @@ import retrofit.client.Response;
  */
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList> {
 
-    private static final String FAVORITE_STATE = "favorite_state";
-    private static final String TRAILER_STATE_KEY = "trailer_state";
-    private static final String REVIEW_STATE_KEY = "review_state";
-    private static final String TRAILER_VIEW_STATE_KEY = "trailer_view_state";
-    private static final int TRAILER_VIEW_STATE_SUCCESS = 0;
-    private static final int TRAILER_VIEW_STATE_FAILURE = 1;
-    private static final String REVIEW_VIEW_STATE_KEY = "review_view_state";
-    private static final int REVIEW_VIEW_STATE_SUCCESS = 0;
-    private static final int REVIEW_VIEW_STATE_FAILURE = 1;
-    private final static int TRAILER_LOADER_ID = 0;
-    private final static int REVIEW_LOADER_ID = 1;
-    private MovieList.Movie mMovie;
-    private ImageButton mTrailerImageButton;
-    private FloatingActionButton fab;
-    private LinearLayout mReviewListView;
-    private TextView mNoReviewTextView;
-    private MenuItem mShareButton;
-    private ArrayList<TrailerList.Trailer> mTrailerList;
-    private ArrayList<ReviewList.Review> mReviewList;
-    private boolean isFavorite = false;
-    private boolean isConnected = true;
+    public final static String MOVIE = "movie";
 
-    public static DetailFragment getInstance(MovieList.Movie movie) {
+    public final static String FAVORITE = "favorite";
+
+    private static final String FAVORITE_STATE = "favorite_state";
+
+    private static final String TRAILER_STATE_KEY = "trailer_state";
+
+    private static final String REVIEW_STATE_KEY = "review_state";
+
+    private static final String TRAILER_VIEW_STATE_KEY = "trailer_view_state";
+
+    private static final int TRAILER_VIEW_STATE_SUCCESS = 0;
+
+    private static final int TRAILER_VIEW_STATE_FAILURE = 1;
+
+    private static final String REVIEW_VIEW_STATE_KEY = "review_view_state";
+
+    private static final int REVIEW_VIEW_STATE_SUCCESS = 0;
+
+    private static final int REVIEW_VIEW_STATE_FAILURE = 1;
+
+    private final static int TRAILER_LOADER_ID = 0;
+
+    private final static int REVIEW_LOADER_ID = 1;
+
+    private MovieList.Movie mMovie;
+
+    private ImageButton mTrailerImageButton;
+
+    private FloatingActionButton fab;
+
+    private LinearLayout mReviewListView;
+
+    private TextView mNoReviewTextView;
+
+    private MenuItem mShareButton;
+
+    private ArrayList<TrailerList.Trailer> mTrailerList;
+
+    private ArrayList<ReviewList.Review> mReviewList;
+
+    private boolean isFavorite = false;
+
+    private boolean isConnected = false;
+
+    public static DetailFragment getInstance(MovieList.Movie movie, boolean isFavorite) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(MainActivity.PACKAGE_NAME, movie);
+        args.putParcelable(MOVIE, movie);
+        args.putBoolean(FAVORITE, isFavorite);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
 
     @Override
@@ -148,7 +178,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mMovie = getArguments().getParcelable(MainActivity.PACKAGE_NAME);
+        mMovie = getArguments().getParcelable(MOVIE);
+        isFavorite = getArguments().getBoolean(FAVORITE);
         if (mMovie == null) {
             throw new NullPointerException("Movie object should be put into fragment arguments.");
         }
@@ -175,7 +206,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         if (savedInstanceState == null) {
-            ifMovieIsFavorite();
             ifDeviceIsConnected();
             if (isFavorite && !isConnected) {
                 getActivity().getSupportLoaderManager().restartLoader(TRAILER_LOADER_ID, null, this);
@@ -288,23 +318,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-    }
-
-    /*Method to determine if movie is in favorites list*/
-    private void ifMovieIsFavorite() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String favoritesString = prefs.getString("favorites", "");
-        StringTokenizer stringTokenizer = new StringTokenizer(favoritesString, ",");
-        ArrayList<String> list = new ArrayList<>();
-        while (stringTokenizer.hasMoreTokens()) {
-            list.add(stringTokenizer.nextToken());
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(mMovie.movieId)) {
-                isFavorite = true;
-                break;
-            }
-        }
     }
 
     @Override
@@ -529,7 +542,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoaderReset(Loader loader) {
     }
-
 
     class ReviewViewHolder {
 

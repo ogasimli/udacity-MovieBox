@@ -1,14 +1,11 @@
 package org.ogasimli.MovieBox.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -28,8 +25,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.ogasimli.MovieBox.DetailActivity;
-import org.ogasimli.MovieBox.MainActivity;
 import org.ogasimli.MovieBox.R;
 import org.ogasimli.MovieBox.asynctasks.MovieLoader;
 import org.ogasimli.MovieBox.objects.MovieAdapter;
@@ -54,47 +49,62 @@ import retrofit.client.Response;
 public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<MovieList.Movie>> {
 
     private static final String LIST_STATE_KEY = "list_state";
+
     private static final String MENU_CHECKED_STATE = "checked";
+
     private static final String MENU_SORT_ORDER = "sort_order";
+
     private static final String VIEW_STATE_KEY = "view_state";
+
     private final static int VIEW_STATE_ERROR = 0;
+
     private final static int VIEW_STATE_RESULTS = 1;
+
     private final static int VIEW_STATE_NO_FAVORITES = 2;
+
     private static final int MOVIE_LOADER_ID = 0;
+
     private LinearLayout mErrorLinearLayout;
+
     private LinearLayout mNoFavoritesLinearLayout;
+
     private RecyclerView mRecyclerView;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private String mSortOrder;
+
     private MovieAdapter mMovieAdapter;
+
     private ArrayList<MovieList.Movie> mMovieList;
+
+    private MovieActionListener mMovieActionListener;
+
+    private boolean isFavorite = false;
     private final MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
             mMovieList = mMovieAdapter.getMovieList();
             if (mMovieList != null) {
                 MovieList.Movie passedMovie = mMovieList.get(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(MainActivity.PACKAGE_NAME, passedMovie);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptionsCompat options = ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(getActivity(),
-                                    v.findViewById(R.id.movie_poster), "poster");
-                    getActivity().startActivity(intent, options.toBundle());
-                } else {
-                    getActivity().startActivity(intent);
-                }
+                mMovieActionListener.onMovieSelected(passedMovie, ifMovieIsFavorite(passedMovie.movieId), v.findViewById(R.id.movie_poster));
             } else {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
             }
         }
     };
-    private String mSortOrder;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         setRetainInstance(true);
+
+        try {
+            mMovieActionListener = (MovieActionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
     @Override
@@ -303,6 +313,18 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         return list;
     }
 
+    /*Method to determine if movie is in favorites list*/
+    private boolean ifMovieIsFavorite(String movieId) {
+        ArrayList<String> list = getFavoriteList();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(movieId)) {
+                isFavorite = true;
+                break;
+            }
+        }
+        return isFavorite;
+    }
+
     /*Method to get sort order from SharedPreferences*/
     @NonNull
     private String getSortOrder() {
@@ -388,5 +410,9 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoaderReset(Loader<ArrayList<MovieList.Movie>> loader) {
+    }
+
+    public interface MovieActionListener {
+        void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
     }
 }

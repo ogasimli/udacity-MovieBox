@@ -26,24 +26,33 @@ public class MovieList {
                 return new Movie[size];
             }
         };
-        //Additional methods to get poster URLs
+
         private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+
         @SerializedName("genre_ids")
         public final ArrayList<String> genreIds = new ArrayList<>();
+
         @SerializedName("original_title")
         public String movieTitle;
+
         @SerializedName("poster_path")
         public String posterPath;
+
         @SerializedName("backdrop_path")
         public String backdropPath;
+
         @SerializedName("id")
         public String movieId;
+
         @SerializedName("overview")
         public String movieOverview;
+
         @SerializedName("release_date")
         public String movieReleaseDate;
+
         @SerializedName("vote_average")
         public double movieRating;
+
         public String movieGenre;
 
         public Movie() {
@@ -76,6 +85,7 @@ public class MovieList {
             return 0;
         }
 
+        //Additional methods to get poster URLs
         public String getPosterUrl() {
             return POSTER_BASE_URL + "w185" + posterPath;
         }

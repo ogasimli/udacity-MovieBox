@@ -16,18 +16,22 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         MovieList.Movie movie;
+        boolean isFavorite;
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            movie = extras.getParcelable(MainActivity.PACKAGE_NAME);
+            movie = extras.getParcelable(DetailFragment.MOVIE);
+            isFavorite = extras.getBoolean(DetailFragment.FAVORITE);
         } else {
             throw new NullPointerException("No movie found in extras");
         }
 
-        DetailFragment fragment = DetailFragment.getInstance(movie);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.detail_container, fragment)
-                .commit();
+        if (savedInstanceState == null) {
+            DetailFragment fragment = DetailFragment.getInstance(movie, isFavorite);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.detail_container, fragment)
+                    .commit();
+        }
     }
 
     @Override
