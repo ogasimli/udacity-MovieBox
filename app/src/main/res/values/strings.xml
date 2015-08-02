@@ -20,7 +20,7 @@
     <string name="unable_to_fetch_data_message">Can\'t get movies</string>
     <string name="error_image_description">Error image</string>
     <string name="menu_sort">Sort</string>
-    <string name="no_overview">No information available.</string>
+    <string name="no_overview">No overview available.</string>
     <string name="unknown_genre_text">Unknown</string>
     <string name="no_review">No user review available.</string>
     <string name="user_avatar_description">User avatar</string>

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
+import android.widget.FrameLayout;
 
 import org.ogasimli.MovieBox.fragments.DetailFragment;
 import org.ogasimli.MovieBox.fragments.MovieFragment;
@@ -19,10 +20,18 @@ public class MainActivity extends AppCompatActivity
         implements MovieFragment.MovieActionListener {
 
     private static final String DETAIL_FRAGMENT_TAG = "DFT";
+
+    private static final String MOVIE_FRAGMENT_TAG = "MFT";
+
     public static String PACKAGE_NAME;
+
     private boolean isDualPane;
 
     private DetailFragment mDetailFragment;
+
+    private MovieFragment mMoviesFragment;
+
+    private FrameLayout mDetailContainer;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -39,16 +48,20 @@ public class MainActivity extends AppCompatActivity
         //Get package name to use within intents
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        if (findViewById(R.id.detail_container) != null) {
-            isDualPane = true;
-            if (savedInstanceState == null) {
-                mDetailFragment = new DetailFragment();
-                getSupportFragmentManager().beginTransaction().
-                        replace(R.id.detail_container, mDetailFragment, DETAIL_FRAGMENT_TAG).
-                        commit();
-            }
+        mDetailContainer = (FrameLayout) findViewById(R.id.detail_container);
+
+        isDualPane = (mDetailContainer != null);
+
+        if (savedInstanceState == null) {
+            mMoviesFragment = MovieFragment.getInstance(isDualPane);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.movie_container, mMoviesFragment, MOVIE_FRAGMENT_TAG)
+                    .commit();
         } else {
-            isDualPane = false;
+            mMoviesFragment = (MovieFragment) getSupportFragmentManager().
+                    findFragmentByTag(MOVIE_FRAGMENT_TAG);
+            mMoviesFragment.setDualPane(isDualPane);
         }
     }
 

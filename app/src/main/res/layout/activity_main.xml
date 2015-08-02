@@ -20,14 +20,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <fragment
-        android:id="@+id/fragment_main"
-        android:name="org.ogasimli.MovieBox.fragments.MovieFragment"
+    <FrameLayout
+        android:id="@+id/movie_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="org.ogasimli.MovieBox.fragments.MovieFragment"
         tools:layout="@android:layout/list_content" />
 
 </android.support.design.widget.CoordinatorLayout>

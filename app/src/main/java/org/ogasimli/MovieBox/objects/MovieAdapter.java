@@ -23,10 +23,9 @@ import java.util.ArrayList;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
+    public int position;
     private ArrayList<MovieList.Movie> mMovieList;
-
     private OnItemClickListener mItemClickListener;
-
     private View view;
 
     public MovieAdapter() {
@@ -72,6 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 into(viewHolder.moviePoster);
 
         viewHolder.movieRating.setRating(decreaseRating(movie.movieRating));
+        position = i;
     }
 
     @Override

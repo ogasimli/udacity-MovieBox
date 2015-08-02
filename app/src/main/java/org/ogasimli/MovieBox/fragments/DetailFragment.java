@@ -381,7 +381,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void failure(RetrofitError error) {
                 mTrailerImageButton.setVisibility(View.GONE);
-//                mShareButton.setEnabled(false);
+                mShareButton.setEnabled(false);
                 Log.d("RetrofitError", error.toString());
             }
         });

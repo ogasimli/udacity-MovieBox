@@ -54,6 +54,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final String VIEW_STATE_KEY = "view_state";
 
+    private static final String IS_DUAL_PANE = "is_dual_pane";
+
     private final static int VIEW_STATE_ERROR = 0;
 
     private final static int VIEW_STATE_RESULTS = 1;
@@ -93,6 +95,15 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
     };
+    private boolean isDualPane = false;
+
+    public static MovieFragment getInstance(boolean isDualPane) {
+        MovieFragment fragment = new MovieFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(IS_DUAL_PANE, isDualPane);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -111,6 +122,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        isDualPane = getArguments().getBoolean(IS_DUAL_PANE, false);
     }
 
     //TODO: replace this with actionlistener, this results in destroying the view while orientation change
@@ -231,7 +243,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
+        RecyclerView.LayoutManager mLayoutManager =
+                new GridLayoutManager(getActivity(), calculateSpanCOunt());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -248,10 +261,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    /**
-     * Calculates grid span count
-     */
-    private int getSpanCount() {
+    /*Method to calculate grid span count*/
+    private int calculateSpanCOunt() {
         int orientation = getResources().getConfiguration().orientation;
         int sw = getResources().getConfiguration().smallestScreenWidthDp;
         boolean landscape = (orientation == Configuration.ORIENTATION_LANDSCAPE);
@@ -413,6 +424,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoaderReset(Loader<ArrayList<MovieList.Movie>> loader) {
+    }
+
+    public void setDualPane(boolean isDualPane) {
+        this.isDualPane = isDualPane;
     }
 
     public interface MovieActionListener {

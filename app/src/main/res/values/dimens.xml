@@ -1,9 +1,21 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_margin">5dp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <!-- FAB diemn for pre-lollipop devices-->
+
+    <!-- FAB dimen for pre-lollipop devices-->
     <dimen name="fab_margin">0.1dp</dimen>
+
+    <!--Dimen fro backdrop poster-->
+    <dimen name="backdrop_poster_height">256dp</dimen>
+
+    <!--Dimen for poster-->
+    <dimen name="poster_height">200dp</dimen>
+    <dimen name="poster_width">120dp</dimen>
+
+    <!--Dimen for genre and release date icons-->
+    <dimen name="icon_size">25dp</dimen>
 </resources>

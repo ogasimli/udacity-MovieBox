@@ -10,7 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="256dp"
+        android:layout_height="@dimen/backdrop_poster_height"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -77,8 +77,8 @@
 
                 <ImageView
                     android:id="@+id/detail_movie_poster"
-                    android:layout_width="120dp"
-                    android:layout_height="200dp"
+                    android:layout_width="@dimen/poster_width"
+                    android:layout_height="@dimen/poster_height"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
@@ -113,8 +113,8 @@
 
                         <ImageView
                             android:id="@+id/movie_release_date_image"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="@dimen/icon_size"
+                            android:layout_height="@dimen/icon_size"
                             android:layout_gravity="center"
                             android:contentDescription="@string/movie_release_date_image_description"
                             android:src="@drawable/ic_genre" />
@@ -139,8 +139,8 @@
 
                         <ImageView
                             android:id="@+id/movie_genre_image"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="@dimen/icon_size"
+                            android:layout_height="@dimen/icon_size"
                             android:layout_gravity="center"
                             android:contentDescription="@string/genre_icon_description"
                             android:src="@drawable/ic_release_date" />
@@ -196,6 +196,7 @@
 
             <TextView
                 android:id="@+id/detail_overview_text"
+                style="@style/Base.TextAppearance.AppCompat.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
