@@ -330,28 +330,35 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     /*Method to change the color of ratingBar*/
     private void tintRatingBar(View view, RatingBar ratingBar) {
         LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-        stars.getDrawable(2).setColorFilter(view.getResources().getColor(R.color.accent_color),
+        stars.getDrawable(2).setColorFilter(view.getResources().
+                        getColor(R.color.accent_color),
                 PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(1).setColorFilter(view.getResources().getColor(R.color.rating_bar_empty_color),
+        stars.getDrawable(1).setColorFilter(view.getResources().
+                        getColor(R.color.rating_bar_empty_color),
                 PorterDuff.Mode.SRC_ATOP);
-        stars.getDrawable(0).setColorFilter(view.getResources().getColor(R.color.light_primary_color),
+        stars.getDrawable(0).setColorFilter(view.getResources().
+                        getColor(R.color.light_primary_color),
                 PorterDuff.Mode.SRC_ATOP);
     }
 
     /*Initialize CollapsingToolbarLayout*/
     private void initCollapsingToolbar() {
-        CollapsingToolbarLayout mCollapsingToolbarLayout = (CollapsingToolbarLayout) getActivity().
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) getActivity().
                 findViewById(R.id.collapsing_toolbar_layout);
-        mCollapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-        mCollapsingToolbarLayout.setTitle(mMovie.movieTitle);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (collapsingToolbarLayout != null) {
+            collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+            collapsingToolbarLayout.setTitle(mMovie.movieTitle);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     /*Initialize Toolbar*/
     private void initToolbar() {
-        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
+        if (toolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        }
     }
 
     private void loadTrailerAndResponse() {
@@ -374,7 +381,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void failure(RetrofitError error) {
                 mTrailerImageButton.setVisibility(View.GONE);
-                mShareButton.setEnabled(false);
+//                mShareButton.setEnabled(false);
                 Log.d("RetrofitError", error.toString());
             }
         });

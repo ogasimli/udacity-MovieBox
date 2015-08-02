@@ -37,7 +37,7 @@
                 android:id="@+id/play_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/ripple"
+                android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/backdrop_poster_description"
                 android:fitsSystemWindows="true"
                 android:scaleType="fitCenter"
@@ -126,6 +126,7 @@
                             android:layout_marginStart="5dp"
                             android:ellipsize="end"
                             android:maxLines="2" />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -150,8 +151,11 @@
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
                             android:maxLines="1" />
+
                     </LinearLayout>
+
                 </LinearLayout>
+
             </RelativeLayout>
 
             <View
@@ -228,7 +232,9 @@
                 android:layout_margin="10dp"
                 android:text="@string/no_review"
                 android:visibility="gone"/>
+
         </LinearLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
@@ -237,9 +243,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_favorite"
-        app:backgroundTint="@color/accent_color"
         app:borderWidth="0dp"
         app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|right"
+        app:layout_anchorGravity="bottom|right|end"
         app:rippleColor="@color/white" />
+
 </android.support.design.widget.CoordinatorLayout>

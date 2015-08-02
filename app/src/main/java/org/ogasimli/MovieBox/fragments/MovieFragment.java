@@ -10,11 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,7 +85,9 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             mMovieList = mMovieAdapter.getMovieList();
             if (mMovieList != null) {
                 MovieList.Movie passedMovie = mMovieList.get(position);
-                mMovieActionListener.onMovieSelected(passedMovie, ifMovieIsFavorite(passedMovie.movieId), v.findViewById(R.id.movie_poster));
+                mMovieActionListener.onMovieSelected(passedMovie,
+                        ifMovieIsFavorite(passedMovie.movieId),
+                        v.findViewById(R.id.movie_poster));
             } else {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
             }
@@ -223,6 +223,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                     break;
             }
         }
+
         return rootView;
     }
 
@@ -230,14 +231,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Initialize Toolbar
-        initToolbar();
-
-        //set GridLayoutManagers grid number based on the orientation of device
-        int orientation = getResources().getConfiguration().orientation;
-        int spanCount = (orientation == Configuration.ORIENTATION_LANDSCAPE) ? 3 : 2;
-
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -254,9 +248,24 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
+    /**
+     * Calculates grid span count
+     */
+    private int getSpanCount() {
+        int orientation = getResources().getConfiguration().orientation;
+        int sw = getResources().getConfiguration().smallestScreenWidthDp;
+        boolean landscape = (orientation == Configuration.ORIENTATION_LANDSCAPE);
+        if (sw < 600) {
+            return (landscape) ? 3 : 2;
+        } else if (sw < 720) {
+            return (landscape) ? 2 : 3;
+        } else {
+            return (landscape) ? 3 : 2;
+        }
+    }
+
     /*Method to get data from database or by using loadMovieData*/
     private void getData() {
-//        android.os.Debug.waitForDebugger();
         showLoadingView();
         mSortOrder = getSortOrder();
         if (mSortOrder.equals(getString(R.string.sort_order_favorites))) {
@@ -380,12 +389,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 }
             }
         });
-    }
-
-    /*Initialize Toolbar*/
-    private void initToolbar() {
-        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 
     /*Callbacks to query data from movie table*/
