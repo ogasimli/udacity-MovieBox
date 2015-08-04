@@ -1,7 +1,10 @@
 package org.ogasimli.MovieBox.objects;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +17,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.ogasimli.MovieBox.R;
+import org.ogasimli.MovieBox.fragments.MovieFragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.StringTokenizer;
 
 /**
  * Custom Adapter for movies
@@ -23,20 +29,21 @@ import java.util.ArrayList;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
-    public int position;
+    final private Context mContext;
+
+    final private MovieFragment.MovieActionListener movieActionListener;
+
+    final private boolean isDualPane;
+    public int mSelectedPosition;
     private ArrayList<MovieList.Movie> mMovieList;
+    private boolean isFavorite;
     private OnItemClickListener mItemClickListener;
     private View view;
 
-    public MovieAdapter() {
-    }
-
-    public ArrayList<MovieList.Movie> getMovieList() {
-        return mMovieList;
-    }
-
-    public void setMovieList(ArrayList<MovieList.Movie> movieList) {
-        this.mMovieList = movieList;
+    public MovieAdapter(Context mContext, MovieFragment.MovieActionListener movieActionListener, boolean isDualPane) {
+        this.mContext = mContext;
+        this.movieActionListener = movieActionListener;
+        this.isDualPane = isDualPane;
     }
 
     @Override
@@ -71,12 +78,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 into(viewHolder.moviePoster);
 
         viewHolder.movieRating.setRating(decreaseRating(movie.movieRating));
-        position = i;
+
+        if (isDualPane) {
+            viewHolder.itemView.setSelected(mSelectedPosition == i);
+        }
     }
 
     @Override
     public int getItemCount() {
         return mMovieList == null ? 0 : mMovieList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return Long.parseLong(mMovieList.get(position).movieId);
     }
 
     /*Method to determine the genre string*/
@@ -126,6 +141,48 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     /*Method to get the half of movie ratings*/
     private float decreaseRating(double rating) {
         return (float) Math.round((rating * 5 / 10) * 100) / 100;
+    }
+
+    public void setMovieList(ArrayList<MovieList.Movie> movieList) {
+        mMovieList = movieList;
+        notifyDataSetChanged();
+        if (isDualPane) {
+            int position = (mSelectedPosition < mMovieList.size()) ? mSelectedPosition
+                    : mMovieList.size() - 1;
+            selectMovie(position, null);
+        }
+    }
+
+    public void selectMovie(int position, View view) {
+        int prevPosition = mSelectedPosition;
+        mSelectedPosition = position;
+        notifyItemChanged(position);
+        notifyItemChanged(prevPosition);
+        MovieList.Movie movie = mMovieList.get(position);
+        ifMovieIsFavorite(movie.movieId);
+        movieActionListener.onMovieSelected(movie, isFavorite, view);
+    }
+
+    /*Method to determine if movie is in favorites list*/
+    private void ifMovieIsFavorite(String movieId) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String favoritesString = prefs.getString("favorites", "");
+        ArrayList<String> list = new ArrayList<>();
+        if (favoritesString.length() > 0) {
+            StringTokenizer st = new StringTokenizer(favoritesString, ",");
+            while (st.hasMoreTokens()) {
+                list.add(st.nextToken());
+            }
+        }
+        Collections.reverse(list);
+        boolean favorite = false;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(movieId)) {
+                favorite = true;
+                break;
+            }
+        }
+        isFavorite = favorite;
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {

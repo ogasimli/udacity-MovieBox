@@ -113,9 +113,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private ArrayList<ReviewList.Review> mReviewList;
 
-    private boolean isFavorite = false;
+    private boolean isFavorite;
 
-    private boolean isConnected = false;
+    private boolean isConnected;
 
     public static DetailFragment getInstance(MovieList.Movie movie, boolean isFavorite) {
         DetailFragment fragment = new DetailFragment();
@@ -154,8 +154,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_detail_fragment, menu);
-
         mShareButton = menu.findItem(R.id.menu_share);
         mShareButton.setEnabled(mTrailerList != null && mTrailerList.size() > 0);
     }
@@ -481,7 +481,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     /*Method to store movie trailers*/
     private void storeTrailers() {
-        if (mReviewList == null || mTrailerList.size() == 0) {
+        if (mTrailerList == null || mTrailerList.size() == 0) {
             return;
         }
         ContentValues[] values = new ContentValues[mTrailerList.size()];

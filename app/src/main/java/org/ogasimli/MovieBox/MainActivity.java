@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -86,6 +88,17 @@ public class MainActivity extends AppCompatActivity
                     beginTransaction().
                     replace(R.id.detail_container, mDetailFragment, DETAIL_FRAGMENT_TAG).
                     commitAllowingStateLoss();
+        }
+    }
+
+    @Override
+    public void onEmptyMovieList() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(DETAIL_FRAGMENT_TAG);
+        if (isDualPane && fragment != null) {
+            fragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commitAllowingStateLoss();
         }
     }
 

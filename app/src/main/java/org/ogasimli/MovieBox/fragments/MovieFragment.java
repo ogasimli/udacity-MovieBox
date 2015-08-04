@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import org.ogasimli.MovieBox.R;
 import org.ogasimli.MovieBox.asynctasks.MovieLoader;
@@ -54,6 +53,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final String VIEW_STATE_KEY = "view_state";
 
+    private static final String SELECTED_MOVIE_KEY = "selected_movie";
+
     private static final String IS_DUAL_PANE = "is_dual_pane";
 
     private final static int VIEW_STATE_ERROR = 0;
@@ -75,27 +76,16 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     private String mSortOrder;
 
     private MovieAdapter mMovieAdapter;
-
-    private ArrayList<MovieList.Movie> mMovieList;
-
-    private MovieActionListener mMovieActionListener;
-
-    private boolean isFavorite = false;
-    private final MovieAdapter.OnItemClickListener itemClickListener = new MovieAdapter.OnItemClickListener() {
+    private final MovieAdapter.OnItemClickListener itemClickListener
+            = new MovieAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, int position) {
-            mMovieList = mMovieAdapter.getMovieList();
-            if (mMovieList != null) {
-                MovieList.Movie passedMovie = mMovieList.get(position);
-                mMovieActionListener.onMovieSelected(passedMovie,
-                        ifMovieIsFavorite(passedMovie.movieId),
-                        v.findViewById(R.id.movie_poster));
-            } else {
-                Toast.makeText(getActivity(), getActivity().getString(R.string.unable_to_fetch_data_message), Toast.LENGTH_SHORT).show();
-            }
+            mMovieAdapter.selectMovie(position, v.findViewById(R.id.movie_poster));
         }
     };
-    private boolean isDualPane = false;
+    private ArrayList<MovieList.Movie> mMovieList;
+    private MovieActionListener mMovieActionListener;
+    private boolean isDualPane;
 
     public static MovieFragment getInstance(boolean isDualPane) {
         MovieFragment fragment = new MovieFragment();
@@ -109,7 +99,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         setRetainInstance(true);
-
         try {
             mMovieActionListener = (MovieActionListener) activity;
         } catch (ClassCastException e) {
@@ -130,7 +119,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onResume() {
         super.onResume();
         //Reload favorites list
-        if (mSortOrder.equals(getString(R.string.sort_order_favorites))) {
+        if (!isDualPane && mSortOrder.equals(getString(R.string.sort_order_favorites))) {
             loadFavoriteMovies();
         }
     }
@@ -148,6 +137,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
         outState.putInt(VIEW_STATE_KEY, state);
         outState.putParcelableArrayList(LIST_STATE_KEY, mMovieList);
+        outState.putInt(SELECTED_MOVIE_KEY, mMovieAdapter.mSelectedPosition);
+
     }
 
     @Override
@@ -167,38 +158,33 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        SharedPreferences.Editor prefs = PreferenceManager.
-                getDefaultSharedPreferences(getActivity()).edit();
-
+        String sortOrder;
+        int checkedMenuItem;
         switch (item.getItemId()) {
             case R.id.action_popularity:
-                prefs.putString(MENU_SORT_ORDER, getResources().getString(R.string.sort_order_popularity));
-                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
-                prefs.apply();
-                item.setChecked(!item.isChecked());
+                sortOrder = getResources().getString(R.string.sort_order_popularity);
+                checkedMenuItem = item.getItemId();
                 break;
             case R.id.action_rating:
-                prefs.putString(MENU_SORT_ORDER, getResources().getString(R.string.sort_order_rating));
-                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
-                prefs.apply();
-                item.setChecked(!item.isChecked());
+                sortOrder = getResources().getString(R.string.sort_order_rating);
+                checkedMenuItem = item.getItemId();
                 break;
             case R.id.action_revenue:
-                prefs.putString(MENU_SORT_ORDER, getResources().getString(R.string.sort_order_revenue));
-                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
-                prefs.apply();
-                item.setChecked(!item.isChecked());
+                sortOrder = getResources().getString(R.string.sort_order_revenue);
+                checkedMenuItem = item.getItemId();
                 break;
             case R.id.action_favorites:
-                prefs.putString(MENU_SORT_ORDER, getString(R.string.sort_order_favorites));
-                prefs.putInt(MENU_CHECKED_STATE, item.getItemId());
-                prefs.apply();
-                item.setChecked(!item.isChecked());
+                sortOrder = getString(R.string.sort_order_favorites);
+                checkedMenuItem = item.getItemId();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
-        getData();
+        if (sortOrder != null) {
+            item.setChecked(!item.isChecked());
+            setSortOrder(sortOrder, checkedMenuItem);
+            getData();
+        }
         return true;
     }
 
@@ -211,8 +197,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mNoFavoritesLinearLayout = (LinearLayout) rootView.findViewById(R.id.no_favorites_view);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter = new MovieAdapter(getActivity(), mMovieActionListener, isDualPane);
         mMovieAdapter.setOnItemClickListener(itemClickListener);
+        RecyclerView.LayoutManager mLayoutManager =
+                new GridLayoutManager(getActivity(), calculateSpanCount());
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mMovieAdapter);
 
         /*loadMovieData if savedInstanceState is null, load from already fetched data
          if savedInstanceSate is not null*/
@@ -226,9 +218,19 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                     break;
                 case VIEW_STATE_RESULTS:
                     mMovieList = savedInstanceState.getParcelableArrayList(LIST_STATE_KEY);
+                    mMovieAdapter.mSelectedPosition = savedInstanceState.
+                            getInt(SELECTED_MOVIE_KEY, 0);
                     mMovieAdapter.setMovieList(mMovieList);
-                    mRecyclerView.setAdapter(mMovieAdapter);
+//                    mRecyclerView.setAdapter(mMovieAdapter);
                     showResultView();
+                    if (isDualPane) {
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mRecyclerView.scrollToPosition(mMovieAdapter.mSelectedPosition);
+                            }
+                        });
+                    }
                     break;
                 case VIEW_STATE_NO_FAVORITES:
                     showNoFavoritesView();
@@ -243,12 +245,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView.LayoutManager mLayoutManager =
-                new GridLayoutManager(getActivity(), calculateSpanCOunt());
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
         mSwipeRefreshLayout.setColorSchemeResources(
                 R.color.accent_color,
                 R.color.primary_color);
@@ -262,7 +258,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     /*Method to calculate grid span count*/
-    private int calculateSpanCOunt() {
+    private int calculateSpanCount() {
         int orientation = getResources().getConfiguration().orientation;
         int sw = getResources().getConfiguration().smallestScreenWidthDp;
         boolean landscape = (orientation == Configuration.ORIENTATION_LANDSCAPE);
@@ -302,8 +298,9 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 mMovieList = movies.results;
                 if (mMovieList != null && mMovieList.size() > 0) {
                     mMovieAdapter.setMovieList(mMovieList);
-                    mRecyclerView.setAdapter(mMovieAdapter);
-                    mMovieAdapter.notifyDataSetChanged();
+//                    mRecyclerView.setAdapter(mMovieAdapter);
+//                    mMovieAdapter.notifyDataSetChanged();
+                    mRecyclerView.scrollToPosition(0);
                     showResultView();
                 } else {
                     showErrorView();
@@ -319,7 +316,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     /*Method to get list of favorite movie ids in a reversed order*/
-    private ArrayList<String> getFavoriteList() {
+    public ArrayList<String> getFavoriteList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String favoritesString = prefs.getString("favorites", "");
         ArrayList<String> list = new ArrayList<>();
@@ -333,16 +330,15 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         return list;
     }
 
-    /*Method to determine if movie is in favorites list*/
-    private boolean ifMovieIsFavorite(String movieId) {
-        ArrayList<String> list = getFavoriteList();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(movieId)) {
-                isFavorite = true;
-                break;
-            }
-        }
-        return isFavorite;
+    /*Method to store sort order and checked menu item*/
+    private void setSortOrder(String sortOrder, int checkedMenuItem) {
+        mSortOrder = sortOrder;
+        mMovieAdapter.mSelectedPosition = 0;
+        SharedPreferences.Editor prefs = PreferenceManager.
+                getDefaultSharedPreferences(getActivity()).edit();
+        prefs.putString(MENU_SORT_ORDER, sortOrder);
+        prefs.putInt(MENU_CHECKED_STATE, checkedMenuItem);
+        prefs.apply();
     }
 
     /*Method to get sort order from SharedPreferences*/
@@ -359,6 +355,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mNoFavoritesLinearLayout.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
         hideLoadingView();
+        mMovieActionListener.onEmptyMovieList();
     }
 
     /*Method to show result view*/
@@ -367,6 +364,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mNoFavoritesLinearLayout.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
         hideLoadingView();
+        mMovieActionListener.onEmptyMovieList();
     }
 
     /*Method to show that there is no movie in favorites list*/
@@ -375,6 +373,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mNoFavoritesLinearLayout.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
         hideLoadingView();
+        mMovieActionListener.onEmptyMovieList();
     }
 
     /*Method to start swiperefreshlayout*/
@@ -414,8 +413,9 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             showErrorView();
         } else if (data.size() > 0) {
             mMovieAdapter.setMovieList(data);
-            mRecyclerView.setAdapter(mMovieAdapter);
-            mMovieAdapter.notifyDataSetChanged();
+//            mRecyclerView.setAdapter(mMovieAdapter);
+//            mMovieAdapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(0);
             showResultView();
         } else {
             showNoFavoritesView();
@@ -432,5 +432,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     public interface MovieActionListener {
         void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
+
+        void onEmptyMovieList();
     }
 }
