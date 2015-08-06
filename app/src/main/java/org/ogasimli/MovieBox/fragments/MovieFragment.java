@@ -114,7 +114,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         isDualPane = getArguments().getBoolean(IS_DUAL_PANE, false);
     }
 
-    //TODO: replace this with actionlistener, this results in destroying the view while orientation change
     @Override
     public void onResume() {
         super.onResume();
@@ -208,7 +207,9 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
         /*loadMovieData if savedInstanceState is null, load from already fetched data
          if savedInstanceSate is not null*/
-        if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)) {
+        if (savedInstanceState == null || !savedInstanceState.containsKey(LIST_STATE_KEY)
+                || !savedInstanceState.containsKey(VIEW_STATE_KEY)
+                || !savedInstanceState.containsKey(SELECTED_MOVIE_KEY)) {
             getData();
         } else {
             int state = savedInstanceState.getInt(VIEW_STATE_KEY, VIEW_STATE_ERROR);
@@ -401,6 +402,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
+    public void setDualPane(boolean isDualPane) {
+        this.isDualPane = isDualPane;
+    }
+
     /*Callbacks to query data from movie table*/
     @Override
     public Loader<ArrayList<MovieList.Movie>> onCreateLoader(int id, Bundle args) {
@@ -412,7 +417,8 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         if (data == null) {
             showErrorView();
         } else if (data.size() > 0) {
-            mMovieAdapter.setMovieList(data);
+            mMovieList = data;
+            mMovieAdapter.setMovieList(mMovieList);
 //            mRecyclerView.setAdapter(mMovieAdapter);
 //            mMovieAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(0);
@@ -426,13 +432,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onLoaderReset(Loader<ArrayList<MovieList.Movie>> loader) {
     }
 
-    public void setDualPane(boolean isDualPane) {
-        this.isDualPane = isDualPane;
+    public void favoriteChanged() {
+        if (isDualPane && mSortOrder.equals(getString(R.string.sort_order_favorites))) {
+            loadFavoriteMovies();
+        }
     }
 
     public interface MovieActionListener {
         void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
-
         void onEmptyMovieList();
     }
 }

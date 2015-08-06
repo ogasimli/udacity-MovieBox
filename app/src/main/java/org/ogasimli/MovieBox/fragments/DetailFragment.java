@@ -117,6 +117,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private boolean isConnected;
 
+    private DetailActionListener mDetailActionListener;
+
     public static DetailFragment getInstance(MovieList.Movie movie, boolean isFavorite) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
@@ -129,6 +131,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        if (activity instanceof DetailActionListener) {
+            mDetailActionListener = (DetailActionListener) activity;
+        }
     }
 
     @Override
@@ -258,15 +263,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     String.valueOf(mMovie.movieRating)));
         }
 
-        Context context = detailPosterImage.getContext();
-        Glide.with(context).
+        Glide.with(this).
                 load(mMovie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailPosterImage);
 
-        context = detailBackdropImage.getContext();
-        Glide.with(context).
+        Glide.with(this).
                 load(mMovie.getBackdropPosterUrl()).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
                 into(detailBackdropImage);
@@ -355,9 +358,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     /*Initialize Toolbar*/
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
+        if (mToolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         }
     }
 
@@ -459,6 +462,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("favorites", stringBuilder.toString());
         editor.apply();
+
+        if (mDetailActionListener != null) {
+            mDetailActionListener.onFavoriteChanged(isFavorite);
+        }
     }
 
     private void setFavorite(boolean favorite) {
@@ -548,6 +555,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoaderReset(Loader loader) {
+    }
+
+    public interface DetailActionListener {
+        void onFavoriteChanged(boolean isChanged);
     }
 
     class ReviewViewHolder {

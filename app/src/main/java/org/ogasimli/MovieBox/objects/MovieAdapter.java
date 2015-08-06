@@ -34,10 +34,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     final private MovieFragment.MovieActionListener movieActionListener;
 
     final private boolean isDualPane;
+
     public int mSelectedPosition;
+
     private ArrayList<MovieList.Movie> mMovieList;
+
     private boolean isFavorite;
+
     private OnItemClickListener mItemClickListener;
+
     private View view;
 
     public MovieAdapter(Context mContext, MovieFragment.MovieActionListener movieActionListener, boolean isDualPane) {

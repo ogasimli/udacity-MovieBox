@@ -18,8 +18,8 @@ import org.ogasimli.MovieBox.fragments.MovieFragment;
 import org.ogasimli.MovieBox.objects.MovieList;
 
 
-public class MainActivity extends AppCompatActivity
-        implements MovieFragment.MovieActionListener {
+public class MainActivity extends AppCompatActivity implements MovieFragment.MovieActionListener,
+        DetailFragment.DetailActionListener {
 
     private static final String DETAIL_FRAGMENT_TAG = "DFT";
 
@@ -29,11 +29,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isDualPane;
 
-    private DetailFragment mDetailFragment;
-
     private MovieFragment mMoviesFragment;
-
-    private FrameLayout mDetailContainer;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         //Get package name to use within intents
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        mDetailContainer = (FrameLayout) findViewById(R.id.detail_container);
+        FrameLayout mDetailContainer = (FrameLayout) findViewById(R.id.detail_container);
 
         isDualPane = (mDetailContainer != null);
 
@@ -83,10 +79,10 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         } else {
-            mDetailFragment = DetailFragment.getInstance(movie, isFavorite);
+            DetailFragment detailFragment = DetailFragment.getInstance(movie, isFavorite);
             getSupportFragmentManager().
                     beginTransaction().
-                    replace(R.id.detail_container, mDetailFragment, DETAIL_FRAGMENT_TAG).
+                    replace(R.id.detail_container, detailFragment, DETAIL_FRAGMENT_TAG).
                     commitAllowingStateLoss();
         }
     }
@@ -106,5 +102,12 @@ public class MainActivity extends AppCompatActivity
     private void initToolbar() {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+    }
+
+    @Override
+    public void onFavoriteChanged(boolean isChanged) {
+        if (!isChanged) {
+            mMoviesFragment.favoriteChanged();
+        }
     }
 }
