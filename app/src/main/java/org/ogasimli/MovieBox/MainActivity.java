@@ -2,13 +2,17 @@ package org.ogasimli.MovieBox;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
@@ -61,6 +65,49 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
                     findFragmentByTag(MOVIE_FRAGMENT_TAG);
             mMoviesFragment.setDualPane(isDualPane);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_fragment, menu);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int checked = prefs.getInt("checked", R.id.action_popularity);
+        MenuItem menuItem = menu.findItem(checked);
+        if (menuItem != null) {
+            menuItem.setChecked(true);
+        } else {
+            menu.findItem(R.id.action_popularity).setChecked(true);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String sortOrder = null;
+        int checkedMenuItem = 0;
+        switch (item.getItemId()) {
+            case R.id.action_popularity:
+                sortOrder = getResources().getString(R.string.sort_order_popularity);
+                checkedMenuItem = item.getItemId();
+                break;
+            case R.id.action_rating:
+                sortOrder = getResources().getString(R.string.sort_order_rating);
+                checkedMenuItem = item.getItemId();
+                break;
+            case R.id.action_revenue:
+                sortOrder = getResources().getString(R.string.sort_order_revenue);
+                checkedMenuItem = item.getItemId();
+                break;
+            case R.id.action_favorites:
+                sortOrder = getString(R.string.sort_order_favorites);
+                checkedMenuItem = item.getItemId();
+                break;
+        }
+        if (sortOrder != null) {
+            item.setChecked(!item.isChecked());
+            mMoviesFragment.setSortOrder(sortOrder, checkedMenuItem);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

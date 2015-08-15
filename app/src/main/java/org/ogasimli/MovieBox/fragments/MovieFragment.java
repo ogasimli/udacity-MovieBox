@@ -15,9 +15,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -110,7 +107,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         isDualPane = getArguments().getBoolean(IS_DUAL_PANE, false);
     }
 
@@ -140,7 +137,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     }
 
-    @Override
+/*    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main_fragment, menu);
 
@@ -152,13 +149,12 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         } else {
             menu.findItem(R.id.action_popularity).setChecked(true);
         }
-    }
+    }*/
 
-    @Override
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        String sortOrder;
-        int checkedMenuItem;
+        String sortOrder = null;
+        int checkedMenuItem = 0;
         switch (item.getItemId()) {
             case R.id.action_popularity:
                 sortOrder = getResources().getString(R.string.sort_order_popularity);
@@ -176,16 +172,15 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 sortOrder = getString(R.string.sort_order_favorites);
                 checkedMenuItem = item.getItemId();
                 break;
-            default:
-                return super.onOptionsItemSelected(item);
         }
         if (sortOrder != null) {
             item.setChecked(!item.isChecked());
             setSortOrder(sortOrder, checkedMenuItem);
             getData();
         }
-        return true;
-    }
+
+        return super.onOptionsItemSelected(item);
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -332,7 +327,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     /*Method to store sort order and checked menu item*/
-    private void setSortOrder(String sortOrder, int checkedMenuItem) {
+    public void setSortOrder(String sortOrder, int checkedMenuItem) {
         mSortOrder = sortOrder;
         mMovieAdapter.mSelectedPosition = 0;
         SharedPreferences.Editor prefs = PreferenceManager.
@@ -340,6 +335,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         prefs.putString(MENU_SORT_ORDER, sortOrder);
         prefs.putInt(MENU_CHECKED_STATE, checkedMenuItem);
         prefs.apply();
+        getData();
     }
 
     /*Method to get sort order from SharedPreferences*/

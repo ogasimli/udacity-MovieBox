@@ -166,6 +166,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     @Override
+    public void onDestroyOptionsMenu() {
+        super.onDestroyOptionsMenu();
+        Log.e("Menu", "Destroyed!!");
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_share) {
             Intent intent = new Intent();
@@ -358,9 +364,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     /*Initialize Toolbar*/
     private void initToolbar() {
-        Toolbar mToolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
-        if (mToolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
+        if (toolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
     }
 
@@ -410,6 +416,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private void addReviewsToList() {
         if (mReviewList != null && mReviewList.size() > 0) {
             mReviewListView.removeAllViews();
+            //TODO: Handle NullPointerException
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             Random random = new Random();
             for (ReviewList.Review review : mReviewList) {

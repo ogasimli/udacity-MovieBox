@@ -161,8 +161,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void selectMovie(int position, View view) {
         int prevPosition = mSelectedPosition;
         mSelectedPosition = position;
-        notifyItemChanged(position);
-        notifyItemChanged(prevPosition);
+//        notifyItemChanged(position);
+//        notifyItemChanged(prevPosition);
         MovieList.Movie movie = mMovieList.get(position);
         ifMovieIsFavorite(movie.movieId);
         movieActionListener.onMovieSelected(movie, isFavorite, view);
