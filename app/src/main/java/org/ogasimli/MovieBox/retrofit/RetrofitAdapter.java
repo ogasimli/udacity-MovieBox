@@ -12,7 +12,14 @@ import retrofit.RestAdapter;
 public class RetrofitAdapter {
 
     private final static String BASE_URL = "http://api.themoviedb.org/3/";
-    private final static String API_KEY = "65f1348325dc3a10a0a408c9c9100c31";
+
+    private final static String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
+    private static final RequestInterceptor mRequestInterceptor = new RequestInterceptor() {
+        @Override
+        public void intercept(RequestFacade request) {
+            request.addQueryParam("api_key", API_KEY);
+        }
+    };
     private static RestAdapter mRestAdapter;
 
     public static RestAdapter getRestAdapter() {
@@ -28,11 +35,4 @@ public class RetrofitAdapter {
         }
         return mRestAdapter;
     }
-
-    private static final RequestInterceptor mRequestInterceptor = new RequestInterceptor() {
-        @Override
-        public void intercept(RequestFacade request) {
-            request.addQueryParam("api_key", API_KEY);
-        }
-    };
 }
