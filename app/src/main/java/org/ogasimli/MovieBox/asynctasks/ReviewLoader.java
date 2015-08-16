@@ -12,12 +12,12 @@ import org.ogasimli.MovieBox.provigen.ReviewContract;
 import java.util.ArrayList;
 
 /**
- * Async task loader to load rreviews
+ * Async task loader to load reviews
  * Created by ogasimli on 26.07.2015.
  */
 public class ReviewLoader extends AsyncTaskLoader<ArrayList<ReviewList.Review>> {
 
-    private String mMovieId;
+    private final String mMovieId;
 
     private ArrayList<ReviewList.Review> mReviewList;
 

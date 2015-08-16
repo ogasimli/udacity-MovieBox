@@ -312,7 +312,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     /*Method to get list of favorite movie ids in a reversed order*/
-    public ArrayList<String> getFavoriteList() {
+    private ArrayList<String> getFavoriteList() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String favoritesString = prefs.getString("favorites", "");
         ArrayList<String> list = new ArrayList<>();
@@ -373,7 +373,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mMovieActionListener.onEmptyMovieList();
     }
 
-    /*Method to start swiperefreshlayout*/
+    /*Method to start SwipeRefreshLayout*/
     private void showLoadingView() {
         mRecyclerView.setVisibility(View.GONE);
         mSwipeRefreshLayout.post(new Runnable() {
@@ -386,7 +386,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         });
     }
 
-    /*Method to cancel swiperefreshlayout*/
+    /*Method to cancel SwipeRefreshLayout*/
     private void hideLoadingView() {
         mSwipeRefreshLayout.post(new Runnable() {
             @Override

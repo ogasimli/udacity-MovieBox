@@ -85,7 +85,8 @@
                     android:layout_margin="5dp"
                     android:contentDescription="@string/poster_description"
                     android:scaleType="centerCrop"
-                    android:transitionName="poster" />
+                    android:transitionName="poster"
+                    tools:ignore="UnusedAttribute" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

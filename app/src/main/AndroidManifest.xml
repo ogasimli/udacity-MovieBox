@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.ogasimli.MovieBox">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,8 +22,9 @@
         <activity
             android:name="org.ogasimli.MovieBox.DetailActivity"
             android:label=""
+            android:parentActivityName="org.ogasimli.MovieBox.MainActivity"
             android:theme="@style/DetailsTheme"
-            android:parentActivityName="org.ogasimli.MovieBox.MainActivity">
+            tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.ogasimli.MovieBox.MainActivity" />

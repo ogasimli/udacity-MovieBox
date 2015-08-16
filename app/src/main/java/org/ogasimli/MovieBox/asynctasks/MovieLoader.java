@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class MovieLoader extends AsyncTaskLoader<ArrayList<MovieList.Movie>> {
 
-    private ArrayList<String> mMovieIds;
+    private final ArrayList<String> mMovieIds;
 
     public MovieLoader(Context context, ArrayList<String> mMovieIds) {
         super(context);

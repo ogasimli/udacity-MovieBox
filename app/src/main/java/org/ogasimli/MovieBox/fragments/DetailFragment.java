@@ -538,7 +538,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         newFragment.show(fragmentManager, "dialog");
     }
 
-    /*Callbacks to qery data from trailer and review tables*/
+    /*Callbacks to query data from trailer and review tables*/
     @SuppressWarnings("unchecked")
     @Override
     public Loader onCreateLoader(int id, Bundle args) {

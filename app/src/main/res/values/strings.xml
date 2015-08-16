@@ -1,29 +1,14 @@
 <resources>
-    <string name="app_name" translatable="false">Movie Box</string>
     <string name="sort_by_popularity">Popularity</string>
     <string name="sort_by_rating">Rating</string>
     <string name="sort_by_revenue">Revenue</string>
-    <string name="sort_order_popularity" translatable="false">popularity.desc</string>
-    <string name="sort_order_rating" translatable="false">vote_average.desc</string>
-    <string name="sort_order_revenue" translatable="false">revenue.desc</string>
-    <string name="sort_order_favorites" translatable="false">favorites</string>
-    <string name="detail_rating" translatable="false">%1$s / 10</string>
-    <string name="transition_label" translatable="false">poster</string>
-    <string name="poster_description">Posters of films</string>
-    <string name="backdrop_poster_description">Backdrop posters of films</string>
-    <string name="genre_icon_description">Movie genre</string>
     <string name="overview_caption">Overview</string>
-    <string name="movie_release_date_image_description">Movie release date</string>
-    <string name="check_state" translatable="false">checked</string>
     <string name="no_result">Ooops! Connection problem.</string>
     <string name="refine_search">Swipe down to try again</string>
-    <string name="unable_to_fetch_data_message">Can\'t get movies</string>
-    <string name="error_image_description">Error image</string>
     <string name="menu_sort">Sort</string>
     <string name="no_overview">No overview available.</string>
     <string name="unknown_genre_text">Unknown</string>
     <string name="no_review">No user review available.</string>
-    <string name="user_avatar_description">User avatar</string>
     <string name="user_reviews_caption">User reviews</string>
     <string name="added_to_favorites_snackbar">Movie added to favorites</string>
     <string name="removed_from_favorites_snackbar">Movie removed from favorites</string>
@@ -33,4 +18,21 @@
     <string name="menu_share">Share</string>
     <string name="share_trailer_text" formatted="false">Check out the trailer of "%s": %s</string>
     <string name="share_trailer_title">Share this video via</string>
+
+    <!-- Content descriptions for images -->
+    <string name="poster_description">Posters of films</string>
+    <string name="backdrop_poster_description">Backdrop posters of films</string>
+    <string name="genre_icon_description">Movie genre</string>
+    <string name="movie_release_date_image_description">Movie release date</string>
+    <string name="error_image_description">Error image</string>
+    <string name="user_avatar_description">User avatar</string>
+
+    <!-- Non translatable strings -->
+    <string name="app_name" translatable="false">Movie Box</string>
+    <string name="sort_order_popularity" translatable="false">popularity.desc</string>
+    <string name="sort_order_rating" translatable="false">vote_average.desc</string>
+    <string name="sort_order_revenue" translatable="false">revenue.desc</string>
+    <string name="sort_order_favorites" translatable="false">favorites</string>
+    <string name="detail_rating" translatable="false">%1$s / 10</string>
+    <string name="transition_label" translatable="false">poster</string>
 </resources>

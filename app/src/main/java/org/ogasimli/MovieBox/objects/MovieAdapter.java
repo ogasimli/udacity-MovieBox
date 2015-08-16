@@ -159,10 +159,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     }
 
     public void selectMovie(int position, View view) {
-        int prevPosition = mSelectedPosition;
         mSelectedPosition = position;
-//        notifyItemChanged(position);
-//        notifyItemChanged(prevPosition);
+        notifyDataSetChanged();
         MovieList.Movie movie = mMovieList.get(position);
         ifMovieIsFavorite(movie.movieId);
         movieActionListener.onMovieSelected(movie, isFavorite, view);
@@ -208,18 +206,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
         public final RatingBar movieRating;
 
-        public final String id[];
-
-        public final String value[];
-
         public ViewHolder(View itemView) {
             super(itemView);
             movieTitle = (TextView) itemView.findViewById(R.id.movie_title_text);
             movieGenre = (TextView) itemView.findViewById(R.id.movie_genre_text);
             moviePoster = (ImageView) itemView.findViewById(R.id.movie_poster);
             movieRating = (RatingBar) itemView.findViewById(R.id.rating_bar);
-            id = itemView.getResources().getStringArray(R.array.genre_id);
-            value = itemView.getResources().getStringArray(R.array.genre_id_values);
+            String id[] = itemView.getResources().getStringArray(R.array.genre_id);
+            String value[] = itemView.getResources().getStringArray(R.array.genre_id_values);
             itemView.setOnClickListener(this);
         }
 

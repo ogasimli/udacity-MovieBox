@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class TrailerLoader extends AsyncTaskLoader<ArrayList<TrailerList.Trailer>> {
 
-    private String mMovieId;
+    private final String mMovieId;
 
     private ArrayList<TrailerList.Trailer> mTrailerList;
 
