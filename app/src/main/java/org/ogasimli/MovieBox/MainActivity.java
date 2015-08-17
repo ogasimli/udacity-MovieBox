@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
     }
 
     @Override
-    public void onEmptyMovieList() {
+    public void onNoResultList() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(DETAIL_FRAGMENT_TAG);
         if (isDualPane && fragment != null) {

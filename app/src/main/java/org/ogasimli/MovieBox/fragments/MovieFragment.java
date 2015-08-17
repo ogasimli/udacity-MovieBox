@@ -307,7 +307,7 @@ public class MovieFragment extends Fragment
         mNoFavoritesLinearLayout.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
         hideLoadingView();
-        mMovieActionListener.onEmptyMovieList();
+        mMovieActionListener.onNoResultList();
     }
 
     /*Method to show result view*/
@@ -316,7 +316,7 @@ public class MovieFragment extends Fragment
         mNoFavoritesLinearLayout.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
         hideLoadingView();
-        mMovieActionListener.onEmptyMovieList();
+        mMovieActionListener.onNoResultList();
     }
 
     /*Method to show that there is no movie in favorites list*/
@@ -325,7 +325,7 @@ public class MovieFragment extends Fragment
         mNoFavoritesLinearLayout.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
         hideLoadingView();
-        mMovieActionListener.onEmptyMovieList();
+        mMovieActionListener.onNoResultList();
     }
 
     /*Method to start SwipeRefreshLayout*/
@@ -391,6 +391,6 @@ public class MovieFragment extends Fragment
     /** Movie action listeners */
     public interface MovieActionListener {
         void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
-        void onEmptyMovieList();
+        void onNoResultList();
     }
 }
