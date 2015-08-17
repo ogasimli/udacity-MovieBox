@@ -22,13 +22,9 @@ After that just replace YOUR_API_KEY with your valid TMDB api key.
 
 ## Screens
 
-![screen](../master/art/phone-movies.png)
+![screen](../master/screenshots/main_phone.png)
 
-![screen](../master/art/phone-details.png)
-
-![screen](../master/art/tablet-port.png)
-
-![screen](../master/art/tablet-land.png)
+![screen](../master/screenshots/detail_phone.png)
 
 ## Libraries Used
 
@@ -40,7 +36,7 @@ After that just replace YOUR_API_KEY with your valid TMDB api key.
 ## Android Developer Nanodegree
 [![udacity][1]][2]
 
-[1]: ../master/art/nanodegree-logo.png
+[1]: ../master/screenshots/nanodegree.png
 [2]: https://www.udacity.com/course/android-developer-nanodegree--nd801
 
 ## License
