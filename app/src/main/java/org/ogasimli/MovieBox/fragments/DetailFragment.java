@@ -62,6 +62,7 @@ import java.util.StringTokenizer;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -138,9 +139,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @InjectView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
 
+    @Optional
     @InjectView(R.id.collapsing_toolbar_layout)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
 
+    @Optional
     @InjectView(R.id.detail_toolbar)
     Toolbar mToolbar;
 
@@ -202,12 +205,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         inflater.inflate(R.menu.menu_detail_fragment, menu);
         mShareButton = menu.findItem(R.id.menu_share);
         mShareButton.setEnabled(mTrailerList != null && mTrailerList.size() > 0);
-    }
-
-    @Override
-    public void onDestroyOptionsMenu() {
-        super.onDestroyOptionsMenu();
-        Log.e("Menu", "Destroyed!!");
     }
 
     @Override
@@ -439,7 +436,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private void addReviewsToList() {
         if (mReviewList != null && mReviewList.size() > 0) {
             mReviewListView.removeAllViews();
-            //TODO: Handle NullPointerException
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             Random random = new Random();
             for (ReviewList.Review review : mReviewList) {
