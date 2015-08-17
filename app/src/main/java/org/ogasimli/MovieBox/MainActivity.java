@@ -34,12 +34,16 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
     private static final String MOVIE_FRAGMENT_TAG = "MFT";
 
     public static String PACKAGE_NAME;
+
     @InjectView(R.id.toolbar)
     Toolbar mToolbar;
+
     @Optional
     @InjectView(R.id.detail_container)
     FrameLayout mDetailContainer;
+
     private boolean isDualPane;
+
     private MovieFragment mMoviesFragment;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

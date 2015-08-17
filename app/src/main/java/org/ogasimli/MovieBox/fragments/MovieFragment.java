@@ -66,20 +66,21 @@ public class MovieFragment extends Fragment
     private static final int MOVIE_LOADER_ID = 0;
 
     @InjectView(R.id.error_view)
-    private LinearLayout mErrorLinearLayout;
+    LinearLayout mErrorLinearLayout;
 
     @InjectView(R.id.no_favorites_view)
-    private LinearLayout mNoFavoritesLinearLayout;
+    LinearLayout mNoFavoritesLinearLayout;
 
     @InjectView(R.id.recycler_view)
-    private RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView;
 
     @InjectView(R.id.swipe_refresh_layout)
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     private String mSortOrder;
 
     private MovieAdapter mMovieAdapter;
+
     private final MovieAdapter.OnItemClickListener itemClickListener
             = new MovieAdapter.OnItemClickListener() {
         @Override

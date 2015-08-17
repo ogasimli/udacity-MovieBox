@@ -204,16 +204,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @InjectView(R.id.movie_title_text)
-        public TextView mMovieTitle;
+        TextView mMovieTitle;
 
         @InjectView(R.id.movie_genre_text)
-        public TextView mMovieGenre;
+        TextView mMovieGenre;
 
         @InjectView(R.id.movie_poster)
-        public ImageView mMoviePoster;
+        ImageView mMoviePoster;
 
         @InjectView(R.id.rating_bar)
-        public RatingBar mMovieRating;
+        RatingBar mMovieRating;
 
         public ViewHolder(View itemView) {
             super(itemView);

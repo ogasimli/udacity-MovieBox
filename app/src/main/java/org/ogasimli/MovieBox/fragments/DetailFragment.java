@@ -98,54 +98,37 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private final static int TRAILER_LOADER_ID = 0;
 
     private final static int REVIEW_LOADER_ID = 1;
-
-    private MovieList.Movie mMovie;
-
     @InjectView(R.id.backdrop_image)
-    private ImageView mBackdropImage;
-
+    ImageView mBackdropImage;
     @InjectView(R.id.detail_movie_poster)
-    private ImageView mPosterImage;
-
+    ImageView mPosterImage;
     @InjectView(R.id.detail_title_text)
-    private TextView mMovieTitle;
-
+    TextView mMovieTitle;
     @InjectView(R.id.detail_genre_text)
-    private TextView mMovieGenre;
-
+    TextView mMovieGenre;
     @InjectView(R.id.detail_release_text)
-    private TextView mMovieRelease;
-
+    TextView mMovieRelease;
     @InjectView(R.id.detail_rating_text)
-    private TextView mMovieRating;
-
+    TextView mMovieRating;
     @InjectView(R.id.detail_rating_bar)
-    private RatingBar mRatingBar;
-
+    RatingBar mRatingBar;
     @InjectView(R.id.detail_overview_text)
-    private TextView mMovieOverview;
-
+    TextView mMovieOverview;
     @InjectView(R.id.play_image)
-    private ImageButton mTrailerImageButton;
-
+    ImageButton mTrailerImageButton;
     @InjectView(R.id.fab)
-    private FloatingActionButton mFab;
-
+    FloatingActionButton mFab;
     @InjectView(R.id.list_view_review)
-    private LinearLayout mReviewListView;
-
+    LinearLayout mReviewListView;
     @InjectView(R.id.detail_review_text)
-    private TextView mNoReviewTextView;
-
+    TextView mNoReviewTextView;
     @InjectView(R.id.coordinator_layout)
-    private CoordinatorLayout mCoordinatorLayout;
-
+    CoordinatorLayout mCoordinatorLayout;
     @InjectView(R.id.collapsing_toolbar_layout)
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
-
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     @InjectView(R.id.detail_toolbar)
-    private Toolbar mToolbar;
-
+    Toolbar mToolbar;
+    private MovieList.Movie mMovie;
     private MenuItem mShareButton;
 
     private ArrayList<TrailerList.Trailer> mTrailerList;
