@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -63,24 +65,21 @@ public class MovieFragment extends Fragment
 
     private static final int MOVIE_LOADER_ID = 0;
 
+    @InjectView(R.id.error_view)
     private LinearLayout mErrorLinearLayout;
 
+    @InjectView(R.id.no_favorites_view)
     private LinearLayout mNoFavoritesLinearLayout;
 
+    @InjectView(R.id.recycler_view)
     private RecyclerView mRecyclerView;
 
+    @InjectView(R.id.swipe_refresh_layout)
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private String mSortOrder;
 
     private MovieAdapter mMovieAdapter;
-
-    private ArrayList<MovieList.Movie> mMovieList;
-
-    private MovieActionListener mMovieActionListener;
-
-    private boolean isDualPane;
-
     private final MovieAdapter.OnItemClickListener itemClickListener
             = new MovieAdapter.OnItemClickListener() {
         @Override
@@ -88,6 +87,9 @@ public class MovieFragment extends Fragment
             mMovieAdapter.selectMovie(position, v.findViewById(R.id.movie_poster));
         }
     };
+    private ArrayList<MovieList.Movie> mMovieList;
+    private MovieActionListener mMovieActionListener;
+    private boolean isDualPane;
 
     public static MovieFragment getInstance(boolean isDualPane) {
         MovieFragment fragment = new MovieFragment();
@@ -144,11 +146,8 @@ public class MovieFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.inject(this, rootView);
 
-        mErrorLinearLayout = (LinearLayout) rootView.findViewById(R.id.error_view);
-        mNoFavoritesLinearLayout = (LinearLayout) rootView.findViewById(R.id.no_favorites_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         mMovieAdapter = new MovieAdapter(getActivity(), mMovieActionListener, isDualPane);
         mMovieAdapter.setOnItemClickListener(itemClickListener);
         RecyclerView.LayoutManager mLayoutManager =
@@ -381,6 +380,7 @@ public class MovieFragment extends Fragment
     public void onLoaderReset(Loader<ArrayList<MovieList.Movie>> loader) {
     }
 
+    /*Method to reload data if favorite movie added/removed*/
     public void favoriteChanged() {
         if (isDualPane && mSortOrder.equals(getString(R.string.sort_order_favorites))) {
             loadFavoriteMovies();

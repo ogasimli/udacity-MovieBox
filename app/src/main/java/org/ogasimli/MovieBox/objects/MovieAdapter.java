@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.StringTokenizer;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Custom Adapter for movies
  * Created by ogasimli on 01.07.2015.
@@ -60,7 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         ViewHolder viewHolder = new ViewHolder(view);
 
         //Change the color of ratingBar
-        tintRatingBar(view, viewHolder.movieRating);
+        tintRatingBar(view, viewHolder.mMovieRating);
 
         return viewHolder;
     }
@@ -69,22 +72,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         MovieList.Movie movie = mMovieList.get(i);
 
-        viewHolder.movieTitle.setText(movie.movieTitle);
+        viewHolder.mMovieTitle.setText(movie.movieTitle);
 
         if (movie.movieGenre != null) {
-            viewHolder.movieGenre.setText(movie.movieGenre);
+            viewHolder.mMovieGenre.setText(movie.movieGenre);
         } else {
             movie.movieGenre = determineGenre(view, movie.genreIds);
-            viewHolder.movieGenre.setText(movie.movieGenre);
+            viewHolder.mMovieGenre.setText(movie.movieGenre);
         }
 
-        Glide.with(viewHolder.moviePoster.getContext()).
+        Glide.with(viewHolder.mMoviePoster.getContext()).
                 load(movie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
-                into(viewHolder.moviePoster);
+                into(viewHolder.mMoviePoster);
 
-        viewHolder.movieRating.setRating(decreaseRating(movie.movieRating));
+        viewHolder.mMovieRating.setRating(decreaseRating(movie.movieRating));
 
         if (isDualPane) {
             viewHolder.itemView.setSelected(mSelectedPosition == i);
@@ -197,22 +200,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         void onItemClick(View v, int position);
     }
 
+    /*Movie view holder class*/
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public final TextView movieTitle;
+        @InjectView(R.id.movie_title_text)
+        public TextView mMovieTitle;
 
-        public final TextView movieGenre;
+        @InjectView(R.id.movie_genre_text)
+        public TextView mMovieGenre;
 
-        public final ImageView moviePoster;
+        @InjectView(R.id.movie_poster)
+        public ImageView mMoviePoster;
 
-        public final RatingBar movieRating;
+        @InjectView(R.id.rating_bar)
+        public RatingBar mMovieRating;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            movieTitle = (TextView) itemView.findViewById(R.id.movie_title_text);
-            movieGenre = (TextView) itemView.findViewById(R.id.movie_genre_text);
-            moviePoster = (ImageView) itemView.findViewById(R.id.movie_poster);
-            movieRating = (RatingBar) itemView.findViewById(R.id.rating_bar);
+            ButterKnife.inject(this, itemView);
             itemView.setOnClickListener(this);
         }
 

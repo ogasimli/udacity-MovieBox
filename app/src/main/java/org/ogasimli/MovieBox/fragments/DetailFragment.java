@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -99,13 +101,50 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private MovieList.Movie mMovie;
 
+    @InjectView(R.id.backdrop_image)
+    private ImageView mBackdropImage;
+
+    @InjectView(R.id.detail_movie_poster)
+    private ImageView mPosterImage;
+
+    @InjectView(R.id.detail_title_text)
+    private TextView mMovieTitle;
+
+    @InjectView(R.id.detail_genre_text)
+    private TextView mMovieGenre;
+
+    @InjectView(R.id.detail_release_text)
+    private TextView mMovieRelease;
+
+    @InjectView(R.id.detail_rating_text)
+    private TextView mMovieRating;
+
+    @InjectView(R.id.detail_rating_bar)
+    private RatingBar mRatingBar;
+
+    @InjectView(R.id.detail_overview_text)
+    private TextView mMovieOverview;
+
+    @InjectView(R.id.play_image)
     private ImageButton mTrailerImageButton;
 
-    private FloatingActionButton fab;
+    @InjectView(R.id.fab)
+    private FloatingActionButton mFab;
 
+    @InjectView(R.id.list_view_review)
     private LinearLayout mReviewListView;
 
+    @InjectView(R.id.detail_review_text)
     private TextView mNoReviewTextView;
+
+    @InjectView(R.id.coordinator_layout)
+    private CoordinatorLayout mCoordinatorLayout;
+
+    @InjectView(R.id.collapsing_toolbar_layout)
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+
+    @InjectView(R.id.detail_toolbar)
+    private Toolbar mToolbar;
 
     private MenuItem mShareButton;
 
@@ -200,21 +239,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-
-        ImageView detailBackdropImage = (ImageView) rootView.findViewById(R.id.backdrop_image);
-        ImageView detailPosterImage = (ImageView) rootView.findViewById(R.id.detail_movie_poster);
-        TextView detailMovieTitle = (TextView) rootView.findViewById(R.id.detail_title_text);
-        TextView detailMovieGenre = (TextView) rootView.findViewById(R.id.detail_genre_text);
-        TextView detailMovieRelease = (TextView) rootView.findViewById(R.id.detail_release_text);
-        TextView detailMovieRating = (TextView) rootView.findViewById(R.id.detail_rating_text);
-        RatingBar detailRatingBar = (RatingBar) rootView.findViewById(R.id.detail_rating_bar);
-        TextView detailMovieOverview = (TextView) rootView.findViewById(R.id.detail_overview_text);
-        mTrailerImageButton = (ImageButton) rootView.findViewById(R.id.play_image);
-        mReviewListView = (LinearLayout) rootView.findViewById(R.id.list_view_review);
-        mNoReviewTextView = (TextView) rootView.findViewById(R.id.detail_review_text);
-        final CoordinatorLayout mCoordinatorLayout = (CoordinatorLayout)
-                rootView.findViewById(R.id.coordinator_layout);
-        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        ButterKnife.inject(this, rootView);
 
         if (savedInstanceState == null) {
             ifDeviceIsConnected();
@@ -253,18 +278,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         setFavorite(isFavorite);
 
-        tintRatingBar(rootView, detailRatingBar);
+        tintRatingBar(rootView, mRatingBar);
 
-        detailMovieTitle.setText(mMovie.movieTitle);
-        detailMovieGenre.setText(mMovie.movieGenre);
-        detailMovieRelease.setText(mMovie.movieReleaseDate);
-        detailRatingBar.setRating((float) mMovie.movieRating);
+        mMovieTitle.setText(mMovie.movieTitle);
+        mMovieGenre.setText(mMovie.movieGenre);
+        mMovieRelease.setText(mMovie.movieReleaseDate);
+        mRatingBar.setRating((float) mMovie.movieRating);
 
         if (mMovie.movieRating == 10.0) {
-            detailMovieRating.setText(String.format(rootView.getResources().
+            mMovieRating.setText(String.format(rootView.getResources().
                     getString(R.string.detail_rating), "10"));
         } else {
-            detailMovieRating.setText(String.format(rootView.getResources().
+            mMovieRating.setText(String.format(rootView.getResources().
                             getString(R.string.detail_rating),
                     String.valueOf(mMovie.movieRating)));
         }
@@ -273,22 +298,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 load(mMovie.getPosterUrl()).
                 placeholder(R.drawable.movie_placeholder).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
-                into(detailPosterImage);
+                into(mPosterImage);
 
         Glide.with(this).
                 load(mMovie.getBackdropPosterUrl()).
                 diskCacheStrategy(DiskCacheStrategy.ALL).
-                into(detailBackdropImage);
+                into(mBackdropImage);
 
         if (mMovie.movieOverview != null) {
-            detailMovieOverview.setText(mMovie.movieOverview);
+            mMovieOverview.setText(mMovie.movieOverview);
         } else {
-            detailMovieOverview.setText(R.string.no_overview);
+            mMovieOverview.setText(R.string.no_overview);
         }
 
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.grow);
-        fab.startAnimation(animation);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab.startAnimation(animation);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 favoriteMovie();
@@ -352,11 +377,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     /*Initialize CollapsingToolbarLayout*/
     private void initCollapsingToolbar() {
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) getActivity().
-                findViewById(R.id.collapsing_toolbar_layout);
-        if (collapsingToolbarLayout != null) {
-            collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
-            collapsingToolbarLayout.setTitle(mMovie.movieTitle);
+        if (mCollapsingToolbarLayout != null) {
+            mCollapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+            mCollapsingToolbarLayout.setTitle(mMovie.movieTitle);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -364,9 +387,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     /*Initialize Toolbar*/
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.detail_toolbar);
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (mToolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         }
     }
 
@@ -485,7 +507,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             resId = R.drawable.ic_favorite;
         }
         if (getActivity() != null) {
-            fab.setImageDrawable(ContextCompat.getDrawable(getActivity(), resId));
+            mFab.setImageDrawable(ContextCompat.getDrawable(getActivity(), resId));
         }
     }
 
@@ -571,16 +593,20 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         void onFavoriteChanged(boolean isChanged);
     }
 
+    /*View holder class for user reviews*/
     class ReviewViewHolder {
 
-        public final TextView userName;
-        public final TextView reviewContent;
-        public final ImageView userAvatar;
+        @InjectView(R.id.user_name_text_view)
+        TextView userName;
+
+        @InjectView(R.id.review_content_text_view)
+        TextView reviewContent;
+
+        @InjectView(R.id.avatar_image)
+        ImageView userAvatar;
 
         public ReviewViewHolder(View itemView) {
-            userName = (TextView) itemView.findViewById(R.id.user_name_text_view);
-            reviewContent = (TextView) itemView.findViewById(R.id.review_content_text_view);
-            userAvatar = (ImageView) itemView.findViewById(R.id.avatar_image);
+            ButterKnife.inject(this, itemView);
         }
     }
 }

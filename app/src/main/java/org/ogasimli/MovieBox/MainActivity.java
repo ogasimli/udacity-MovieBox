@@ -21,6 +21,10 @@ import org.ogasimli.MovieBox.fragments.DetailFragment;
 import org.ogasimli.MovieBox.fragments.MovieFragment;
 import org.ogasimli.MovieBox.objects.MovieList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.MovieActionListener,
         DetailFragment.DetailActionListener {
@@ -30,9 +34,12 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
     private static final String MOVIE_FRAGMENT_TAG = "MFT";
 
     public static String PACKAGE_NAME;
-
+    @InjectView(R.id.toolbar)
+    Toolbar mToolbar;
+    @Optional
+    @InjectView(R.id.detail_container)
+    FrameLayout mDetailContainer;
     private boolean isDualPane;
-
     private MovieFragment mMoviesFragment;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -42,15 +49,13 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
         getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
 
         initToolbar();
 
         //Get package name to use within intents
         PACKAGE_NAME = getApplicationContext().getPackageName();
-
-        FrameLayout mDetailContainer = (FrameLayout) findViewById(R.id.detail_container);
 
         isDualPane = (mDetailContainer != null);
 
@@ -147,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
 
     /*Initialize Toolbar*/
     private void initToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
     }
 
