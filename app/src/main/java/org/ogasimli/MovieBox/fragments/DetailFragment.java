@@ -98,37 +98,54 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private final static int TRAILER_LOADER_ID = 0;
 
     private final static int REVIEW_LOADER_ID = 1;
+
     @InjectView(R.id.backdrop_image)
     ImageView mBackdropImage;
+
     @InjectView(R.id.detail_movie_poster)
     ImageView mPosterImage;
+
     @InjectView(R.id.detail_title_text)
     TextView mMovieTitle;
+
     @InjectView(R.id.detail_genre_text)
     TextView mMovieGenre;
+
     @InjectView(R.id.detail_release_text)
     TextView mMovieRelease;
+
     @InjectView(R.id.detail_rating_text)
     TextView mMovieRating;
+
     @InjectView(R.id.detail_rating_bar)
     RatingBar mRatingBar;
+
     @InjectView(R.id.detail_overview_text)
     TextView mMovieOverview;
+
     @InjectView(R.id.play_image)
     ImageButton mTrailerImageButton;
+
     @InjectView(R.id.fab)
     FloatingActionButton mFab;
+
     @InjectView(R.id.list_view_review)
     LinearLayout mReviewListView;
+
     @InjectView(R.id.detail_review_text)
     TextView mNoReviewTextView;
+
     @InjectView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+
     @InjectView(R.id.collapsing_toolbar_layout)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
+
     @InjectView(R.id.detail_toolbar)
     Toolbar mToolbar;
+
     private MovieList.Movie mMovie;
+
     private MenuItem mShareButton;
 
     private ArrayList<TrailerList.Trailer> mTrailerList;
@@ -359,6 +376,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     /*Initialize CollapsingToolbarLayout*/
+    @SuppressWarnings("ConstantConditions")
     private void initCollapsingToolbar() {
         if (mCollapsingToolbarLayout != null) {
             mCollapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
