@@ -45,7 +45,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private View view;
 
-    public MovieAdapter(Context mContext, MovieFragment.MovieActionListener movieActionListener, boolean isDualPane) {
+    public MovieAdapter(Context mContext,
+                        MovieFragment.MovieActionListener movieActionListener,
+                        boolean isDualPane) {
         this.mContext = mContext;
         this.movieActionListener = movieActionListener;
         this.isDualPane = isDualPane;

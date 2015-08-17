@@ -1,0 +1,11 @@
+<resources>
+    <!--Dimen fro backdrop poster-->
+    <dimen name="backdrop_poster_height">300dp</dimen>
+
+    <!--Dimen for poster-->
+    <dimen name="poster_height">250dp</dimen>
+    <dimen name="poster_width">170dp</dimen>
+
+    <!--Dimen for genre and release date icons-->
+    <dimen name="icon_size">45dp</dimen>
+</resources>

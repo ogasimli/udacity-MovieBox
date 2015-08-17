@@ -475,6 +475,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     }
 
+    /*Change the favorite status of the movie*/
     private void setFavorite(boolean favorite) {
         isFavorite = favorite;
         int resId;
@@ -532,6 +533,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 .execute(values);
     }
 
+    /*Show dialog fragment*/
     private void showDialog() {
         FragmentManager fragmentManager = getFragmentManager();
         android.support.v4.app.DialogFragment newFragment = TrailerDialogFragment.getInstance(mTrailerList);
@@ -564,6 +566,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoaderReset(Loader loader) {
     }
 
+    /*Action listener that notifies if the favorite movie is changed*/
     public interface DetailActionListener {
         void onFavoriteChanged(boolean isChanged);
     }

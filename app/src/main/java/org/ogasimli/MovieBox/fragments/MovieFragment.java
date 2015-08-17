@@ -40,7 +40,8 @@ import retrofit.client.Response;
  * A placeholder fragment containing list of movies.
  * Created by ogasimli on 01.07.2015.
  */
-public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<MovieList.Movie>> {
+public class MovieFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<ArrayList<MovieList.Movie>> {
 
     private static final String LIST_STATE_KEY = "list_state";
 
@@ -73,6 +74,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     private String mSortOrder;
 
     private MovieAdapter mMovieAdapter;
+
+    private ArrayList<MovieList.Movie> mMovieList;
+
+    private MovieActionListener mMovieActionListener;
+
+    private boolean isDualPane;
+
     private final MovieAdapter.OnItemClickListener itemClickListener
             = new MovieAdapter.OnItemClickListener() {
         @Override
@@ -80,9 +88,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             mMovieAdapter.selectMovie(position, v.findViewById(R.id.movie_poster));
         }
     };
-    private ArrayList<MovieList.Movie> mMovieList;
-    private MovieActionListener mMovieActionListener;
-    private boolean isDualPane;
 
     public static MovieFragment getInstance(boolean isDualPane) {
         MovieFragment fragment = new MovieFragment();
@@ -107,7 +112,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
         isDualPane = getArguments().getBoolean(IS_DUAL_PANE, false);
     }
 
@@ -136,51 +140,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         outState.putInt(SELECTED_MOVIE_KEY, mMovieAdapter.mSelectedPosition);
 
     }
-
-/*    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main_fragment, menu);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
-        MenuItem menuItem = menu.findItem(checked);
-        if (menuItem != null) {
-            menuItem.setChecked(true);
-        } else {
-            menu.findItem(R.id.action_popularity).setChecked(true);
-        }
-    }*/
-
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        String sortOrder = null;
-        int checkedMenuItem = 0;
-        switch (item.getItemId()) {
-            case R.id.action_popularity:
-                sortOrder = getResources().getString(R.string.sort_order_popularity);
-                checkedMenuItem = item.getItemId();
-                break;
-            case R.id.action_rating:
-                sortOrder = getResources().getString(R.string.sort_order_rating);
-                checkedMenuItem = item.getItemId();
-                break;
-            case R.id.action_revenue:
-                sortOrder = getResources().getString(R.string.sort_order_revenue);
-                checkedMenuItem = item.getItemId();
-                break;
-            case R.id.action_favorites:
-                sortOrder = getString(R.string.sort_order_favorites);
-                checkedMenuItem = item.getItemId();
-                break;
-        }
-        if (sortOrder != null) {
-            item.setChecked(!item.isChecked());
-            setSortOrder(sortOrder, checkedMenuItem);
-            getData();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
