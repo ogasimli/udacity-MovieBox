@@ -20,7 +20,7 @@ TheMovieDBAPIKey=YOUR_API_KEY
 
 After that just replace YOUR_API_KEY with your valid TMDB api key.
 
-## Screens
+## Screenshots
 
 ![screen](../master/screenshots/main_phone.png)
 
@@ -28,7 +28,7 @@ After that just replace YOUR_API_KEY with your valid TMDB api key.
 
 ![screen](../master/screenshots/7inch_tablet_1.png)
 
-![screen](../master/screenshots/7inch_tablet_1.png)
+![screen](../master/screenshots/7inch_tablet_2.png)
 
 ## Libraries Used
 
