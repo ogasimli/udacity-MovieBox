@@ -26,6 +26,10 @@ After that just replace YOUR_API_KEY with your valid TMDB api key.
 
 ![screen](../master/screenshots/detail_phone.png)
 
+![screen](../master/screenshots/7inch_tablet_1.png)
+
+![screen](../master/screenshots/7inch_tablet_1.png)
+
 ## Libraries Used
 
 * [ButterKnife](https://github.com/JakeWharton/butterknife)
