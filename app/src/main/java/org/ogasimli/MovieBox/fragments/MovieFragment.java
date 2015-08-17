@@ -107,14 +107,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
         isDualPane = getArguments().getBoolean(IS_DUAL_PANE, false);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //Reload favorites list
+        /*Reload favorites list*/
         if (!isDualPane && mSortOrder.equals(getString(R.string.sort_order_favorites))) {
             loadFavoriteMovies();
         }
@@ -134,53 +133,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         outState.putInt(VIEW_STATE_KEY, state);
         outState.putParcelableArrayList(LIST_STATE_KEY, mMovieList);
         outState.putInt(SELECTED_MOVIE_KEY, mMovieAdapter.mSelectedPosition);
-
     }
-
-/*    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main_fragment, menu);
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        int checked = prefs.getInt(MENU_CHECKED_STATE, R.id.action_popularity);
-        MenuItem menuItem = menu.findItem(checked);
-        if (menuItem != null) {
-            menuItem.setChecked(true);
-        } else {
-            menu.findItem(R.id.action_popularity).setChecked(true);
-        }
-    }*/
-
-/*    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        String sortOrder = null;
-        int checkedMenuItem = 0;
-        switch (item.getItemId()) {
-            case R.id.action_popularity:
-                sortOrder = getResources().getString(R.string.sort_order_popularity);
-                checkedMenuItem = item.getItemId();
-                break;
-            case R.id.action_rating:
-                sortOrder = getResources().getString(R.string.sort_order_rating);
-                checkedMenuItem = item.getItemId();
-                break;
-            case R.id.action_revenue:
-                sortOrder = getResources().getString(R.string.sort_order_revenue);
-                checkedMenuItem = item.getItemId();
-                break;
-            case R.id.action_favorites:
-                sortOrder = getString(R.string.sort_order_favorites);
-                checkedMenuItem = item.getItemId();
-                break;
-        }
-        if (sortOrder != null) {
-            item.setChecked(!item.isChecked());
-            setSortOrder(sortOrder, checkedMenuItem);
-            getData();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -217,7 +170,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                     mMovieAdapter.mSelectedPosition = savedInstanceState.
                             getInt(SELECTED_MOVIE_KEY, 0);
                     mMovieAdapter.setMovieList(mMovieList);
-//                    mRecyclerView.setAdapter(mMovieAdapter);
                     showResultView();
                     if (isDualPane) {
                         mRecyclerView.post(new Runnable() {
@@ -294,8 +246,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
                 mMovieList = movies.results;
                 if (mMovieList != null && mMovieList.size() > 0) {
                     mMovieAdapter.setMovieList(mMovieList);
-//                    mRecyclerView.setAdapter(mMovieAdapter);
-//                    mMovieAdapter.notifyDataSetChanged();
                     mRecyclerView.scrollToPosition(0);
                     showResultView();
                 } else {
@@ -415,8 +365,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         } else if (data.size() > 0) {
             mMovieList = data;
             mMovieAdapter.setMovieList(mMovieList);
-//            mRecyclerView.setAdapter(mMovieAdapter);
-//            mMovieAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(0);
             showResultView();
         } else {
@@ -434,6 +382,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         }
     }
 
+    /** Movie action listeners */
     public interface MovieActionListener {
         void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
         void onEmptyMovieList();
