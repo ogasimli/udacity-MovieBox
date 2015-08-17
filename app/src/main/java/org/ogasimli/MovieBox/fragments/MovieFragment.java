@@ -118,7 +118,7 @@ public class MovieFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        //Reload favorites list
+        /*Reload favorites list*/
         if (!isDualPane && mSortOrder.equals(getString(R.string.sort_order_favorites))) {
             loadFavoriteMovies();
         }
@@ -138,7 +138,6 @@ public class MovieFragment extends Fragment
         outState.putInt(VIEW_STATE_KEY, state);
         outState.putParcelableArrayList(LIST_STATE_KEY, mMovieList);
         outState.putInt(SELECTED_MOVIE_KEY, mMovieAdapter.mSelectedPosition);
-
     }
 
     @Override
@@ -176,7 +175,6 @@ public class MovieFragment extends Fragment
                     mMovieAdapter.mSelectedPosition = savedInstanceState.
                             getInt(SELECTED_MOVIE_KEY, 0);
                     mMovieAdapter.setMovieList(mMovieList);
-//                    mRecyclerView.setAdapter(mMovieAdapter);
                     showResultView();
                     if (isDualPane) {
                         mRecyclerView.post(new Runnable() {
@@ -253,8 +251,6 @@ public class MovieFragment extends Fragment
                 mMovieList = movies.results;
                 if (mMovieList != null && mMovieList.size() > 0) {
                     mMovieAdapter.setMovieList(mMovieList);
-//                    mRecyclerView.setAdapter(mMovieAdapter);
-//                    mMovieAdapter.notifyDataSetChanged();
                     mRecyclerView.scrollToPosition(0);
                     showResultView();
                 } else {
@@ -374,8 +370,6 @@ public class MovieFragment extends Fragment
         } else if (data.size() > 0) {
             mMovieList = data;
             mMovieAdapter.setMovieList(mMovieList);
-//            mRecyclerView.setAdapter(mMovieAdapter);
-//            mMovieAdapter.notifyDataSetChanged();
             mRecyclerView.scrollToPosition(0);
             showResultView();
         } else {
@@ -393,6 +387,7 @@ public class MovieFragment extends Fragment
         }
     }
 
+    /** Movie action listeners */
     public interface MovieActionListener {
         void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
         void onEmptyMovieList();
