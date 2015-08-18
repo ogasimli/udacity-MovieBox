@@ -1,7 +1,7 @@
 # Movie Box
 A highly functional and interactive android app developed by me for first and second stages of Android Nanodegree Program.
 
-Movie Box was evaluated and graded as "" by certified Udacity code reviewer.
+Movie Box was evaluated and graded as "Exceeds Specifications" by certified Udacity code reviewer.
 
 ## Features
 
@@ -27,8 +27,6 @@ After that just replace YOUR_API_KEY with your valid TMDB api key.
 ![screen](../master/screenshots/detail_phone.png)
 
 ![screen](../master/screenshots/7inch_tablet_1.png)
-
-![screen](../master/screenshots/7inch_tablet_2.png)
 
 ## Libraries Used
 
