@@ -26,7 +26,7 @@ After that just replace YOUR_API_KEY with valid API key, obtained from The Movie
 
 ![screen](../master/screenshots/detail_phone.png)
 
-![screen](../master/screenshots/7inch_tablet_1.png)
+![screen](../master/screenshots/sw600dp.png)
 
 ## Libraries Used
 
