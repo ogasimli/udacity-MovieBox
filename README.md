@@ -6,10 +6,10 @@ Movie Box was evaluated and graded as "Exceeds Specifications" by certified Udac
 ## Features
 
 The main features of the app:
-* Discover the most popular, the most rated or the highest rated movies
+* Discover the most popular, the highest rated movies or movies with the highest revenue
 * Save favorite movies locally to view them even when offline
 * Watch trailers
-* Read reviews
+* Read user reviews
 
 ## The Movie Database API
 
@@ -18,7 +18,7 @@ In order to be able to launch the app you have to get a valid API key from The M
 
 TheMovieDBAPIKey=YOUR_API_KEY
 
-After that just replace YOUR_API_KEY with your valid TMDB api key.
+After that just replace YOUR_API_KEY with valid API key, obtained from The Movie Database.
 
 ## Screenshots
 
