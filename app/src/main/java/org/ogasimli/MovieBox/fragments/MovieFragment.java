@@ -81,15 +81,10 @@ public class MovieFragment extends Fragment
 
     private MovieAdapter mMovieAdapter;
 
-    private final MovieAdapter.OnItemClickListener itemClickListener
-            = new MovieAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, int position) {
-            mMovieAdapter.selectMovie(position, v.findViewById(R.id.movie_poster));
-        }
-    };
     private ArrayList<MovieList.Movie> mMovieList;
+
     private MovieActionListener mMovieActionListener;
+
     private boolean isDualPane;
 
     public static MovieFragment getInstance(boolean isDualPane) {
@@ -209,6 +204,15 @@ public class MovieFragment extends Fragment
             }
         });
     }
+
+    /*ItemClickListener for cards*/
+    private final MovieAdapter.OnItemClickListener itemClickListener
+            = new MovieAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View v, int position) {
+            mMovieAdapter.selectMovie(position, v.findViewById(R.id.movie_poster));
+        }
+    };
 
     /*Method to calculate grid span count*/
     private int calculateSpanCount() {
