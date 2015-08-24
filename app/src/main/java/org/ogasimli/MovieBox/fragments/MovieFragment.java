@@ -388,7 +388,7 @@ public class MovieFragment extends Fragment
         }
     }
 
-    /** Movie action listeners */
+    /*Movie action listeners*/
     public interface MovieActionListener {
         void onMovieSelected(MovieList.Movie movie, boolean isFavorite, View view);
         void onNoResultList();
