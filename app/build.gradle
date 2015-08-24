@@ -4,7 +4,7 @@ def THE_MOVIE_DB_API_KEY = '"' + TheMovieDBAPIKey + '"' ?: '"Missing The Movie D
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "23.0.0 rc2"
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         applicationId "org.ogasimli.MovieBox"
