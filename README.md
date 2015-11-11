@@ -22,17 +22,17 @@ After that just replace YOUR_API_KEY with valid API key, obtained from The Movie
 
 ## Screenshots
 
-![screen](../master/screenshots/main_phone.png)
+![screen](screenshots/main_phone.png)
 
-![screen](../master/screenshots/detail_phone.png)
+![screen](screenshots/detail_phone.png)
 
-![screen](../master/screenshots/sw600dp_portrait.png)
+![screen](screenshots/sw600dp_portrait.png)
 
-![screen](../master/screenshots/sw600dp_landscape.png)
+![screen](screenshots/sw600dp_landscape.png)
 
-![screen](../master/screenshots/sw720dp_portrait.png)
+![screen](screenshots/sw720dp_portrait.png)
 
-![screen](../master/screenshots/sw720dp_landscape.png)
+![screen](screenshots/sw720dp_landscape.png)
 
 ## Libraries Used
 
@@ -44,7 +44,7 @@ After that just replace YOUR_API_KEY with valid API key, obtained from The Movie
 ## Android Developer Nanodegree
 [![udacity][1]][2]
 
-[1]: ../master/screenshots/nanodegree.png
+[1]: screenshots/nanodegree.png
 [2]: https://www.udacity.com/course/android-developer-nanodegree--nd801
 
 ## License
